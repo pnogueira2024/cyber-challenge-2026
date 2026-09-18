@@ -1,3279 +1,1104 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-    Cyber Challenge 2026 — BOSS FINAL
-</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Challenge 2026 — Boss Final</title>
 
 <style>
-
-/* ============================================================
-   RESET
-============================================================ */
-
-* {
-    box-sizing: border-box;
-}
-
-
-body {
-
-    margin: 0;
-
-    min-height: 100vh;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    color: #f4f7fb;
-
-    background:
-
-        radial-gradient(
-            circle at top,
-            #24152f 0%,
-            #100d18 42%,
-            #05070b 100%
-        );
-}
-
-
-.container {
-
-    width: 100%;
-
-    max-width: 1050px;
-
-    margin: auto;
-
-    padding:
-        22px
-        18px
-        50px;
-}
-
-
-/* ============================================================
-   HEADER
-============================================================ */
-
-.header {
-
-    text-align: center;
-
-    margin-bottom: 20px;
-}
-
-
-.logo {
-
-    font-size: 52px;
-
-    margin-bottom: 4px;
-
-}
-
-
-h1 {
-
-    margin: 0;
-
-    font-size: 30px;
-
-    letter-spacing: 2px;
-
-}
-
-
-.subtitle {
-
-    color: #a7b0bf;
-
-    margin-top: 8px;
-
-}
-
-
-/* ============================================================
-   TOP BAR
-============================================================ */
-
-.topbar {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr
-        1fr
-        1fr;
-
-    gap: 12px;
-
-    margin-bottom: 15px;
-
-}
-
-
-.stat {
-
-    background: #0d1320;
-
-    border:
-        1px solid
-        #29364b;
-
-    border-radius: 11px;
-
-    padding: 11px 15px;
-
-}
-
-
-.stat-label {
-
-    color: #7f8da3;
-
-    font-size: 11px;
-
-    text-transform: uppercase;
-
-    letter-spacing: .6px;
-
-}
-
-
-.stat-value {
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    margin-top: 4px;
-
-}
-
-
-/* ============================================================
-   TIMER
-============================================================ */
-
-.timer {
-
-    color: #f4f7fb;
-
-}
-
-
-.timer.warning {
-
-    color: #facc15;
-
-}
-
-
-.timer.danger {
-
-    color: #ef4444;
-
-}
-
-
-/* ============================================================
-   PROGRESS
-============================================================ */
-
-.progress-wrapper {
-
-    height: 9px;
-
-    background: #1b2433;
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    margin-bottom: 20px;
-
-}
-
-
-.progress {
-
-    width: 0%;
-
-    height: 100%;
-
-    background: #a855f7;
-
-    transition:
-        width .35s;
-}
-
-
-/* ============================================================
-   MAIN CARD
-============================================================ */
-
-.card {
-
-    background:
-        rgba(15, 20, 32, .97);
-
-    border:
-        1px solid
-        #303c51;
-
-    border-radius: 18px;
-
-    padding: 27px;
-
-    box-shadow:
-        0 20px 70px
-        rgba(0,0,0,.45);
-
-}
-
-
-/* ============================================================
-   BOSS INTRO
-============================================================ */
-
-.boss-intro {
-
-    text-align: center;
-
-    padding: 15px 5px 10px;
-
-}
-
-
-.boss-symbol {
-
-    font-size: 80px;
-
-    margin-bottom: 5px;
-
-}
-
-
-.boss-title {
-
-    font-size: 32px;
-
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
-}
-
-
-.boss-text {
-
-    max-width: 720px;
-
-    margin:
-        18px
-        auto;
-
-    color: #c4cedc;
-
-    line-height: 1.7;
-
-}
-
-
-.warning-box {
-
-    max-width: 650px;
-
-    margin:
-        20px
-        auto;
-
-    padding: 15px;
-
-    border:
-        1px solid
-        #7c3aed;
-
-    border-radius: 12px;
-
-    background:
-        rgba(124,58,237,.10);
-
-    color: #ddd6fe;
-
-}
-
-
-.start-button {
-
-    margin-top: 10px;
-
-    border: 0;
-
-    border-radius: 11px;
-
-    padding:
-        15px
-        28px;
-
-    font-size: 17px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    background: #a855f7;
-
-    color: white;
-
-    transition: .2s;
-
-}
-
-
-.start-button:hover {
-
-    transform:
-        translateY(-2px);
-
-    filter:
-        brightness(1.1);
-
-}
-
-
-/* ============================================================
-   PHASE
-============================================================ */
-
-.phase-header {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    flex-wrap: wrap;
-
-    margin-bottom: 20px;
-
-}
-
-
-.phase-number {
-
-    color: #c084fc;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1px;
-
-}
-
-
-.phase-title {
-
-    font-size: 27px;
-
-    margin:
-        5px
-        0
-        0;
-
-}
-
-
-.phase-question {
-
-    font-size: 19px;
-
-    line-height: 1.65;
-
-    color: #e5eaf1;
-
-    margin-bottom: 22px;
-
-}
-
-
-/* ============================================================
-   SCENARIO
-============================================================ */
-
-.scenario {
-
-    background: #0b111d;
-
-    border:
-        1px solid
-        #29364b;
-
-    border-radius: 13px;
-
-    padding: 20px;
-
-    margin-bottom: 20px;
-
-    line-height: 1.7;
-
-}
-
-
-.scenario strong {
-
-    color: #c084fc;
-
-}
-
-
-/* ============================================================
-   OPTIONS
-============================================================ */
-
-.options {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 11px;
-
-}
-
-
-.option {
-
-    width: 100%;
-
-    text-align: left;
-
-    padding: 16px 17px;
-
-    border:
-        1px solid
-        #344257;
-
-    border-radius: 11px;
-
-    background: #141d2c;
-
-    color: #f4f7fb;
-
-    cursor: pointer;
-
-    font-size: 15px;
-
-    line-height: 1.5;
-
-    transition:
-        transform .15s,
-        border-color .15s,
-        background .15s;
-
-}
-
-
-.option:hover {
-
-    transform:
-        translateX(3px);
-
-    border-color:
-        #a855f7;
-
-}
-
-
-.option.correct {
-
-    border-color:
-        #4ade80;
-
-    background:
-        #10271c;
-
-    color:
-        #bbf7d0;
-
-}
-
-
-.option.wrong {
-
-    border-color:
-        #ef4444;
-
-    background:
-        #321417;
-
-    color:
-        #fecaca;
-
-}
-
-
-.option.disabled {
-
-    cursor:
-        default;
-
-    opacity:
-        .4;
-
-}
-
-
-.option.disabled:hover {
-
-    transform:
-        none;
-
-    border-color:
-        #344257;
-
-}
-
-
-/* ============================================================
-   FEEDBACK
-============================================================ */
-
-.feedback {
-
-    margin-top: 18px;
-
-    padding: 15px 17px;
-
-    border-radius: 11px;
-
-    background:
-        #101827;
-
-    border:
-        1px solid
-        #2c394d;
-
-    line-height: 1.6;
-
-}
-
-
-.feedback.good {
-
-    border-color:
-        #4ade80;
-
-}
-
-
-.feedback.bad {
-
-    border-color:
-        #ef4444;
-
-}
-
-
-/* ============================================================
-   NEXT BUTTON
-============================================================ */
-
-.next-area {
-
-    display: flex;
-
-    justify-content: flex-end;
-
-    margin-top: 20px;
-
-}
-
-
-.next-button {
-
-    border: 0;
-
-    border-radius: 10px;
-
-    padding:
-        13px
-        21px;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    background:
-        #a855f7;
-
-    color: white;
-
-}
-
-
-.next-button:disabled {
-
-    opacity: .3;
-
-    cursor: not-allowed;
-
-}
-
-
-/* ============================================================
-   PHASE 5 — ORDER
-============================================================ */
-
-.order-intro {
-
-    color: #b8c2d0;
-
-    line-height: 1.6;
-
-    margin-bottom: 18px;
-
-}
-
-
-.order-list {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-
-}
-
-
-.order-item {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 14px;
-
-    border:
-        1px solid
-        #344257;
-
-    border-radius: 10px;
-
-    background:
-        #141d2c;
-
-    cursor: grab;
-
-    user-select: none;
-
-}
-
-
-.order-item:active {
-
-    cursor: grabbing;
-
-}
-
-
-.order-number {
-
-    min-width: 32px;
-
-    height: 32px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background:
-        #263248;
-
-    color:
-        #cbd5e1;
-
-    font-weight: bold;
-
-}
-
-
-.order-item.correct-position {
-
-    border-color:
-        #4ade80;
-
-}
-
-
-/* ============================================================
-   END SCREEN
-============================================================ */
-
-.end-screen {
-
-    text-align: center;
-
-}
-
-
-.final-crown {
-
-    font-size: 85px;
-
-}
-
-
-.final-title {
-
-    font-size: 32px;
-
-    margin:
-        10px
-        0;
-
-}
-
-
-.final-score {
-
-    font-size: 70px;
-
-    font-weight: bold;
-
-    color: #c084fc;
-
-    margin:
-        15px
-        0;
-
-}
-
-
-.final-classification {
-
-    display: inline-block;
-
-    padding:
-        10px
-        18px;
-
-    border-radius: 20px;
-
-    background:
-        #171126;
-
-    border:
-        1px solid
-        #7c3aed;
-
-    color:
-        #ddd6fe;
-
-    font-weight: bold;
-
-    letter-spacing: .5px;
-
-}
-
-
-.final-message {
-
-    max-width: 700px;
-
-    margin:
-        25px
-        auto;
-
-    color:
-        #c5cedb;
-
-    line-height: 1.7;
-
-    font-size: 17px;
-
-}
-
-
-.score-breakdown {
-
-    max-width: 500px;
-
-    margin:
-        25px
-        auto;
-
-    background:
-        #0b111d;
-
-    border:
-        1px solid
-        #29364b;
-
-    border-radius: 12px;
-
-    padding: 18px;
-
-    text-align: left;
-
-}
-
-
-.breakdown-row {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    padding:
-        8px
-        0;
-
-    border-bottom:
-        1px solid
-        #202b3c;
-
-}
-
-
-.breakdown-row:last-child {
-
-    border-bottom:
-        0;
-
-    font-weight: bold;
-
-    padding-top: 13px;
-
-}
-
-
-.final-buttons {
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-
-    margin-top: 25px;
-
-}
-
-
-.final-button {
-
-    border: 0;
-
-    border-radius: 10px;
-
-    padding:
-        13px
-        20px;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    background:
-        #a855f7;
-
-    color: white;
-
-}
-
-
-.secondary-button {
-
-    background:
-        #263248;
-
-    color:
-        #e2e8f0;
-
-}
-
-
-/* ============================================================
-   HIDDEN
-============================================================ */
-
-.hidden {
-
-    display:
-        none !important;
-
-}
-
-
-/* ============================================================
-   FOOTER
-============================================================ */
-
-.footer {
-
-    text-align: center;
-
-    color:
-        #596579;
-
-    font-size:
-        12px;
-
-    margin-top:
-        20px;
-
-}
-
-
-/* ============================================================
-   MOBILE
-============================================================ */
-
-@media (max-width: 700px) {
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+            radial-gradient(circle at top, #172554 0%, #020617 45%, #000 100%);
+        color: #e5e7eb;
+    }
 
     .container {
-
-        padding:
-            14px
-            10px
-            35px;
-
+        max-width: 1050px;
+        margin: auto;
+        padding: 25px 18px 50px;
     }
-
-
-    .card {
-
-        padding:
-            17px;
-
-    }
-
 
     .topbar {
-
-        grid-template-columns:
-            1fr
-            1fr;
-
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
     }
 
-
-    .stat:last-child {
-
-        grid-column:
-            1 / -1;
-
+    .logo {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 1px;
     }
 
+    .logo span {
+        color: #22d3ee;
+    }
+
+    .status {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .badge {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid #334155;
+        border-radius: 10px;
+        padding: 9px 14px;
+        font-weight: bold;
+    }
+
+    .timer {
+        color: #f87171;
+        border-color: #7f1d1d;
+    }
+
+    .card {
+        background: rgba(15, 23, 42, 0.94);
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
 
     h1 {
-
-        font-size:
-            25px;
-
+        margin-top: 0;
+        font-size: 34px;
     }
 
-
-    .boss-symbol {
-
-        font-size:
-            65px;
-
+    h2 {
+        margin-top: 0;
+        color: #67e8f9;
     }
 
-
-    .boss-title {
-
-        font-size:
-            27px;
-
+    p {
+        line-height: 1.6;
     }
 
-
-    .phase-title {
-
-        font-size:
-            23px;
-
+    .intro {
+        text-align: center;
+        padding: 50px 20px;
     }
 
-
-    .phase-question {
-
-        font-size:
-            17px;
-
+    .crown {
+        font-size: 65px;
+        margin-bottom: 10px;
     }
 
-
-    .option {
-
-        padding:
-            14px;
-
+    button {
+        border: 0;
+        border-radius: 10px;
+        padding: 13px 22px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #0891b2;
+        color: white;
+        transition: .15s;
     }
 
+    button:hover {
+        transform: translateY(-1px);
+        background: #0e7490;
+    }
+
+    button:disabled {
+        opacity: .4;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .start-btn {
+        margin-top: 20px;
+        font-size: 18px;
+        padding: 15px 30px;
+    }
+
+    .progress-wrap {
+        margin-bottom: 25px;
+    }
+
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #94a3b8;
+    }
+
+    .progress {
+        height: 9px;
+        background: #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 20%;
+        background: #22d3ee;
+        transition: width .25s;
+    }
+
+    .phase {
+        display: none;
+    }
+
+    .phase.active {
+        display: block;
+    }
+
+    .scenario {
+        background: #020617;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .email {
+        background: #f8fafc;
+        color: #111827;
+        border-radius: 10px;
+        padding: 18px;
+        margin-top: 15px;
+    }
+
+    .email strong {
+        color: #111827;
+    }
+
+    .choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .choice {
+        background: #1e293b;
+        border: 1px solid #475569;
+        color: #e5e7eb;
+        text-align: left;
+    }
+
+    .choice:hover {
+        background: #334155;
+    }
+
+    .feedback {
+        min-height: 30px;
+        margin-top: 18px;
+        font-weight: bold;
+    }
+
+    .correct {
+        color: #4ade80;
+    }
+
+    .wrong {
+        color: #f87171;
+    }
+
+    .next-area {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .order-item {
+        padding: 15px;
+        background: #1e293b;
+        border: 1px solid #475569;
+        border-radius: 10px;
+        cursor: grab;
+        user-select: none;
+    }
+
+    .order-item:active {
+        cursor: grabbing;
+    }
+
+    .order-item.dragging {
+        opacity: .45;
+    }
+
+    .order-hint {
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .final {
+        display: none;
+        text-align: center;
+    }
 
     .final-score {
-
-        font-size:
-            55px;
-
+        font-size: 64px;
+        font-weight: 900;
+        color: #22d3ee;
+        margin: 20px 0;
     }
 
-
-    .final-buttons {
-
-        flex-direction:
-            column;
-
+    .breakdown {
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
     }
 
-
-    .final-button {
-
-        width:
-            100%;
-
+    .breakdown-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 13px 15px;
+        border-bottom: 1px solid #334155;
     }
 
-}
+    .breakdown-row.total {
+        border-top: 2px solid #22d3ee;
+        border-bottom: 0;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 18px;
+    }
 
+    .completed {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .completed-icon {
+        font-size: 70px;
+    }
+
+    .small {
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+        .card {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        .choices {
+            grid-template-columns: 1fr;
+        }
+
+        .final-score {
+            font-size: 48px;
+        }
+    }
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="container">
 
-
-<!-- ============================================================
-     HEADER
-============================================================ -->
-
-<div class="header">
-
-    <div class="logo">
-        👑
-    </div>
-
-    <h1>
-        CYBER CHALLENGE 2026
-    </h1>
-
-    <div class="subtitle">
-        BOSS FINAL
-    </div>
-
-</div>
-
-
-
-<!-- ============================================================
-     GAME
-============================================================ -->
-
-<div id="gameScreen">
-
-
-    <!-- ========================================================
-         TOP BAR
-    ========================================================= -->
-
     <div class="topbar">
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Fase
-            </div>
-
-            <div
-                id="phaseCounter"
-                class="stat-value"
-            >
-                0 / 5
-            </div>
-
+        <div class="logo">
+            CYBER <span>CHALLENGE</span> 2026
         </div>
 
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Tempo
+        <div class="status" id="statusBar" style="display:none;">
+            <div class="badge">
+                👑 BOSS FINAL
             </div>
-
-            <div
-                id="timer"
-                class="stat-value timer"
-            >
-                90
+            <div class="badge">
+                Pontos: <span id="bossScore">0</span>
             </div>
-
+            <div class="badge timer">
+                ⏱️ <span id="timer">90</span>s
+            </div>
         </div>
+    </div>
 
 
-        <div class="stat">
+    <!-- INTRO -->
 
-            <div class="stat-label">
-                Pontuação
-            </div>
+    <div class="card intro" id="introScreen">
 
-            <div
-                id="score"
-                class="stat-value"
-            >
-                0
-            </div>
+        <div class="crown">👑</div>
 
-        </div>
+        <h1>Boss Final</h1>
 
+        <p>
+            Chegaste ao fim do Cyber Challenge.
+        </p>
+
+        <p>
+            Aqui vais ter de aplicar tudo o que aprendeste:
+            phishing, credenciais, dispositivos desconhecidos,
+            incidentes e segurança física.
+        </p>
+
+        <p>
+            Tens <strong>90 segundos</strong> para completar o Boss.
+        </p>
+
+        <button class="start-btn" onclick="startBoss()">
+            🚀 Enfrentar o Boss
+        </button>
 
     </div>
 
 
+    <!-- GAME -->
 
-    <!-- ========================================================
-         PROGRESS
-    ========================================================= -->
+    <div class="card" id="gameScreen" style="display:none;">
 
-    <div class="progress-wrapper">
+        <div class="progress-wrap">
 
-        <div
-            id="progress"
-            class="progress"
-        ></div>
-
-    </div>
-
-
-
-    <!-- ========================================================
-         INTRO
-    ========================================================= -->
-
-    <div
-        id="introScreen"
-        class="card"
-    >
-
-        <div class="boss-intro">
-
-
-            <div class="boss-symbol">
-                👑
+            <div class="progress-text">
+                <span id="phaseLabel">Fase 1 de 5</span>
+                <span id="phasePoints">+20 pontos</span>
             </div>
 
-
-            <div class="boss-title">
-                BOSS FINAL
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
             </div>
 
+        </div>
 
-            <div class="boss-text">
 
-                Chegaste ao último desafio.
+        <!-- PHASE 1 -->
+
+        <div class="phase active" id="phase1">
+
+            <h2>Fase 1 — O Email</h2>
+
+            <p>
+                Recebeste este email. O que fazes?
+            </p>
+
+            <div class="email">
+
+                <strong>De:</strong> Microsoft Security &lt;security@microsoft-support.example&gt;<br>
+                <strong>Assunto:</strong> Ação necessária — conta suspensa
+
+                <hr>
+
+                A sua conta Microsoft 365 será suspensa nas próximas
+                24 horas devido a uma atividade suspeita.
 
                 <br><br>
 
-                Até aqui aprendeste a reconhecer
-                phishing, proteger credenciais,
-                manter uma secretária segura e
-                identificar comportamentos suspeitos.
+                Confirme imediatamente a sua palavra-passe através
+                do seguinte link para evitar a suspensão:
 
                 <br><br>
 
-                Agora tens de provar que consegues
-                <strong>tomar boas decisões quando
-                várias coisas acontecem ao mesmo tempo.</strong>
+                <strong>CONFIRMAR CONTA</strong>
 
             </div>
 
+            <div class="choices">
 
-            <div class="warning-box">
-
-                ⚠️ Tens <strong>90 segundos</strong>.
-
-                <br>
-
-                São <strong>5 fases</strong>.
-
-                <br>
-
-                Cada decisão correta vale
-                <strong>20 pontos</strong>.
-
-                <br>
-
-                Uma decisão errada custa
-                <strong>5 pontos</strong>.
-
-            </div>
-
-
-            <button
-                class="start-button"
-                onclick="startBoss()"
-            >
-                👑 ACEITAR O DESAFIO
-            </button>
-
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ========================================================
-         PHASE SCREEN
-    ========================================================= -->
-
-    <div
-        id="phaseScreen"
-        class="card hidden"
-    >
-
-        <div class="phase-header">
-
-            <div>
-
-                <div
-                    id="phaseNumber"
-                    class="phase-number"
-                >
-                    FASE 01
-                </div>
-
-                <div
-                    id="phaseTitle"
-                    class="phase-title"
-                >
-                    O primeiro instinto
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            id="phaseContent"
-        ></div>
-
-
-        <div
-            id="feedback"
-            class="feedback hidden"
-        ></div>
-
-
-        <div class="next-area">
-
-            <button
-                id="nextButton"
-                class="next-button"
-                onclick="nextPhase()"
-                disabled
-            >
-                Próxima fase →
-            </button>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ========================================================
-         END SCREEN
-    ========================================================= -->
-
-    <div
-        id="endScreen"
-        class="card hidden"
-    >
-
-        <div class="end-screen">
-
-
-            <div class="final-crown">
-                👑
-            </div>
-
-
-            <div class="final-title">
-                BOSS FINAL CONCLUÍDO
-            </div>
-
-
-            <div
-                id="finalScore"
-                class="final-score"
-            >
-                0 / 100
-            </div>
-
-
-            <div
-                id="classification"
-                class="final-classification"
-            >
-                CYBER SURVIVOR
-            </div>
-
-
-            <div
-                id="finalMessage"
-                class="final-message"
-            ></div>
-
-
-            <div
-                id="scoreBreakdown"
-                class="score-breakdown"
-            ></div>
-
-
-            <div class="final-buttons">
-
-                <button
-                    class="final-button"
-                    onclick="restartBoss()"
-                >
-                    🔄 Jogar novamente
+                <button class="choice" onclick="answerPhase(1, false)">
+                    🔗 Clicar no link e confirmar
                 </button>
 
-
-                <button
-                    class="final-button secondary-button"
-                    onclick="goHome()"
-                >
-                    🏠 Voltar ao Challenge
+                <button class="choice" onclick="answerPhase(1, true)">
+                    🛡️ Não clicar, reportar e contactar o IT por canal conhecido
                 </button>
 
             </div>
 
+            <div class="feedback" id="feedback1"></div>
+
+        </div>
+
+
+        <!-- PHASE 2 -->
+
+        <div class="phase" id="phase2">
+
+            <h2>Fase 2 — A Password</h2>
+
+            <div class="scenario">
+
+                <p>
+                    Um colega liga-te e diz:
+                </p>
+
+                <p>
+                    <strong>
+                        "Estou com um problema urgente e preciso da tua
+                        password para entrar no sistema. Depois alteras."
+                    </strong>
+                </p>
+
+            </div>
+
+            <div class="choices">
+
+                <button class="choice" onclick="answerPhase(2, true)">
+                    🔐 Recusar partilhar a password e seguir o procedimento correto
+                </button>
+
+                <button class="choice" onclick="answerPhase(2, false)">
+                    🤝 Dar a password porque é um colega
+                </button>
+
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+
+        </div>
+
+
+        <!-- PHASE 3 -->
+
+        <div class="phase" id="phase3">
+
+            <h2>Fase 3 — O USB</h2>
+
+            <div class="scenario">
+
+                <p>
+                    Encontras uma pen USB no parque de estacionamento.
+                </p>
+
+                <p>
+                    Não sabes quem é o proprietário.
+                </p>
+
+                <p>
+                    O que fazes?
+                </p>
+
+            </div>
+
+            <div class="choices">
+
+                <button class="choice" onclick="answerPhase(3, false)">
+                    💻 Ligar a pen ao computador para descobrir o conteúdo
+                </button>
+
+                <button class="choice" onclick="answerPhase(3, true)">
+                    🛡️ Entregar ao IT/Security sem a ligar
+                </button>
+
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+
+        </div>
+
+
+        <!-- PHASE 4 -->
+
+        <div class="phase" id="phase4">
+
+            <h2>Fase 4 — Algo não está bem</h2>
+
+            <div class="scenario">
+
+                <p>
+                    O teu computador começa a apresentar comportamentos
+                    estranhos:
+                </p>
+
+                <ul>
+                    <li>janelas aparecem sem explicação;</li>
+                    <li>o computador fica extremamente lento;</li>
+                    <li>aparece uma mensagem desconhecida.</li>
+                </ul>
+
+                <p>
+                    Qual é a ação correta?
+                </p>
+
+            </div>
+
+            <div class="choices">
+
+                <button class="choice" onclick="answerPhase(4, true)">
+                    🚨 Reportar imediatamente o incidente pelo canal definido
+                </button>
+
+                <button class="choice" onclick="answerPhase(4, false)">
+                    🔧 Continuar a trabalhar e tentar resolver sozinho
+                </button>
+
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+
+        </div>
+
+
+        <!-- PHASE 5 -->
+
+        <div class="phase" id="phase5">
+
+            <h2>Fase 5 — Liga os Pontos</h2>
+
+            <p>
+                Agora organiza os acontecimentos pela ordem que
+                consideras correta.
+            </p>
+
+            <p class="order-hint">
+                Arrasta os acontecimentos para mudar a ordem.
+                Quando estiveres satisfeito, termina o Boss.
+            </p>
+
+            <div class="order-list" id="orderList">
+
+                <div class="order-item" draggable="true">
+                    📧 Email suspeito
+                </div>
+
+                <div class="order-item" draggable="true">
+                    🔗 Link
+                </div>
+
+                <div class="order-item" draggable="true">
+                    🔐 Pedido de password
+                </div>
+
+                <div class="order-item" draggable="true">
+                    💾 USB desconhecida
+                </div>
+
+                <div class="order-item" draggable="true">
+                    🖥️ Comportamento anómalo
+                </div>
+
+                <div class="order-item" draggable="true">
+                    🚨 Reporte ao IT
+                </div>
+
+            </div>
+
+            <div class="next-area">
+
+                <button onclick="finishBoss()">
+                    👑 Terminar Boss
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
 
+    <!-- FINAL -->
+
+    <div class="card final" id="finalScreen">
+
+        <div class="crown">🏆</div>
+
+        <h1>Cyber Challenge concluído!</h1>
+
+        <p id="finalMessage"></p>
+
+        <div class="final-score">
+            <span id="totalScore">0</span> / 500
+        </div>
+
+        <p>
+            Pontuação final acumulada
+        </p>
+
+        <div class="breakdown">
+
+            <div class="breakdown-row">
+                <span>🎯 Desafio 01</span>
+                <strong id="scoreD1">0</strong>
+            </div>
+
+            <div class="breakdown-row">
+                <span>🗂️ Desafio 02</span>
+                <strong id="scoreD2">0</strong>
+            </div>
+
+            <div class="breakdown-row">
+                <span>🧠 Desafio 03</span>
+                <strong id="scoreD3">0</strong>
+            </div>
+
+            <div class="breakdown-row">
+                <span>🔗 Desafio 04</span>
+                <strong id="scoreD4">0</strong>
+            </div>
+
+            <div class="breakdown-row">
+                <span>👑 Boss Final</span>
+                <strong id="scoreBoss">0</strong>
+            </div>
+
+            <div class="breakdown-row total">
+                <span>TOTAL</span>
+                <strong id="scoreTotal">0 / 500</strong>
+            </div>
+
+        </div>
+
+        <p class="small">
+            A tua participação neste desafio foi concluída.
+        </p>
+
+    </div>
+
+
+    <!-- ALREADY COMPLETED -->
+
+    <div class="card completed" id="completedScreen" style="display:none;">
+
+        <div class="completed-icon">🔒</div>
+
+        <h1>Boss já concluído</h1>
+
+        <p>
+            Este Boss Final já foi concluído neste dispositivo.
+        </p>
+
+        <p class="small">
+            Não é possível repetir ou alterar a pontuação.
+        </p>
+
+        <div class="final-score">
+            <span id="completedTotal">0</span> / 500
+        </div>
+
+    </div>
+
 </div>
-
-
-
-<div class="footer">
-
-    Cyber Challenge 2026 · Sport TV
-
-</div>
-
-
-</div>
-
 
 
 <script>
 
-/* ============================================================
-   CONFIGURAÇÃO
-============================================================ */
-
-const TOTAL_TIME = 90;
-
-const POINTS_CORRECT = 20;
-
-const POINTS_WRONG = 5;
-
-const TOTAL_PHASES = 5;
-
-
-/* ============================================================
-   ESTADO
-============================================================ */
-
+let bossScore = 0;
 let currentPhase = 0;
-
-let score = 0;
-
-let timeLeft = TOTAL_TIME;
-
+let timerValue = 90;
 let timerInterval = null;
-
-let phaseCompleted = false;
-
-let bossStarted = false;
-
-let bossFinished = false;
+let phaseAnswered = false;
 
 let phaseScores = [0, 0, 0, 0, 0];
 
-
-/* ============================================================
-   FASES
-============================================================ */
-
-const phases = [
-
-    /* ========================================================
-       FASE 1
-    ======================================================== */
-
-    {
-        title:
-            "O primeiro instinto",
-
-        scenario: `
-            <strong>16:47 — ALERTA DE SEGURANÇA</strong>
-
-            <br><br>
-
-            Recebes um email aparentemente enviado
-            pelo departamento de IT.
-
-            <br><br>
-
-            O email diz que a tua conta Microsoft 365
-            foi comprometida e que tens de confirmar
-            imediatamente a tua identidade através
-            de um link.
-
-            <br><br>
-
-            Ao mesmo tempo, recebes uma mensagem
-            no Teams de um colega a pedir ajuda.
-        `,
-
-        question:
-            "O que fazes primeiro?",
-
-        options: [
-
-            {
-                text:
-                    "🔗 Clico no link para confirmar se o alerta é verdadeiro.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🙈 Ignoro tudo e continuo a trabalhar.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🛡️ Não clico, reporto o email como suspeito e contacto o IT por um canal conhecido.",
-
-                correct:
-                    true
-            },
-
-            {
-                text:
-                    "📨 Encaminho o email para um colega para perguntar se também recebeu.",
-
-                correct:
-                    false
-            }
-
-        ]
-
-    },
-
-
-    /* ========================================================
-       FASE 2
-    ======================================================== */
-
-    {
-        title:
-            "O colega insiste",
-
-        scenario: `
-            A mensagem no Teams continua:
-
-            <br><br>
-
-            <strong>
-                "É mesmo urgente. Manda-me só a password.
-                Estou fora do escritório."
-            </strong>
-
-            <br><br>
-
-            O colega é alguém que conheces e
-            trabalhas regularmente com ele.
-        `,
-
-        question:
-            "Como respondes?",
-
-        options: [
-
-            {
-                text:
-                    "🔐 Envio a password porque conheço o colega.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "💬 Envio pelo Teams porque é um canal interno.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🛡️ Recuso partilhar credenciais e encaminho o pedido para o procedimento adequado.",
-
-                correct:
-                    true
-            },
-
-            {
-                text:
-                    "🔄 Envio a password e altero-a depois.",
-
-                correct:
-                    false
-            }
-
-        ]
-
-    },
-
-
-    /* ========================================================
-       FASE 3
-    ======================================================== */
-
-    {
-        title:
-            "A pen",
-
-        scenario: `
-            Ao sair do edifício encontras uma
-            <strong>pen USB</strong> no parque de
-            estacionamento.
-
-            <br><br>
-
-            Não sabes quem é o proprietário.
-
-            <br><br>
-
-            Na pen está escrito apenas:
-
-            <br>
-
-            <strong>
-                "IMPORTANTE — FINANCE"
-            </strong>
-        `,
-
-        question:
-            "O que fazes?",
-
-        options: [
-
-            {
-                text:
-                    "💾 Ligo a pen ao computador para descobrir de quem é.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🛡️ Entrego a pen ao IT/Security sem a ligar a um equipamento.",
-
-                correct:
-                    true
-            },
-
-            {
-                text:
-                    "🖥️ Ligo-a num computador antigo que não seja importante.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🏠 Levo-a para casa para verificar o conteúdo.",
-
-                correct:
-                    false
-            }
-
-        ]
-
-    },
-
-
-    /* ========================================================
-       FASE 4
-    ======================================================== */
-
-    {
-        title:
-            "O incidente",
-
-        scenario: `
-            Pouco depois, o teu computador começa
-            a comportar-se de forma estranha.
-
-            <br><br>
-
-            Aparece uma aplicação que não reconheces
-            e surgem várias tentativas de autenticação
-            que não foste tu a iniciar.
-
-            <br><br>
-
-            Neste momento já tens razões para suspeitar
-            de um possível incidente de segurança.
-        `,
-
-        question:
-            "Qual é a prioridade?",
-
-        options: [
-
-            {
-                text:
-                    "🔧 Tento resolver o problema sozinho.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🔄 Reinicio o computador e continuo a trabalhar.",
-
-                correct:
-                    false
-            },
-
-            {
-                text:
-                    "🚨 Comunico imediatamente o incidente através do canal definido pela empresa.",
-
-                correct:
-                    true
-            },
-
-            {
-                text:
-                    "📸 Faço screenshots e envio para todos os colegas.",
-
-                correct:
-                    false
-            }
-
-        ]
-
-    },
-
-
-    /* ========================================================
-       FASE 5
-    ======================================================== */
-
-    {
-        title:
-            "A decisão final",
-
-        scenario: `
-            O IT responde:
-
-            <br><br>
-
-            <strong>
-                "Precisamos de saber exatamente o que
-                aconteceu. O que fizeste?"
-            </strong>
-
-            <br><br>
-
-            Agora tens de reconstruir a sequência
-            dos acontecimentos.
-        `,
-
-        question:
-            "Ordena os acontecimentos pela sequência mais lógica.",
-
-        options:
-            null
-
-    }
-
+const correctOrder = [
+    "📧 Email suspeito",
+    "🔗 Link",
+    "🔐 Pedido de password",
+    "💾 USB desconhecida",
+    "🖥️ Comportamento anómalo",
+    "🚨 Reporte ao IT"
 ];
 
 
-/* ============================================================
-   START BOSS
-============================================================ */
+// --------------------------------------------------
+// START
+// --------------------------------------------------
 
 function startBoss() {
 
-    bossStarted = true;
+    if (localStorage.getItem("cyberChallenge_bossCompleted") === "true") {
+        showAlreadyCompleted();
+        return;
+    }
 
+    document.getElementById("introScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+    document.getElementById("statusBar").style.display = "flex";
+
+    bossScore = 0;
     currentPhase = 0;
+    timerValue = 90;
 
-    score = 0;
-
-    timeLeft = TOTAL_TIME;
-
-    phaseScores =
-        [0, 0, 0, 0, 0];
-
-    document
-        .getElementById("introScreen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("phaseScreen")
-        .classList.remove("hidden");
+    updateScore();
+    updateTimer();
 
     startTimer();
 
-    renderPhase();
-
-    updateInterface();
+    setupDragAndDrop();
 
 }
 
 
-/* ============================================================
-   TIMER
-============================================================ */
+// --------------------------------------------------
+// TIMER
+// --------------------------------------------------
 
 function startTimer() {
 
-    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
 
-    timerInterval =
-        setInterval(
-            function() {
+        timerValue--;
 
-                if (
-                    !bossStarted ||
-                    bossFinished
-                ) {
+        updateTimer();
 
-                    return;
+        if (timerValue <= 0) {
 
-                }
+            clearInterval(timerInterval);
 
+            finishBoss(true);
 
-                timeLeft--;
+        }
 
-                updateTimer();
-
-
-                if (
-                    timeLeft <= 0
-                ) {
-
-                    timeLeft = 0;
-
-                    updateTimer();
-
-                    finishBoss(
-                        true
-                    );
-
-                }
-
-            },
-            1000
-        );
+    }, 1000);
 
 }
 
-
-/* ============================================================
-   UPDATE TIMER
-============================================================ */
 
 function updateTimer() {
 
-    const timer =
-        document.getElementById(
-            "timer"
-        );
-
-
-    timer.textContent =
-        timeLeft;
-
-
-    timer.classList.remove(
-        "warning",
-        "danger"
-    );
-
-
-    if (
-        timeLeft <= 15
-    ) {
-
-        timer.classList.add(
-            "danger"
-        );
-
-    }
-
-    else if (
-        timeLeft <= 30
-    ) {
-
-        timer.classList.add(
-            "warning"
-        );
-
-    }
+    document.getElementById("timer").textContent = timerValue;
 
 }
 
 
-/* ============================================================
-   RENDER PHASE
-============================================================ */
+// --------------------------------------------------
+// PHASE ANSWERS
+// --------------------------------------------------
 
-function renderPhase() {
+function answerPhase(phase, correct) {
 
-    phaseCompleted = false;
+    if (phaseAnswered) return;
 
+    phaseAnswered = true;
 
-    const phase =
-        phases[currentPhase];
+    const feedback = document.getElementById("feedback" + phase);
 
+    if (correct) {
 
-    document
-        .getElementById("phaseNumber")
-        .textContent =
-        `FASE ${String(currentPhase + 1).padStart(2, "0")}`;
+        bossScore += 20;
+        phaseScores[phase - 1] = 20;
 
+        feedback.textContent = "✓ Correto! +20 pontos";
+        feedback.className = "feedback correct";
 
-    document
-        .getElementById("phaseTitle")
-        .textContent =
-        phase.title;
+    } else {
 
+        bossScore -= 5;
 
-    const content =
-        document.getElementById(
-            "phaseContent"
-        );
+        if (bossScore < 0) bossScore = 0;
 
+        phaseScores[phase - 1] = -5;
 
-    /*
-       FASE 5
-    */
-
-    if (
-        currentPhase === 4
-    ) {
-
-        renderFinalOrdering();
-
-        return;
+        feedback.textContent = "✗ Não é a ação correta. -5 pontos";
+        feedback.className = "feedback wrong";
 
     }
 
+    updateScore();
 
-    /*
-       FASES 1-4
-    */
+    setTimeout(() => {
 
-    let html = "";
-
-
-    html += `
-        <div class="scenario">
-            ${phase.scenario}
-        </div>
-    `;
-
-
-    html += `
-        <div class="phase-question">
-            <strong>
-                ${phase.question}
-            </strong>
-        </div>
-    `;
-
-
-    html += `
-        <div class="options">
-    `;
-
-
-    phase.options.forEach(
-        (option, index) => {
-
-            html += `
-
-                <button
-                    class="option"
-                    onclick="answerOption(
-                        ${index}
-                    )"
-                >
-
-                    ${option.text}
-
-                </button>
-
-            `;
-
-        }
-    );
-
-
-    html += `
-        </div>
-    `;
-
-
-    content.innerHTML =
-        html;
-
-
-    hideFeedback();
-
-
-    document
-        .getElementById("nextButton")
-        .disabled =
-        true;
-
-
-    updateInterface();
-
-}
-
-
-/* ============================================================
-   ANSWER OPTION
-============================================================ */
-
-function answerOption(index) {
-
-    if (
-        phaseCompleted ||
-        bossFinished
-    ) {
-
-        return;
-
-    }
-
-
-    const phase =
-        phases[currentPhase];
-
-
-    const option =
-        phase.options[index];
-
-
-    const buttons =
-        document.querySelectorAll(
-            ".option"
-        );
-
-
-    if (
-        option.correct
-    ) {
-
-        phaseCompleted = true;
-
-        score +=
-            POINTS_CORRECT;
-
-        phaseScores[currentPhase] =
-            POINTS_CORRECT;
-
-
-        buttons[index]
-            .classList.add(
-                "correct"
-            );
-
-
-        buttons.forEach(
-            (button, i) => {
-
-                if (
-                    i !== index
-                ) {
-
-                    button
-                        .classList.add(
-                            "disabled"
-                        );
-
-                }
-
-            }
-        );
-
-
-        showFeedback(
-            "good",
-            `
-            🟢 <strong>Boa decisão.</strong>
-
-            <br><br>
-
-            Esta é a resposta mais segura.
-
-            <br><br>
-
-            <strong>
-                +${POINTS_CORRECT} pontos
-            </strong>
-            `
-        );
-
-
-        document
-            .getElementById("nextButton")
-            .disabled =
-            false;
-
-
-        updateInterface();
-
-
-    }
-
-    else {
-
-        score -=
-            POINTS_WRONG;
-
-
-        if (
-            score < 0
-        ) {
-
-            score = 0;
-
+        if (phase < 4) {
+            goToPhase(phase);
+        } else {
+            goToPhase(4);
         }
 
+    }, 900);
 
-        buttons[index]
-            .classList.add(
-                "wrong"
-            );
+}
 
 
-        showFeedback(
-            "bad",
-            `
-            🔴 <strong>Má decisão.</strong>
+// --------------------------------------------------
+// PHASE NAVIGATION
+// --------------------------------------------------
 
-            <br><br>
+function goToPhase(phaseNumber) {
 
-            Pensa no princípio:
-            <strong>parar, verificar e comunicar</strong>.
+    document.querySelectorAll(".phase").forEach(p => {
+        p.classList.remove("active");
+    });
 
-            <br><br>
+    currentPhase = phaseNumber;
 
-            <strong>
-                -${POINTS_WRONG} pontos
-            </strong>
+    document.getElementById("phase" + (phaseNumber + 1)).classList.add("active");
 
-            <br><br>
+    phaseAnswered = false;
 
-            Ainda podes tentar outra resposta.
-            `
+    const phaseDisplay = phaseNumber + 1;
+
+    document.getElementById("phaseLabel").textContent =
+        "Fase " + phaseDisplay + " de 5";
+
+    document.getElementById("progressBar").style.width =
+        (phaseDisplay / 5 * 100) + "%";
+
+}
+
+
+// --------------------------------------------------
+// SCORE
+// --------------------------------------------------
+
+function updateScore() {
+
+    document.getElementById("bossScore").textContent = bossScore;
+
+}
+
+
+// --------------------------------------------------
+// PHASE 5 — ORDER
+// --------------------------------------------------
+
+function getCurrentOrder() {
+
+    return Array.from(
+        document.querySelectorAll("#orderList .order-item")
+    ).map(item => item.textContent.trim());
+
+}
+
+
+function evaluateOrder() {
+
+    const currentOrder = getCurrentOrder();
+
+    const correct =
+        currentOrder.length === correctOrder.length &&
+        currentOrder.every(
+            (value, index) => value === correctOrder[index]
         );
 
+    if (correct) {
 
-        setTimeout(
-            function() {
+        bossScore += 20;
+        phaseScores[4] = 20;
 
-                buttons[index]
-                    .classList.remove(
-                        "wrong"
-                    );
+    } else {
 
-            },
-            700
-        );
+        bossScore -= 5;
 
+        if (bossScore < 0) bossScore = 0;
 
-        updateInterface();
+        phaseScores[4] = -5;
 
     }
 
 }
 
 
-/* ============================================================
-   FINAL ORDERING
-============================================================ */
+// --------------------------------------------------
+// FINISH BOSS
+// --------------------------------------------------
 
-const correctOrder = [
+function finishBoss(timeExpired = false) {
 
-    "📧 Email suspeito",
+    if (localStorage.getItem("cyberChallenge_bossCompleted") === "true") {
+        return;
+    }
 
-    "🔗 Link",
-
-    "🔐 Pedido de password",
-
-    "💾 USB desconhecida",
-
-    "🖥️ Comportamento anómalo",
-
-    "🚨 Reporte ao IT"
-
-];
-
-
-function renderFinalOrdering() {
-
-    const content =
-        document.getElementById(
-            "phaseContent"
-        );
-
-
-    const shuffled =
-        [...correctOrder];
-
+    clearInterval(timerInterval);
 
     /*
-       Fisher-Yates
+       A Fase 5 é sempre avaliada uma única vez.
+       Não existe retry.
     */
 
-    for (
-        let i = shuffled.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const j =
-            Math.floor(
-                Math.random() *
-                (i + 1)
-            );
-
-
-        [
-            shuffled[i],
-            shuffled[j]
-        ] =
-        [
-            shuffled[j],
-            shuffled[i]
-        ];
-
+    if (currentPhase === 4 && phaseScores[4] === 0) {
+        evaluateOrder();
     }
-
-
-    content.innerHTML = `
-
-        <div class="scenario">
-
-            ${phases[4].scenario}
-
-        </div>
-
-
-        <div class="phase-question">
-
-            <strong>
-                ${phases[4].question}
-            </strong>
-
-        </div>
-
-
-        <div class="order-intro">
-
-            Arrasta os acontecimentos para os colocar
-            pela ordem correta.
-
-            <br><br>
-
-            📌 A sequência representa aquilo que
-            aconteceu durante o incidente.
-
-        </div>
-
-
-        <div
-            id="orderList"
-            class="order-list"
-        >
-
-            ${shuffled.map(
-                (item, index) => `
-
-                    <div
-                        class="order-item"
-                        draggable="true"
-                        data-value="${item}"
-                    >
-
-                        <div
-                            class="order-number"
-                        >
-                            ${index + 1}
-                        </div>
-
-                        <div>
-                            ${item}
-                        </div>
-
-                    </div>
-
-                `
-            ).join("")}
-
-        </div>
-
-    `;
-
-
-    setupOrdering();
-
-
-    hideFeedback();
-
-
-    document
-        .getElementById("nextButton")
-        .disabled =
-        true;
-
-}
-
-
-/* ============================================================
-   ORDERING DRAG & DROP
-============================================================ */
-
-function setupOrdering() {
-
-    const list =
-        document.getElementById(
-            "orderList"
-        );
-
-
-    let dragged = null;
-
-
-    list
-        .querySelectorAll(".order-item")
-        .forEach(
-            item => {
-
-                item.addEventListener(
-                    "dragstart",
-                    function() {
-
-                        dragged = this;
-
-                    }
-                );
-
-
-                item.addEventListener(
-                    "dragover",
-                    function(event) {
-
-                        event.preventDefault();
-
-                    }
-                );
-
-
-                item.addEventListener(
-                    "drop",
-                    function(event) {
-
-                        event.preventDefault();
-
-
-                        if (
-                            !dragged ||
-                            dragged === this
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        const items =
-                            Array.from(
-                                list.children
-                            );
-
-
-                        const draggedIndex =
-                            items.indexOf(
-                                dragged
-                            );
-
-
-                        const targetIndex =
-                            items.indexOf(
-                                this
-                            );
-
-
-                        if (
-                            draggedIndex <
-                            targetIndex
-                        ) {
-
-                            list.insertBefore(
-                                dragged,
-                                this.nextSibling
-                            );
-
-                        }
-
-                        else {
-
-                            list.insertBefore(
-                                dragged,
-                                this
-                            );
-
-                        }
-
-
-                        updateOrderNumbers();
-
-                    }
-                );
-
-            }
-        );
-
-
 
     /*
-       Mobile fallback:
-       tocar num item e depois noutro
-       para trocar posições.
+       Se o tempo acabar antes da Fase 5,
+       o jogador termina com a pontuação acumulada.
     */
 
-    let selectedOrderItem =
-        null;
+    if (timeExpired && currentPhase !== 4) {
+        // Não há pontos adicionais.
+    }
+
+    if (bossScore < 0) bossScore = 0;
+    if (bossScore > 100) bossScore = 100;
+
+    localStorage.setItem(
+        "cyberChallenge_bossScore",
+        bossScore
+    );
+
+    localStorage.setItem(
+        "cyberChallenge_bossCompleted",
+        "true"
+    );
+
+    showFinalScreen();
+
+}
 
 
-    list
-        .querySelectorAll(".order-item")
-        .forEach(
-            item => {
+// --------------------------------------------------
+// FINAL SCORE
+// --------------------------------------------------
 
-                item.addEventListener(
-                    "click",
-                    function() {
+function getStoredScore(key) {
 
-                        if (
-                            selectedOrderItem === null
-                        ) {
+    const value = parseInt(
+        localStorage.getItem(key),
+        10
+    );
 
-                            selectedOrderItem =
-                                this;
+    return Number.isFinite(value) ? value : 0;
 
-                            this.classList.add(
-                                "correct-position"
-                            );
-
-                            return;
-
-                        }
+}
 
 
-                        if (
-                            selectedOrderItem === this
-                        ) {
+function showFinalScreen() {
 
-                            this.classList.remove(
-                                "correct-position"
-                            );
+    document.getElementById("gameScreen").style.display = "none";
+    document.getElementById("statusBar").style.display = "none";
+    document.getElementById("finalScreen").style.display = "block";
 
-                            selectedOrderItem =
-                                null;
+    const d1 = getStoredScore("cyberChallenge_d1");
+    const d2 = getStoredScore("cyberChallenge_d2");
+    const d3 = getStoredScore("cyberChallenge_d3");
+    const d4 = getStoredScore("cyberChallenge_d4");
 
-                            return;
+    const total =
+        d1 + d2 + d3 + d4 + bossScore;
 
-                        }
+    document.getElementById("scoreD1").textContent = d1;
+    document.getElementById("scoreD2").textContent = d2;
+    document.getElementById("scoreD3").textContent = d3;
+    document.getElementById("scoreD4").textContent = d4;
+    document.getElementById("scoreBoss").textContent = bossScore;
 
+    document.getElementById("scoreTotal").textContent =
+        total + " / 500";
 
-                        const first =
-                            selectedOrderItem;
+    document.getElementById("totalScore").textContent =
+        total;
 
+    if (total >= 450) {
 
-                        const second =
-                            this;
+        document.getElementById("finalMessage").textContent =
+            "🔥 Resultado extraordinário. Mostraste uma excelente capacidade de reconhecer e reagir a situações de cibersegurança.";
 
+    } else if (total >= 350) {
 
-                        const parent =
-                            list;
+        document.getElementById("finalMessage").textContent =
+            "🛡️ Muito bem! Demonstraste bons conhecimentos de cibersegurança.";
 
+    } else if (total >= 250) {
 
-                        const firstNext =
-                            first.nextSibling;
+        document.getElementById("finalMessage").textContent =
+            "👍 Desafio concluído! Há alguns pontos onde podes reforçar os teus conhecimentos.";
 
+    } else {
 
-                        const secondNext =
-                            second.nextSibling;
+        document.getElementById("finalMessage").textContent =
+            "🎯 Desafio concluído! A cibersegurança é uma aprendizagem contínua.";
 
+    }
 
-                        if (
-                            firstNext === second
-                        ) {
-
-                            parent.insertBefore(
-                                second,
-                                first
-                            );
-
-                        }
-
-                        else if (
-                            secondNext === first
-                        ) {
-
-                            parent.insertBefore(
-                                first,
-                                second
-                            );
-
-                        }
-
-                        else {
-
-                            parent.insertBefore(
-                                first,
-                                secondNext
-                            );
-
-                            parent.insertBefore(
-                                second,
-                                firstNext
-                            );
-
-                        }
+}
 
 
-                        first.classList.remove(
-                            "correct-position"
-                        );
+// --------------------------------------------------
+// ALREADY COMPLETED
+// --------------------------------------------------
+
+function showAlreadyCompleted() {
+
+    document.getElementById("introScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "none";
+    document.getElementById("statusBar").style.display = "none";
+    document.getElementById("completedScreen").style.display = "block";
+
+    const d1 = getStoredScore("cyberChallenge_d1");
+    const d2 = getStoredScore("cyberChallenge_d2");
+    const d3 = getStoredScore("cyberChallenge_d3");
+    const d4 = getStoredScore("cyberChallenge_d4");
+    const boss = getStoredScore("cyberChallenge_bossScore");
+
+    document.getElementById("completedTotal").textContent =
+        d1 + d2 + d3 + d4 + boss;
+
+}
 
 
-                        second.classList.remove(
-                            "correct-position"
-                        );
+// --------------------------------------------------
+// DRAG & DROP
+// --------------------------------------------------
 
+function setupDragAndDrop() {
 
-                        selectedOrderItem =
-                            null;
+    const items = document.querySelectorAll(".order-item");
 
+    let draggedItem = null;
 
-                        updateOrderNumbers();
+    items.forEach(item => {
 
-                    }
+        item.addEventListener("dragstart", function() {
+
+            draggedItem = this;
+
+            this.classList.add("dragging");
+
+        });
+
+        item.addEventListener("dragend", function() {
+
+            this.classList.remove("dragging");
+
+            draggedItem = null;
+
+        });
+
+        item.addEventListener("dragover", function(event) {
+
+            event.preventDefault();
+
+            if (!draggedItem || draggedItem === this) return;
+
+            const list = document.getElementById("orderList");
+
+            const rect = this.getBoundingClientRect();
+
+            const middle =
+                rect.top + rect.height / 2;
+
+            if (event.clientY < middle) {
+
+                list.insertBefore(
+                    draggedItem,
+                    this
+                );
+
+            } else {
+
+                list.insertBefore(
+                    draggedItem,
+                    this.nextSibling
                 );
 
             }
-        );
 
-}
+        });
 
-
-/* ============================================================
-   ORDER NUMBERS
-============================================================ */
-
-function updateOrderNumbers() {
-
-    document
-        .querySelectorAll(
-            ".order-number"
-        )
-        .forEach(
-            (number, index) => {
-
-                number.textContent =
-                    index + 1;
-
-            }
-        );
-
-}
-
-
-/* ============================================================
-   CHECK FINAL ORDER
-============================================================ */
-
-function checkFinalOrder() {
-
-    const items =
-        Array.from(
-            document.querySelectorAll(
-                ".order-item"
-            )
-        );
-
-
-    const currentOrder =
-        items.map(
-            item =>
-                item.dataset.value
-        );
-
-
-    let correct =
-        true;
-
-
-    currentOrder.forEach(
-        (value, index) => {
-
-            if (
-                value !==
-                correctOrder[index]
-            ) {
-
-                correct = false;
-
-            }
-
-        }
-    );
-
-
-    if (
-        correct
-    ) {
-
-        phaseCompleted =
-            true;
-
-
-        score +=
-            POINTS_CORRECT;
-
-        phaseScores[4] =
-            POINTS_CORRECT;
-
-
-        items.forEach(
-            item => {
-
-                item.classList.add(
-                    "correct-position"
-                );
-
-            }
-        );
-
-
-        showFeedback(
-            "good",
-            `
-            🟢 <strong>Sequência correta!</strong>
-
-            <br><br>
-
-            Reconstruíste corretamente o incidente.
-
-            <br><br>
-
-            <strong>
-                +${POINTS_CORRECT} pontos
-            </strong>
-            `
-        );
-
-
-        document
-            .getElementById("nextButton")
-            .disabled =
-            false;
-
-
-        updateInterface();
-
-
-        return;
-
-    }
-
-
-    /*
-       Ordem errada
-    */
-
-    score -=
-        POINTS_WRONG;
-
-
-    if (
-        score < 0
-    ) {
-
-        score = 0;
-
-    }
-
-
-    showFeedback(
-        "bad",
-        `
-        🔴 <strong>A sequência ainda não está correta.</strong>
-
-        <br><br>
-
-        Pensa na cronologia dos acontecimentos
-        e tenta novamente.
-
-        <br><br>
-
-        <strong>
-            -${POINTS_WRONG} pontos
-        </strong>
-        `
-    );
-
-
-    updateInterface();
-
-}
-
-
-/* ============================================================
-   NEXT PHASE
-============================================================ */
-
-function nextPhase() {
-
-    if (
-        !phaseCompleted
-    ) {
-
-        /*
-           Na fase 5 o botão serve para
-           validar a sequência.
-        */
-
-        if (
-            currentPhase === 4
-        ) {
-
-            checkFinalOrder();
-
-        }
-
-        return;
-
-    }
-
-
-    if (
-        currentPhase >=
-        TOTAL_PHASES - 1
-    ) {
-
-        finishBoss(false);
-
-        return;
-
-    }
-
-
-    currentPhase++;
-
-    renderPhase();
-
-    updateInterface();
-
-}
-
-
-/* ============================================================
-   INTERFACE
-============================================================ */
-
-function updateInterface() {
-
-    document
-        .getElementById("phaseCounter")
-        .textContent =
-        `${Math.min(
-            currentPhase + 1,
-            TOTAL_PHASES
-        )} / ${TOTAL_PHASES}`;
-
-
-    document
-        .getElementById("score")
-        .textContent =
-        score;
-
-
-    document
-        .getElementById("progress")
-        .style.width =
-        `${(
-            currentPhase /
-            TOTAL_PHASES
-        ) * 100}%`;
-
-}
-
-
-/* ============================================================
-   FEEDBACK
-============================================================ */
-
-function showFeedback(
-    type,
-    message
-) {
-
-    const feedback =
-        document.getElementById(
-            "feedback"
-        );
-
-
-    feedback.className =
-        `feedback ${type}`;
-
-
-    feedback.innerHTML =
-        message;
-
-
-    feedback.classList.remove(
-        "hidden"
-    );
-
-}
-
-
-function hideFeedback() {
-
-    const feedback =
-        document.getElementById(
-            "feedback"
-        );
-
-
-    feedback.classList.add(
-        "hidden"
-    );
-
-}
-
-
-/* ============================================================
-   FINISH BOSS
-============================================================ */
-
-function finishBoss(
-    timeExpired
-) {
-
-    if (
-        bossFinished
-    ) {
-
-        return;
-
-    }
-
-
-    bossFinished = true;
-
-
-    clearInterval(
-        timerInterval
-    );
-
-
-    document
-        .getElementById("phaseScreen")
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById("endScreen")
-        .classList.remove(
-            "hidden"
-        );
-
-
-    document
-        .getElementById("progress")
-        .style.width =
-        "100%";
-
-
-    document
-        .getElementById("phaseCounter")
-        .textContent =
-        "5 / 5";
-
-
-    document
-        .getElementById("timer")
-        .textContent =
-        timeExpired
-            ? "0"
-            : timeLeft;
-
-
-    document
-        .getElementById("finalScore")
-        .textContent =
-        `${score} / 100`;
-
-
-    const classification =
-        getClassification();
-
-
-    document
-        .getElementById("classification")
-        .textContent =
-        classification.title;
-
-
-    document
-        .getElementById("finalMessage")
-        .innerHTML =
-        timeExpired
-            ? classification.timeMessage
-            : classification.message;
-
-
-    renderBreakdown();
-
-}
-
-
-/* ============================================================
-   CLASSIFICATION
-============================================================ */
-
-function getClassification() {
-
-    if (
-        score >= 90
-    ) {
-
-        return {
-
-            title:
-                "🏆 CYBER MASTER",
-
-            message:
-                `
-                <strong>Boss derrotado.</strong>
-
-                <br><br>
-
-                Conseguistes manter a cabeça fria,
-                reconhecer os sinais de risco e agir
-                de forma segura.
-
-                <br><br>
-
-                Não precisaste de ser hacker.
-                Precisaste de saber <strong>parar,
-                pensar e comunicar</strong>.
-                `,
-
-            timeMessage:
-                `
-                <strong>Excelente desempenho.</strong>
-
-                <br><br>
-
-                O tempo acabou, mas conseguiste
-                acumular uma pontuação muito elevada.
-                `
-
-        };
-
-    }
-
-
-    if (
-        score >= 80
-    ) {
-
-        return {
-
-            title:
-                "🛡️ CYBER SURVIVOR",
-
-            message:
-                `
-                Sobreviveste ao incidente.
-
-                <br><br>
-
-                Tiveste algumas decisões menos
-                seguras, mas conseguiste controlar
-                a situação.
-                `,
-
-            timeMessage:
-                `
-                O tempo acabou.
-
-                <br><br>
-
-                Apesar disso, acumulaste uma
-                boa pontuação e demonstraste
-                bons reflexos de segurança.
-                `
-
-        };
-
-    }
-
-
-    if (
-        score >= 60
-    ) {
-
-        return {
-
-            title:
-                "🟡 INCIDENTE CONTROLADO",
-
-            message:
-                `
-                A situação foi controlada,
-                mas algumas decisões poderiam
-                ter criado riscos adicionais.
-
-                <br><br>
-
-                Na próxima vez:
-                <strong>para, pensa e comunica.</strong>
-                `,
-
-            timeMessage:
-                `
-                O tempo acabou antes de conseguires
-                controlar completamente a situação.
-
-                <br><br>
-
-                Algumas decisões ainda precisam
-                de mais atenção.
-                `
-
-        };
-
-    }
-
-
-    return {
-
-        title:
-            "🔴 INCIDENTE NÃO CONTROLADO",
-
-        message:
-            `
-            O incidente não foi controlado.
-
-            <br><br>
-
-            Lembra-te dos princípios fundamentais:
-            não clicar, não partilhar credenciais,
-            não ligar dispositivos desconhecidos
-            e comunicar rapidamente os incidentes.
-            `,
-
-        timeMessage:
-            `
-            O tempo acabou.
-
-            <br><br>
-
-            Num incidente real, cada segundo conta.
-            `
-
-    };
-
-}
-
-
-/* ============================================================
-   BREAKDOWN
-============================================================ */
-
-function renderBreakdown() {
-
-    const breakdown =
-        document.getElementById(
-            "scoreBreakdown"
-        );
-
-
-    breakdown.innerHTML = `
-
-        <div class="breakdown-row">
-
-            <span>
-                Fase 01
-            </span>
-
-            <span>
-                ${phaseScores[0]} pts
-            </span>
-
-        </div>
-
-
-        <div class="breakdown-row">
-
-            <span>
-                Fase 02
-            </span>
-
-            <span>
-                ${phaseScores[1]} pts
-            </span>
-
-        </div>
-
-
-        <div class="breakdown-row">
-
-            <span>
-                Fase 03
-            </span>
-
-            <span>
-                ${phaseScores[2]} pts
-            </span>
-
-        </div>
-
-
-        <div class="breakdown-row">
-
-            <span>
-                Fase 04
-            </span>
-
-            <span>
-                ${phaseScores[3]} pts
-            </span>
-
-        </div>
-
-
-        <div class="breakdown-row">
-
-            <span>
-                Fase 05
-            </span>
-
-            <span>
-                ${phaseScores[4]} pts
-            </span>
-
-        </div>
-
-
-        <div class="breakdown-row">
-
-            <span>
-                TOTAL BOSS
-            </span>
-
-            <span>
-                ${score} / 100
-            </span>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ============================================================
-   RESTART
-============================================================ */
-
-function restartBoss() {
-
-    clearInterval(
-        timerInterval
-    );
-
-
-    currentPhase = 0;
-
-    score = 0;
-
-    timeLeft =
-        TOTAL_TIME;
-
-    phaseCompleted =
-        false;
-
-    bossStarted =
-        false;
-
-    bossFinished =
-        false;
-
-    phaseScores =
-        [0, 0, 0, 0, 0];
-
-
-    document
-        .getElementById("endScreen")
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById("phaseScreen")
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById("introScreen")
-        .classList.remove(
-            "hidden"
-        );
-
-
-    document
-        .getElementById("timer")
-        .textContent =
-        TOTAL_TIME;
-
-
-    document
-        .getElementById("timer")
-        .classList.remove(
-            "warning",
-            "danger"
-        );
-
-
-    document
-        .getElementById("phaseCounter")
-        .textContent =
-        "0 / 5";
-
-
-    document
-        .getElementById("score")
-        .textContent =
-        "0";
-
-
-    document
-        .getElementById("progress")
-        .style.width =
-        "0%";
-
-}
-
-
-/* ============================================================
-   HOME
-============================================================ */
-
-function goHome() {
-
-    window.location.href =
-        "index.html";
+    });
 
 }
 
 </script>
-
 
 </body>
 </html>

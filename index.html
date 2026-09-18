@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Cyber Challenge 2026</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -29,10 +32,11 @@
       font-size: 28px;
       font-weight: bold;
       margin-bottom: 35px;
+      letter-spacing: 1px;
     }
 
     .logo span {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     .card {
@@ -89,8 +93,10 @@
     .topbar {
       display: flex;
       justify-content: space-between;
+      gap: 15px;
       margin-bottom: 20px;
       font-weight: bold;
+      flex-wrap: wrap;
     }
 
     .progress {
@@ -135,13 +141,6 @@
       outline: 2px solid #ff9800;
     }
 
-    .feedback {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      background: #26304a;
-    }
-
     .correct {
       background: #b7f7c1 !important;
       color: #123b19;
@@ -152,6 +151,13 @@
       color: #591111;
     }
 
+    .feedback {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #26304a;
+    }
+
     .next-button {
       margin-top: 20px;
     }
@@ -160,35 +166,81 @@
       font-size: 42px;
       font-weight: bold;
     }
+
+    .result-box {
+      margin-top: 25px;
+      padding: 20px;
+      background: #26304a;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 600px) {
+
+      .container {
+        padding: 20px 12px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .email-body {
+        padding: 18px;
+      }
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
+
+  <!-- ================================================= -->
+  <!-- LOGO -->
+  <!-- ================================================= -->
+
   <div class="logo">
-    CYBER CHALLENGE <span>2026</span>
+
+    CYBER CHALLENGE
+    <span>2026</span>
+
   </div>
 
 
-  <!-- INÍCIO -->
+  <!-- ================================================= -->
+  <!-- ECRÃ INICIAL -->
+  <!-- ================================================= -->
 
   <div id="startScreen" class="card">
 
     <h1>🕵️ O Caça-Phish</h1>
 
     <p>
-      Um email aparentemente legítimo acabou de chegar à tua caixa
-      de correio.
+      Um email aparentemente legítimo acabou de chegar
+      à tua caixa de correio.
     </p>
 
     <p>
-      Analisa cada mensagem e identifica os sinais de phishing.
+      Analisa cuidadosamente cada mensagem e identifica
+      os sinais que podem indicar phishing.
     </p>
 
     <p>
       <strong>10 emails · 100 pontos</strong>
+    </p>
+
+    <p>
+      ⚠️ Atenção: nem tudo o que aparece nos emails
+      é suspeito.
     </p>
 
     <input
@@ -199,484 +251,1045 @@
     >
 
     <button onclick="startGame()">
+
       🚀 Começar desafio
+
     </button>
 
   </div>
 
 
+
+  <!-- ================================================= -->
   <!-- JOGO -->
+  <!-- ================================================= -->
 
   <div id="gameScreen" class="hidden">
+
 
     <div class="topbar">
 
       <div>
-        Desafio <span id="questionNumber">1</span>/10
+        📧 Email
+        <span id="questionNumber">1</span>/10
       </div>
 
       <div>
-        🏆 <span id="score">0</span> pts
+        🏆
+        <span id="score">0</span>
+        pts
       </div>
 
       <div>
-        ⏱️ <span id="timer">0</span>s
+        ⏱️
+        <span id="timer">0</span>s
       </div>
 
     </div>
 
 
     <div class="progress">
-      <div id="progressBar" class="progress-bar"></div>
+
+      <div
+        id="progressBar"
+        class="progress-bar">
+      </div>
+
     </div>
 
 
     <div class="card">
 
+
       <h2 id="emailTitle"></h2>
 
+
       <p>
-        👀 Clica nos elementos que consideras suspeitos.
+
+        🔎 Analisa o email.
+        Clica nos elementos que consideras suspeitos.
+
       </p>
 
-      <div id="email" class="email"></div>
 
-      <div id="feedback" class="feedback hidden"></div>
+      <p>
+
+        Quando terminares a análise,
+        clica em <strong>Terminei a análise</strong>.
+
+      </p>
+
+
+      <div
+        id="email"
+        class="email">
+      </div>
+
+
+      <div
+        id="feedback"
+        class="feedback hidden">
+      </div>
+
 
       <button
         id="nextButton"
         class="next-button hidden"
         onclick="nextQuestion()">
-        Próximo email →
+
+        🔍 Terminei a análise →
+
       </button>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ================================================= -->
+  <!-- RESULTADO -->
+  <!-- ================================================= -->
+
+  <div
+    id="resultScreen"
+    class="card hidden">
+
+    <h1>
+      🏆 Desafio concluído!
+    </h1>
+
+    <p>
+      Cyber Codename:
+    </p>
+
+    <h2 id="finalCodename"></h2>
+
+
+    <div class="result-box">
+
+      <p>
+        Pontuação final:
+      </p>
+
+      <div
+        id="finalScore"
+        class="score">
+      </div>
+
+
+      <p>
+        Tempo total:
+        <strong>
+          <span id="finalTime"></span>
+          segundos
+        </strong>
+      </p>
 
     </div>
 
   </div>
 
 
-  <!-- RESULTADO -->
-
-  <div id="resultScreen" class="card hidden">
-
-    <h1>🏆 Desafio concluído!</h1>
-
-    <p>Cyber Codename:</p>
-
-    <h2 id="finalCodename"></h2>
-
-    <p>Pontuação:</p>
-
-    <div id="finalScore" class="score"></div>
-
-    <p>
-      Tempo total:
-      <strong><span id="finalTime"></span> segundos</strong>
-    </p>
-
-  </div>
-
 </div>
+
 
 
 <script>
 
-  /*
-   * ============================================
-   * CONFIGURAÇÃO DOS DESAFIOS
-   * ============================================
-   *
-   * Cada email vale 10 pontos.
-   *
-   * "suspect" = true
-   * significa que esse elemento é suspeito.
-   */
 
-  const questions = [
+/* =====================================================
+   DESAFIOS
+   ===================================================== */
+
+const questions = [
+
+
+  /* ===================================================
+     EMAIL 01
+     =================================================== */
 
   {
-    title: "📧 Email 01 — A tua conta Microsoft 365",
+
+    title:
+      "📧 Email 01 — A tua conta Microsoft 365",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Microsoft 365 Support &lt;security@microsoft-support.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Microsoft 365 Support
+          &lt;security@microsoft-support.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           ⚠️ A sua conta será suspensa
+
         </span>
+
       </div>
 
-      <div class="email-body">
-        Olá,<br><br>
 
-        Detetámos uma atividade suspeita na sua conta Microsoft 365.<br><br>
+      <div class="email-body">
+
+        Olá,
+
+        <br><br>
+
+        Detetámos uma atividade suspeita
+        na sua conta Microsoft 365.
+
+        <br><br>
 
         Para evitar a suspensão da sua conta,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          valide imediatamente os seus dados através deste link
-        </span>.<br><br>
 
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Tem apenas 30 minutos para concluir esta operação.
-        </span><br><br>
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          valide imediatamente os seus dados
+          através deste link
+
+        </span>.
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Tem apenas 30 minutos
+          para concluir esta operação.
+
+        </span>
+
+        <br><br>
 
         Obrigado,<br>
+
         Microsoft Security Team
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 02
+     =================================================== */
+
   {
-    title: "📧 Email 02 — Documento partilhado",
+
+    title:
+      "📧 Email 02 — Documento partilhado",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
-          João Silva &lt;joao.silva@sporttv.pt&gt;
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
+          João Silva
+          &lt;joao.silva@sporttv.pt&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           Documento urgente — acesso necessário
+
         </span>
+
       </div>
 
+
       <div class="email-body">
-        Olá,<br><br>
 
-        Partilhei contigo o documento da reunião de amanhã.<br><br>
+        Olá,
 
-        Podes consultar o documento no SharePoint através do
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+        <br><br>
+
+        Partilhei contigo o documento
+        da reunião de amanhã.
+
+        <br><br>
+
+        Podes consultar o documento
+        no SharePoint através do
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           link abaixo
-        </span>.<br><br>
 
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Precisamos que confirmes a tua password para desbloquear o documento.
-        </span><br><br>
+        </span>.
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Precisamos que confirmes
+          a tua password para desbloquear
+          o documento.
+
+        </span>
+
+        <br><br>
 
         Obrigado.
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 03
+     =================================================== */
+
   {
-    title: "📧 Email 03 — Fatura pendente",
+
+    title:
+      "📧 Email 03 — Fatura pendente",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Financeiro &lt;financeiro@fornecedor-pagamentos.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Financeiro
+          &lt;financeiro@fornecedor-pagamentos.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           Fatura em atraso — pagamento imediato
+
         </span>
+
       </div>
 
-      <div class="email-body">
-        Boa tarde,<br><br>
 
-        Informamos que existe uma fatura pendente.<br><br>
+      <div class="email-body">
+
+        Boa tarde,
+
+        <br><br>
+
+        Informamos que existe uma
+        fatura pendente.
+
+        <br><br>
 
         Para evitar custos adicionais,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          o pagamento deverá ser efetuado ainda hoje
-        </span>.<br><br>
 
-        Em anexo encontra-se o documento para consulta.<br><br>
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          o pagamento deverá ser efetuado ainda hoje
+
+        </span>.
+
+        <br><br>
+
+        Em anexo encontra-se o documento
+        para consulta.
+
+        <br><br>
 
         Cumprimentos,<br>
+
         Departamento Financeiro
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 04
+     =================================================== */
+
   {
-    title: "📧 Email 04 — Pedido da Direção",
+
+    title:
+      "📧 Email 04 — Pedido da Direção",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Diretor &lt;diretor@sportv-portugal.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Diretor
+          &lt;diretor@sportv-portugal.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           Preciso da tua ajuda rapidamente
+
         </span>
+
       </div>
 
+
       <div class="email-body">
-        Olá,<br><br>
 
-        Estou numa reunião e preciso de resolver uma situação urgente.<br><br>
+        Olá,
 
-        Podes comprar um cartão-presente e enviar-me o código?
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+        <br><br>
+
+        Estou numa reunião e preciso
+        de resolver uma situação urgente.
+
+        <br><br>
+
+        Podes comprar um cartão-presente
+        e enviar-me o código?
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           É importante que isto fique entre nós.
-        </span><br><br>
 
-        Assim que terminares, envia-me o código por email.<br><br>
+        </span>
+
+        <br><br>
+
+        Assim que terminares,
+        envia-me o código por email.
+
+        <br><br>
 
         Obrigado.
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 05
+     =================================================== */
+
   {
-    title: "📧 Email 05 — Password expirada",
+
+    title:
+      "📧 Email 05 — Password expirada",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          IT Helpdesk &lt;helpdesk@support-office365.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          IT Helpdesk
+          &lt;helpdesk@support-office365.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           A sua password expira hoje
+
         </span>
+
       </div>
 
-      <div class="email-body">
-        Olá,<br><br>
 
-        A sua password encontra-se prestes a expirar.<br><br>
+      <div class="email-body">
+
+        Olá,
+
+        <br><br>
+
+        A sua password encontra-se
+        prestes a expirar.
+
+        <br><br>
 
         Para manter o acesso aos serviços,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          confirme a sua password através deste formulário
-        </span>.<br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          confirme a sua password
+          através deste formulário
+
+        </span>.
+
+        <br><br>
 
         Caso contrário,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           a conta será bloqueada automaticamente.
+
         </span>
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 06
+     =================================================== */
+
   {
-    title: "📧 Email 06 — Reunião Teams",
+
+    title:
+      "📧 Email 06 — Reunião Teams",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
-          Microsoft Teams &lt;noreply@teams.microsoft.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
+          Microsoft Teams
+          &lt;noreply@teams.microsoft.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
           Convite para reunião
+
         </span>
+
       </div>
+
 
       <div class="email-body">
-        Foste convidado para uma reunião Teams.<br><br>
 
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+        Foste convidado para uma reunião Teams.
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
           Data: 14 de outubro
-        </span><br><br>
 
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+        </span>
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
           Organizador: IT Department
-        </span><br><br>
 
-        Consulta o convite no calendário para obter mais informações.
+        </span>
+
+        <br><br>
+
+        Consulta o convite no calendário
+        para obter mais informações.
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 07
+     =================================================== */
+
   {
-    title: "📧 Email 07 — Envio de encomenda",
+
+    title:
+      "📧 Email 07 — Envio de encomenda",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Transportadora &lt;entregas@tracking-portugal.net&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Transportadora
+          &lt;entregas@tracking-portugal.net&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
+
         Encomenda não entregue
+
       </div>
 
+
       <div class="email-body">
-        Tentámos entregar a sua encomenda mas não foi possível.<br><br>
+
+        Tentámos entregar a sua encomenda
+        mas não foi possível.
+
+        <br><br>
 
         Para reagendar a entrega,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          efetue o pagamento de 1,99 € através deste link
-        </span>.<br><br>
 
-        O pagamento deverá ser efetuado nas próximas
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          2 horas
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          efetue o pagamento de 1,99 €
+          através deste link
+
         </span>.
+
+        <br><br>
+
+        O pagamento deverá ser efetuado
+        nas próximas
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          2 horas
+
+        </span>.
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 08
+     =================================================== */
+
   {
-    title: "📧 Email 08 — Segurança da conta",
+
+    title:
+      "📧 Email 08 — Segurança da conta",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Security Alert &lt;security-alert@micros0ft.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Security Alert
+          &lt;security-alert@micros0ft.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
+
         Novo início de sessão
+
       </div>
 
+
       <div class="email-body">
-        Foi detetado um novo início de sessão na sua conta.<br><br>
+
+        Foi detetado um novo início
+        de sessão na sua conta.
+
+        <br><br>
 
         Se não reconhece esta atividade,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          clique aqui para proteger imediatamente a sua conta
-        </span>.<br><br>
 
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Ignore esta mensagem se já efetuou a validação.
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          clique aqui para proteger
+          imediatamente a sua conta
+
+        </span>.
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Ignore esta mensagem se já efetuou
+          a validação.
+
         </span>
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     EMAIL 09
+     =================================================== */
+
   {
-    title: "📧 Email 09 — Partilha OneDrive",
+
+    title:
+      "📧 Email 09 — Partilha OneDrive",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          OneDrive &lt;sharing@onedrive-notification.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          OneDrive
+          &lt;sharing@onedrive-notification.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
+
         Um documento foi partilhado consigo
+
       </div>
 
+
       <div class="email-body">
-        Um documento foi partilhado consigo.<br><br>
+
+        Um documento foi partilhado consigo.
+
+        <br><br>
 
         Documento:
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
           Plano de Projeto 2026
-        </span><br><br>
+
+        </span>
+
+        <br><br>
 
         Para visualizar o documento,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          introduza as suas credenciais Microsoft nesta página
-        </span>.<br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          introduza as suas credenciais
+          Microsoft nesta página
+
+        </span>.
+
+        <br><br>
 
         A ligação expira em 24 horas.
+
       </div>
+
     `
+
   },
 
 
+  /* ===================================================
+     BOSS FINAL
+     =================================================== */
+
   {
-    title: "🧠 BOSS FINAL — O email perfeito",
+
+    title:
+      "🧠 BOSS FINAL — O email perfeito",
 
     content: `
+
       <div class="email-header">
+
         <strong>De:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          Microsoft Support &lt;support@micros0ft-security.com&gt;
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          Microsoft Support
+          &lt;support@micros0ft-security.com&gt;
+
         </span>
+
         <br><br>
 
+
         <strong>Assunto:</strong>
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           Confirmação de segurança necessária
+
         </span>
+
       </div>
+
 
       <div class="email-body">
-        Olá,<br><br>
 
-        Foi identificada uma tentativa de acesso à sua conta.<br><br>
+        Olá,
+
+        <br><br>
+
+        Foi identificada uma tentativa
+        de acesso à sua conta.
+
+        <br><br>
 
         Para verificar a atividade,
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
-          utilize o botão abaixo para iniciar a verificação
-        </span>.<br><br>
 
-        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
+          utilize o botão abaixo
+          para iniciar a verificação
+
+        </span>.
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="true"
+          onclick="checkAnswer(this)">
+
           A verificação deve ser concluída hoje.
-        </span><br><br>
 
-        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
-          Equipa de Segurança Microsoft
         </span>
+
+        <br><br>
+
+        <span
+          class="clickable"
+          data-suspect="false"
+          onclick="checkAnswer(this)">
+
+          Equipa de Segurança Microsoft
+
+        </span>
+
       </div>
+
     `
+
   }
 
 ];
 
-  let currentQuestion = 0;
-  let score = 0;
-  let time = 0;
-  let timerInterval;
-  let codename = "";
-  let answersThisQuestion = 0;
-  let suspectsThisQuestion = 0;
 
 
-  function startGame() {
+/* =====================================================
+   VARIÁVEIS DO JOGO
+   ===================================================== */
 
-    codename =
-      document.getElementById("codename").value.trim();
+let currentQuestion = 0;
 
-    if (!codename) {
+let score = 0;
 
-      alert("Introduz primeiro o teu Cyber Codename.");
+let time = 0;
 
-      return;
-    }
+let timerInterval;
 
+let codename = "";
+
+
+
+/* =====================================================
+   INICIAR JOGO
+   ===================================================== */
+
+function startGame() {
+
+  codename =
     document
-      .getElementById("startScreen")
-      .classList.add("hidden");
+      .getElementById("codename")
+      .value
+      .trim();
 
-    document
-      .getElementById("gameScreen")
-      .classList.remove("hidden");
 
-    timerInterval = setInterval(function() {
+  if (!codename) {
+
+    alert(
+      "Introduz primeiro o teu Cyber Codename."
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("startScreen")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("gameScreen")
+    .classList
+    .remove("hidden");
+
+
+  timerInterval =
+    setInterval(function() {
 
       time++;
 
@@ -686,149 +1299,217 @@
 
     }, 1000);
 
-    loadQuestion();
+
+  loadQuestion();
+
+}
+
+
+
+/* =====================================================
+   CARREGAR DESAFIO
+   ===================================================== */
+
+function loadQuestion() {
+
+  const question =
+    questions[currentQuestion];
+
+
+  document
+    .getElementById("questionNumber")
+    .textContent =
+    currentQuestion + 1;
+
+
+  document
+    .getElementById("emailTitle")
+    .textContent =
+    question.title;
+
+
+  document
+    .getElementById("email")
+    .innerHTML =
+    question.content;
+
+
+  document
+    .getElementById("feedback")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("nextButton")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("progressBar")
+    .style.width =
+    ((currentQuestion + 1) / questions.length * 100)
+    + "%";
+
+}
+
+
+
+/* =====================================================
+   CLICAR NUM ELEMENTO
+   ===================================================== */
+
+function checkAnswer(element) {
+
+
+  if (element.dataset.clicked === "true") {
+
+    return;
 
   }
 
 
-  function loadQuestion() {
+  element.dataset.clicked = "true";
 
-    const question = questions[currentQuestion];
 
-    answersThisQuestion = 0;
+  const feedback =
+    document.getElementById("feedback");
 
-    suspectsThisQuestion =
-      document.querySelectorAll(
-        '[data-suspect="true"]'
-      ).length;
 
-    document
-      .getElementById("questionNumber")
-      .textContent = currentQuestion + 1;
+  feedback.classList
+    .remove("hidden");
 
-    document
-      .getElementById("emailTitle")
-      .textContent = question.title;
 
-    document
-      .getElementById("email")
-      .innerHTML = question.content;
+  if (element.dataset.suspect === "true") {
 
-    document
-      .getElementById("feedback")
-      .classList.add("hidden");
 
-    document
-      .getElementById("nextButton")
-      .classList.add("hidden");
+    score += 10;
 
-    document
-      .getElementById("progressBar")
-      .style.width =
-      ((currentQuestion + 1) / 10 * 100) + "%";
+
+    element.classList
+      .add("correct");
+
+
+    feedback.innerHTML =
+
+      "🎯 <strong>Boa!</strong> " +
+      "Identificaste um sinal de phishing. " +
+      "<strong>+10 pontos.</strong>";
 
   }
 
 
-  function checkAnswer(element) {
-
-    if (element.dataset.clicked === "true") {
-
-      return;
-
-    }
-
-    element.dataset.clicked = "true";
-
-    answersThisQuestion++;
-
-    const feedback =
-      document.getElementById("feedback");
-
-    feedback.classList.remove("hidden");
-
-    if (element.dataset.suspect === "true") {
-
-      score += 10;
-
-      element.classList.add("correct");
-
-      feedback.innerHTML =
-        "🎯 <strong>Boa!</strong> Identificaste um sinal de phishing. +10 pontos.";
-
-    }
-
-    else {
-
-      score -= 5;
-
-      element.classList.add("wrong");
-
-      feedback.innerHTML =
-        "❌ Cuidado! Esse elemento não era suspeito. -5 pontos.";
-
-    }
-
-    document
-      .getElementById("score")
-      .textContent = score;
+  else {
 
 
-    if (answersThisQuestion >= suspectsThisQuestion) {
+    score -= 5;
 
-      document
-        .getElementById("nextButton")
-        .classList.remove("hidden");
 
-    }
+    element.classList
+      .add("wrong");
+
+
+    feedback.innerHTML =
+
+      "❌ <strong>Cuidado!</strong> " +
+      "Este elemento não era suspeito. " +
+      "<strong>-5 pontos.</strong>";
 
   }
 
 
-  function nextQuestion() {
-
-    currentQuestion++;
-
-    if (currentQuestion >= questions.length) {
-
-      endGame();
-
-      return;
-
-    }
-
-    loadQuestion();
-
-  }
+  document
+    .getElementById("score")
+    .textContent =
+    score;
 
 
-  function endGame() {
+  /*
+   * Depois do primeiro clique,
+   * o jogador pode terminar a análise.
+   */
 
-    clearInterval(timerInterval);
+  document
+    .getElementById("nextButton")
+    .classList
+    .remove("hidden");
 
-    document
-      .getElementById("gameScreen")
-      .classList.add("hidden");
+}
 
-    document
-      .getElementById("resultScreen")
-      .classList.remove("hidden");
 
-    document
-      .getElementById("finalCodename")
-      .textContent = codename;
 
-    document
-      .getElementById("finalScore")
-      .textContent = score + " / 100";
+/* =====================================================
+   PRÓXIMO DESAFIO
+   ===================================================== */
 
-    document
-      .getElementById("finalTime")
-      .textContent = time;
+function nextQuestion() {
+
+
+  currentQuestion++;
+
+
+  if (
+    currentQuestion >=
+    questions.length
+  ) {
+
+    endGame();
+
+    return;
 
   }
+
+
+  loadQuestion();
+
+}
+
+
+
+/* =====================================================
+   FINAL
+   ===================================================== */
+
+function endGame() {
+
+
+  clearInterval(timerInterval);
+
+
+  document
+    .getElementById("gameScreen")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("resultScreen")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("finalCodename")
+    .textContent =
+    codename;
+
+
+  document
+    .getElementById("finalScore")
+    .textContent =
+    score + " / 100";
+
+
+  document
+    .getElementById("finalTime")
+    .textContent =
+    time;
+
+}
 
 </script>
 
 </body>
+
 </html>

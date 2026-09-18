@@ -8,373 +8,360 @@
 
 <style>
 
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background:
-            radial-gradient(circle at top, #172033 0%, #0b0f17 45%, #05070b 100%);
-        color: #f4f7fb;
-        min-height: 100vh;
-    }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #172033 0%, #0b0f17 45%, #05070b 100%);
+    color: #f4f7fb;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px 18px 50px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-size: 42px;
+    margin-bottom: 5px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: #9ba8bb;
+    margin-top: 8px;
+}
+
+.card {
+    background: rgba(17, 24, 39, 0.96);
+    border: 1px solid #263246;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+.hidden {
+    display: none !important;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #39475c;
+    background: #0b111c;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #4ade80;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #4ade80;
+    color: #06110a;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+.rules {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.rules strong {
+    color: #4ade80;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.stat {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 110px;
+}
+
+.stat-label {
+    color: #7f8da3;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.progress-wrapper {
+    height: 8px;
+    background: #1c2635;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #4ade80;
+    transition: width .3s;
+}
+
+.email {
+    background: #f7f9fc;
+    color: #172033;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.email-header {
+    background: #e9edf3;
+    padding: 16px;
+    border-bottom: 1px solid #cfd6df;
+}
+
+.email-row {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.email-row:last-child {
+    margin-bottom: 0;
+}
+
+.email-label {
+    display: inline-block;
+    width: 75px;
+    font-weight: bold;
+    color: #5c6878;
+}
+
+.email-body {
+    padding: 25px;
+    line-height: 1.65;
+    font-size: 16px;
+}
+
+.email-body p {
+    margin-top: 0;
+}
+
+/*
+   IMPORTANTE:
+   Os elementos clicáveis NÃO têm destaque inicial.
+*/
+
+.clickable {
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 1px 2px;
+}
+
+.clickable:hover {
+    background: transparent;
+}
+
+.clickable.correct {
+    background: #bbf7d0;
+    outline: 2px solid #22c55e;
+}
+
+.clickable.wrong {
+    background: #fecaca;
+    outline: 2px solid #ef4444;
+}
+
+.feedback {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #101827;
+    border: 1px solid #2c394d;
+    line-height: 1.55;
+}
+
+.feedback.good {
+    border-color: #22c55e;
+}
+
+.feedback.bad {
+    border-color: #ef4444;
+}
+
+.feedback.info {
+    border-color: #60a5fa;
+}
+
+.feedback.warning {
+    border-color: #f59e0b;
+}
+
+.next-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.safe-button {
+    background: #263246;
+    color: #e7edf5;
+}
+
+.safe-button:hover {
+    background: #344258;
+}
+
+.final-score {
+    text-align: center;
+    padding: 25px 10px;
+}
+
+.final-score .big {
+    font-size: 64px;
+    font-weight: bold;
+    color: #4ade80;
+    margin: 15px 0;
+}
+
+.final-message {
+    font-size: 18px;
+    color: #c5cfdb;
+    line-height: 1.6;
+    margin: 20px auto;
+    max-width: 650px;
+}
+
+.next-challenge-box {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(74,222,128,.10),
+            rgba(37,99,235,.10)
+        );
+    border: 1px solid #35516c;
+}
+
+.next-challenge-box h3 {
+    margin-top: 8px;
+    font-size: 23px;
+}
+
+.next-challenge-box p {
+    color: #b7c2d1;
+    line-height: 1.6;
+}
+
+.unlock {
+    color: #4ade80;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer {
+    text-align: center;
+    color: #68768a;
+    font-size: 12px;
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
 
     .container {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 25px 18px 50px;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .logo {
-        font-size: 42px;
-        margin-bottom: 5px;
+        padding: 15px 10px 35px;
     }
 
     h1 {
-        margin: 0;
-        font-size: 30px;
-        letter-spacing: 1px;
+        font-size: 25px;
     }
 
-    .subtitle {
-        color: #9ba8bb;
-        margin-top: 8px;
+    .logo {
+        font-size: 34px;
     }
 
     .card {
-        background: rgba(17, 24, 39, 0.95);
-        border: 1px solid #263246;
-        border-radius: 18px;
-        padding: 25px;
-        box-shadow: 0 15px 50px rgba(0,0,0,.35);
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    input {
-        width: 100%;
-        padding: 15px;
-        margin-top: 10px;
-        margin-bottom: 18px;
-        border-radius: 10px;
-        border: 1px solid #39475c;
-        background: #0b111c;
-        color: white;
-        font-size: 16px;
-        outline: none;
-    }
-
-    input:focus {
-        border-color: #4ade80;
-    }
-
-    button {
-        border: 0;
-        border-radius: 10px;
-        padding: 14px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        background: #4ade80;
-        color: #06110a;
-        transition: .2s;
-    }
-
-    button:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.08);
-    }
-
-    button.secondary {
-        background: #263246;
-        color: #e7edf5;
-    }
-
-    button.next-challenge {
-        background: #4ade80;
-        color: #06110a;
-        font-size: 17px;
-        padding: 16px 25px;
-    }
-
-    .rules {
-        background: #0c1320;
-        border: 1px solid #263246;
-        border-radius: 12px;
-        padding: 18px;
-        margin: 20px 0;
-        line-height: 1.6;
-    }
-
-    .rules strong {
-        color: #4ade80;
-    }
-
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-bottom: 15px;
-    }
-
-    .stat {
-        background: #0c1320;
-        border: 1px solid #263246;
-        border-radius: 10px;
-        padding: 10px 14px;
-        min-width: 110px;
-    }
-
-    .stat-label {
-        color: #7f8da3;
-        font-size: 12px;
-        text-transform: uppercase;
-    }
-
-    .stat-value {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 3px;
-    }
-
-    .progress-wrapper {
-        height: 8px;
-        background: #1c2635;
-        border-radius: 20px;
-        overflow: hidden;
-        margin-bottom: 25px;
-    }
-
-    .progress {
-        height: 100%;
-        width: 0%;
-        background: #4ade80;
-        transition: width .3s;
-    }
-
-    .email {
-        background: #f7f9fc;
-        color: #172033;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    .email-header {
-        background: #e9edf3;
-        padding: 16px;
-        border-bottom: 1px solid #cfd6df;
-    }
-
-    .email-row {
-        margin-bottom: 7px;
-        font-size: 14px;
-    }
-
-    .email-row:last-child {
-        margin-bottom: 0;
-    }
-
-    .email-label {
-        display: inline-block;
-        width: 75px;
-        font-weight: bold;
-        color: #5c6878;
+        padding: 17px;
     }
 
     .email-body {
-        padding: 25px;
-        line-height: 1.65;
-        font-size: 16px;
+        padding: 18px;
+        font-size: 15px;
     }
 
-    .email-body p {
-        margin-top: 0;
+    .email-label {
+        width: 65px;
     }
 
-    /*
-       IMPORTANTE:
-       Os elementos clicáveis NÃO têm qualquer
-       destaque antes de serem selecionados.
-    */
-
-    .clickable {
-        cursor: pointer;
-        border-radius: 4px;
-        padding: 1px 2px;
-    }
-
-    .clickable:hover {
-        background: transparent;
-    }
-
-    .clickable.correct {
-        background: #bbf7d0;
-        outline: 2px solid #22c55e;
-    }
-
-    .clickable.wrong {
-        background: #fecaca;
-        outline: 2px solid #ef4444;
-    }
-
-    .feedback {
-        margin-top: 18px;
-        padding: 16px;
-        border-radius: 10px;
-        background: #101827;
-        border: 1px solid #2c394d;
-        line-height: 1.5;
-    }
-
-    .feedback.good {
-        border-color: #22c55e;
-    }
-
-    .feedback.bad {
-        border-color: #ef4444;
-    }
-
-    .feedback.info {
-        border-color: #60a5fa;
-    }
-
-    .next-area {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-top: 18px;
-    }
-
-    .instruction {
-        margin-bottom: 15px;
-        color: #b7c2d1;
-    }
-
-    .safe-button {
-        background: #263246;
-        color: #e7edf5;
-    }
-
-    .safe-button:hover {
-        background: #344258;
-    }
-
-    .final-score {
-        text-align: center;
-        padding: 25px 10px;
+    .stat {
+        flex: 1;
     }
 
     .final-score .big {
-        font-size: 64px;
-        font-weight: bold;
-        color: #4ade80;
-        margin: 15px 0;
+        font-size: 50px;
     }
 
-    .final-message {
-        font-size: 18px;
-        color: #c5cfdb;
-        line-height: 1.6;
-        margin: 20px auto;
-        max-width: 650px;
+    .next-area {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .next-challenge-box {
-        margin-top: 30px;
-        padding: 25px;
-        border-radius: 15px;
-        background:
-            linear-gradient(
-                135deg,
-                rgba(74,222,128,.10),
-                rgba(37,99,235,.10)
-            );
-        border: 1px solid #35516c;
+    .next-area button {
+        width: 100%;
     }
 
-    .next-challenge-box h3 {
-        margin-top: 5px;
-        font-size: 23px;
-    }
-
-    .next-challenge-box p {
-        color: #b7c2d1;
-        line-height: 1.6;
-    }
-
-    .unlock {
-        color: #4ade80;
-        font-size: 13px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .footer {
-        text-align: center;
-        color: #68768a;
-        font-size: 12px;
-        margin-top: 25px;
-    }
-
-    @media (max-width: 600px) {
-
-        .container {
-            padding: 15px 10px 35px;
-        }
-
-        h1 {
-            font-size: 25px;
-        }
-
-        .logo {
-            font-size: 34px;
-        }
-
-        .card {
-            padding: 17px;
-        }
-
-        .email-body {
-            padding: 18px;
-            font-size: 15px;
-        }
-
-        .email-label {
-            width: 65px;
-        }
-
-        .stat {
-            flex: 1;
-        }
-
-        .final-score .big {
-            font-size: 50px;
-        }
-
-        .next-area {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .next-area button {
-            width: 100%;
-        }
-
-    }
+}
 
 </style>
 </head>
@@ -384,298 +371,291 @@
 
 <div class="container">
 
-    <!-- ========================= -->
-    <!-- HEADER -->
-    <!-- ========================= -->
 
-    <div class="header">
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-        <div class="logo">🕵️‍♂️</div>
+<div class="header">
 
-        <h1>
-            CYBER CHALLENGE 2026
-        </h1>
+    <div class="logo">🕵️‍♂️</div>
 
-        <div class="subtitle">
-            Consegues apanhar o phish antes que ele te apanhe?
-        </div>
+    <h1>
+        CYBER CHALLENGE 2026
+    </h1>
 
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- START SCREEN -->
-    <!-- ========================= -->
-
-    <div id="startScreen" class="card">
-
-        <h2>
-            🎯 Desafio 01 — O Caça-Phish
-        </h2>
-
-        <p>
-            A tua missão é analisar <strong>10 emails</strong>
-            e identificar os sinais que podem indicar phishing ou fraude.
-        </p>
-
-        <div class="rules">
-
-            <strong>Como jogar:</strong>
-
-            <ul>
-
-                <li>
-                    Analisa cada email com atenção.
-                </li>
-
-                <li>
-                    Clica nos elementos que consideras suspeitos.
-                </li>
-
-                <li>
-                    Cada desafio vale <strong>10 pontos</strong>.
-                </li>
-
-                <li>
-                    Encontrar uma pista suspeita dá pontos.
-                </li>
-
-                <li>
-                    Clicar numa situação legítima pode tirar pontos.
-                </li>
-
-                <li>
-                    Alguns emails são legítimos — tens de reconhecer isso.
-                </li>
-
-                <li>
-                    Há apenas <strong>uma tentativa</strong>.
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        <label for="codename">
-            <strong>Escolhe o teu Cyber Codename</strong>
-        </label>
-
-        <input
-            id="codename"
-            type="text"
-            maxlength="20"
-            placeholder="Ex.: CyberNinja"
-            autocomplete="off"
-        >
-
-
-        <button onclick="startGame()">
-            🚀 Começar o desafio
-        </button>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- GAME SCREEN -->
-    <!-- ========================= -->
-
-    <div id="gameScreen" class="hidden">
-
-        <div class="topbar">
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Desafio
-                </div>
-
-                <div
-                    id="challengeNumber"
-                    class="stat-value"
-                >
-                    1 / 10
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Pontuação
-                </div>
-
-                <div
-                    id="score"
-                    class="stat-value"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Tempo
-                </div>
-
-                <div
-                    id="timer"
-                    class="stat-value"
-                >
-                    00:00
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="progress-wrapper">
-
-            <div
-                id="progress"
-                class="progress"
-            ></div>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2 id="challengeTitle">
-                Email 01
-            </h2>
-
-
-            <div class="instruction">
-                🔎 Analisa o email e identifica os sinais suspeitos.
-            </div>
-
-
-            <div id="emailContainer"></div>
-
-
-            <div
-                id="feedback"
-                class="feedback hidden"
-            ></div>
-
-
-            <div class="next-area">
-
-                <button
-                    id="safeButton"
-                    class="safe-button hidden"
-                    onclick="answerSafe()"
-                >
-                    🛡️ Não encontrei sinais suspeitos
-                </button>
-
-
-                <button
-                    id="nextButton"
-                    class="hidden"
-                    onclick="nextQuestion()"
-                >
-                    Próximo desafio →
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- END SCREEN -->
-    <!-- ========================= -->
-
-    <div id="endScreen" class="card hidden">
-
-        <div class="final-score">
-
-            <h2>
-                🏆 DESAFIO 01 CONCLUÍDO
-            </h2>
-
-
-            <p>
-                Cyber Codename:
-                <strong id="finalCodename"></strong>
-            </p>
-
-
-            <div
-                id="finalScore"
-                class="big"
-            >
-                0 / 100
-            </div>
-
-
-            <p id="finalTime"></p>
-
-
-            <div
-                id="finalMessage"
-                class="final-message"
-            ></div>
-
-
-            <!-- ========================= -->
-            <!-- NEXT CHALLENGE -->
-            <!-- ========================= -->
-
-            <div class="next-challenge-box">
-
-                <div class="unlock">
-                    🔓 NOVO DESAFIO DESBLOQUEADO
-                </div>
-
-
-                <h3>
-                    DESAFIO 02 — CLEAR DESK
-                </h3>
-
-
-                <p>
-                    O phishing não foi suficiente para te apanhar.
-                    Agora vamos sair da caixa de correio.
-                </p>
-
-
-                <p>
-                    Há <strong>5 falhas de segurança</strong>
-                    escondidas numa secretária.
-                    E há ainda alguns exemplos de boas práticas.
-                </p>
-
-
-                <button
-                    class="next-challenge"
-                    onclick="goToChallenge02()"
-                >
-                    🔍 Aceitar Desafio 02 →
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="footer">
-        Cyber Challenge 2026 · Sport TV
+    <div class="subtitle">
+        Consegues apanhar o phish antes que ele te apanhe?
     </div>
 
 </div>
+
+
+
+<!-- =========================================================
+     START SCREEN
+========================================================= -->
+
+<div id="startScreen" class="card">
+
+    <h2>
+        🎯 Desafio 01 — O Caça-Phish
+    </h2>
+
+    <p>
+        A tua missão é analisar <strong>10 emails</strong>
+        e identificar sinais de phishing, fraude ou engenharia social.
+    </p>
+
+    <div class="rules">
+
+        <strong>Como jogar:</strong>
+
+        <ul>
+
+            <li>
+                Analisa cada email com atenção.
+            </li>
+
+            <li>
+                Clica nos elementos que consideras suspeitos.
+            </li>
+
+            <li>
+                Nem tudo o que parece estranho é necessariamente perigoso.
+            </li>
+
+            <li>
+                Em alguns emails existem <strong>falsos positivos</strong>.
+            </li>
+
+            <li>
+                Se achares que o email é legítimo,
+                usa <strong>“Não encontrei nada suspeito”</strong>.
+            </li>
+
+            <li>
+                Tens apenas <strong>uma tentativa</strong>.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <label for="codename">
+        <strong>Escolhe o teu Cyber Codename</strong>
+    </label>
+
+    <input
+        id="codename"
+        type="text"
+        maxlength="20"
+        placeholder="Ex.: CyberNinja"
+        autocomplete="off"
+    >
+
+
+    <button onclick="startGame()">
+        🚀 Começar o desafio
+    </button>
+
+</div>
+
+
+
+<!-- =========================================================
+     GAME SCREEN
+========================================================= -->
+
+<div id="gameScreen" class="hidden">
+
+    <div class="topbar">
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Email
+            </div>
+
+            <div
+                id="challengeNumber"
+                class="stat-value"
+            >
+                1 / 10
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Pontuação
+            </div>
+
+            <div
+                id="score"
+                class="stat-value"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Tempo
+            </div>
+
+            <div
+                id="timer"
+                class="stat-value"
+            >
+                00:00
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-wrapper">
+
+        <div
+            id="progress"
+            class="progress"
+        ></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2 id="challengeTitle">
+            Email 01
+        </h2>
+
+
+        <div class="instruction">
+            🔎 Analisa o email. Podes clicar nos elementos que consideras suspeitos
+            ou declarar que não encontraste nenhum sinal suspeito.
+        </div>
+
+
+        <div id="emailContainer"></div>
+
+
+        <div
+            id="feedback"
+            class="feedback hidden"
+        ></div>
+
+
+        <div class="next-area">
+
+            <button
+                id="safeButton"
+                class="safe-button"
+                onclick="answerSafe()"
+            >
+                🛡️ Não encontrei nada suspeito
+            </button>
+
+
+            <button
+                id="nextButton"
+                class="hidden"
+                onclick="nextQuestion()"
+            >
+                Próximo email →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     END SCREEN
+========================================================= -->
+
+<div id="endScreen" class="card hidden">
+
+    <div class="final-score">
+
+        <h2>
+            🏆 DESAFIO 01 CONCLUÍDO
+        </h2>
+
+        <p>
+            Cyber Codename:
+            <strong id="finalCodename"></strong>
+        </p>
+
+
+        <div
+            id="finalScore"
+            class="big"
+        >
+            0 / 100
+        </div>
+
+
+        <p id="finalTime"></p>
+
+
+        <div
+            id="finalMessage"
+            class="final-message"
+        ></div>
+
+
+        <div class="next-challenge-box">
+
+            <div class="unlock">
+                🔓 NOVO DESAFIO DESBLOQUEADO
+            </div>
+
+            <h3>
+                DESAFIO 02 — CLEAR DESK
+            </h3>
+
+            <p>
+                Agora vamos sair da caixa de correio.
+            </p>
+
+            <p>
+                Há <strong>5 falhas de segurança</strong>
+                escondidas numa secretária.
+                E existem também algumas boas práticas.
+            </p>
+
+            <button
+                onclick="goToChallenge02()"
+            >
+                🔍 Aceitar Desafio 02 →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="footer">
+    Cyber Challenge 2026 · Sport TV
+</div>
+
+</div>
+
 
 
 <script>
@@ -683,787 +663,1012 @@
 
 /* ============================================================
    PERGUNTAS
-   ============================================================ */
+   Cada email vale 10 pontos.
+============================================================ */
 
 const questions = [
 
-    {
-        title: "📩 Email 01 — A conta Microsoft 365",
+/* ============================================================
+   01
+============================================================ */
 
-        html: `
-            <div class="email">
+{
+    title: "📩 Email 01 — A conta Microsoft 365",
 
-                <div class="email-header">
+    html: `
+        <div class="email">
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+            <div class="email-header">
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 O domínio do remetente não é microsoft.com. Um endereço que parece oficial pode esconder um domínio completamente diferente."
-                        >
-                            Microsoft 365 Support
-                            &lt;support@microsoft-support.com&gt;
-                        </span>
-                    </div>
+                <div class="email-row">
+                    <span class="email-label">De:</span>
 
-
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
-
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 A linguagem de urgência tenta fazer-te agir rapidamente sem verificares a informação."
-                        >
-                            ⚠️ Ação necessária — a tua conta será suspensa hoje
-                        </span>
-                    </div>
-
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio do remetente não é microsoft.com. Um endereço que parece oficial pode esconder um domínio completamente diferente."
+                    >
+                        Microsoft 365 Support
+                        &lt;support@microsoft-support.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
 
-                    <p>
-                        Olá,
-                    </p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de o email estar dirigido diretamente a ti não é, por si só, um sinal de phishing."
+                    >
+                        tu@sporttv.pt
+                    </span>
+                </div>
 
-                    <p>
-                        Detetámos uma atividade suspeita na tua conta.
-                    </p>
 
-                    <p>
-                        Para evitar a suspensão permanente,
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Pedir credenciais através de um link recebido por email é um sinal clássico de phishing. Em vez de usar o link, entra diretamente no portal oficial."
-                        >
-                            confirma a tua password aqui
-                        </span>.
-                    </p>
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Tens apenas 30 minutos para concluir a validação.
-                    </p>
-
-                    <p>
-                        Obrigado,<br>
-                        Microsoft 365 Security Team
-                    </p>
-
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de suspensão imediata cria pressão para agir sem verificar a mensagem."
+                    >
+                        ⚠️ Ação necessária — a tua conta será suspensa hoje
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "📄 Email 02 — Documento partilhado",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Olá,
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Detetámos uma atividade suspeita na tua conta.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Para evitar a suspensão permanente,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Um email inesperado que pede credenciais através de um link deve ser tratado como suspeito. Entra diretamente no portal oficial em vez de usar o link."
+                    >
+                        confirma a tua password aqui
+                    </span>.
+                </p>
 
-                        <span>
-                            João Silva &lt;joao.silva@sporttv.pt&gt;
-                        </span>
-                    </div>
+                <p>
+                    Tens apenas 30 minutos para concluir a validação.
+                </p>
+
+                <p>
+                    Se tiveres dúvidas,
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Recomendar o contacto com o suporte é normal. O problema está no contexto e nos outros sinais da mensagem."
+                    >
+                        contacta o Service Desk
+                    </span>.
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    Microsoft 365 Security Team
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Um assunto que tenta criar urgência pode ser usado para impedir que confirmes o contexto do pedido."
-                        >
-                            Documento urgente — preciso da tua aprovação
-                        </span>
-                    </div>
+/* ============================================================
+   02
+============================================================ */
 
+{
+    title: "📄 Email 02 — Documento partilhado",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span>
+                        João Silva &lt;joao.silva@sporttv.pt&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
 
-                    <p>
-                        Olá,
-                    </p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de o teu endereço aparecer corretamente no campo Para não é um sinal de phishing."
+                    >
+                        tu@sporttv.pt
+                    </span>
+                </div>
 
-                    <p>
-                        Partilhei contigo o documento relativo ao projeto.
-                    </p>
 
-                    <p>
-                        Podes consultar o documento através do
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 Antes de clicar, verifica para onde o link realmente aponta. O texto apresentado pode não corresponder ao destino real."
-                        >
-                            link abaixo
-                        </span>.
-                    </p>
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 O pedido para introduzir credenciais numa página aberta através de um email deve ser tratado com cautela."
-                        >
-                            Abrir documento
-                        </span>
-                    </p>
-
-                    <p>
-                        Obrigado,<br>
-                        João
-                    </p>
-
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A palavra 'urgente' pode ser usada para pressionar o destinatário a agir sem verificar o contexto."
+                    >
+                        Documento urgente — preciso da tua aprovação
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "💰 Email 03 — Fatura pendente",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Olá,
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Partilhei contigo o documento relativo ao projeto.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Podes consultar o documento através do
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Um link recebido por email deve ser verificado antes de ser aberto. O texto apresentado pode não revelar o destino real."
+                    >
+                        link abaixo
+                    </span>.
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 O endereço usa um domínio que não corresponde claramente ao fornecedor. Confirma sempre o domínio real."
-                        >
-                            Contabilidade
-                            &lt;financeiro@empresa-faturas.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O pedido para iniciar sessão através de um link recebido deve ser validado. Prefere abrir diretamente o serviço oficial."
+                    >
+                        🔗 Abrir documento
+                    </span>
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    João
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span>
-                            Fatura #48392 — pagamento pendente
-                        </span>
-                    </div>
+/* ============================================================
+   03
+============================================================ */
 
+{
+    title: "💰 Email 03 — Fatura pendente",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio do remetente não corresponde claramente ao fornecedor esperado. O nome apresentado não chega para validar a origem."
+                    >
+                        Contabilidade
+                        &lt;financeiro@empresa-faturas.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Exmo. Senhor,
-                    </p>
-
-                    <p>
-                        Informamos que existe uma fatura pendente
-                        associada à sua empresa.
-                    </p>
-
-                    <p>
-                        Para evitar custos adicionais,
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 A ameaça de custos adicionais é usada para pressionar a vítima a agir sem validar o pedido."
-                        >
-                            efetue o pagamento imediatamente
-                        </span>.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Um pedido de pagamento deve ser confirmado através de um canal independente antes de qualquer transferência."
-                        >
-                            Consulte os dados bancários na fatura em anexo.
-                        </span>
-                    </p>
-
+                    <span>
+                        Fatura #48392 — pagamento pendente
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "🎁 Email 04 — Pedido do chefe",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Exmo. Senhor,
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Informamos que existe uma fatura pendente
+                    associada à sua empresa.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Para evitar custos adicionais,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de custos adicionais cria pressão para efetuar um pagamento rapidamente."
+                    >
+                        efetue o pagamento imediatamente
+                    </span>.
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 O endereço pode parecer pertencer ao chefe, mas o domínio deve ser confirmado com atenção."
-                        >
-                            Diretor
-                            &lt;diretor.sporttv@gmail-support.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Dados bancários recebidos por email devem ser confirmados através de um canal independente antes de qualquer pagamento."
+                    >
+                        Consulte os dados bancários na fatura em anexo.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O número da fatura é informação perfeitamente normal e pode existir num email legítimo."
+                    >
+                        Referência: #48392
+                    </span>
+                </p>
+
+                <p>
+                    Cumprimentos,<br>
+                    Departamento Financeiro
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span>
-                            Preciso de uma ajuda rápida
-                        </span>
-                    </div>
+/* ============================================================
+   04
+============================================================ */
 
+{
+    title: "🎁 Email 04 — Pedido do chefe",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O endereço real não corresponde ao domínio habitual da organização. O nome 'Diretor' no remetente não prova a identidade."
+                    >
+                        Diretor
+                        &lt;diretor.sporttv@gmail-support.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Olá,
-                    </p>
-
-                    <p>
-                        Estou numa reunião e preciso que trates
-                        de uma coisa rapidamente.
-                    </p>
-
-                    <p>
-                        Preciso que compres
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 Pedidos inesperados para comprar cartões-presente são um padrão frequente de fraude de identidade."
-                        >
-                            3 cartões-presente de 100€
-                        </span>.
-                    </p>
-
-                    <p>
-                        Envia-me os códigos por email assim que
-                        estiveres com eles.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 O pedido para manter a operação em segredo é outro sinal importante. Confirma sempre por outro canal."
-                        >
-                            Não ligues agora porque estou numa reunião.
-                        </span>
-                    </p>
-
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 'Ajuda rápida' num contexto inesperado pode ser uma tentativa de criar urgência."
+                    >
+                        Preciso de uma ajuda rápida
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "🔐 Email 05 — Password expirada",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Olá,
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Estou numa reunião e preciso que trates
+                    de uma coisa rapidamente.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Preciso que compres
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Pedidos inesperados para comprar cartões-presente são um padrão conhecido de fraude de identidade."
+                    >
+                        3 cartões-presente de 100€
+                    </span>.
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 O endereço não pertence claramente ao domínio oficial da organização."
-                        >
-                            IT Helpdesk
-                            &lt;support@it-helpdesk-security.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    Envia-me os códigos por email assim que
+                    estiveres com eles.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedir que não telefonemos ou não confirmemos o pedido elimina uma das melhores formas de detetar uma fraude de identidade."
+                    >
+                        Não ligues agora porque estou numa reunião.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de alguém estar numa reunião é perfeitamente normal. É o conjunto do contexto que torna o pedido suspeito."
+                    >
+                        Estou numa reunião.
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span>
-                            A tua password expira hoje
-                        </span>
-                    </div>
+/* ============================================================
+   05
+============================================================ */
 
+{
+    title: "🔐 Email 05 — Password expirada",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio não pertence claramente ao suporte oficial da organização."
+                    >
+                        IT Helpdesk
+                        &lt;support@it-helpdesk-security.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        A tua password vai expirar dentro de 24 horas.
-                    </p>
-
-                    <p>
-                        Para manteres o acesso aos sistemas,
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 Não introduzas a password numa página aberta através de um link inesperado. Usa o portal oficial diretamente."
-                        >
-                            clica aqui para renovar a password
-                        </span>.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 A contagem decrescente e ameaça de bloqueio aumentam a pressão para agir sem verificar."
-                        >
-                            Caso contrário, a tua conta será bloqueada.
-                        </span>
-                    </p>
-
+                    <span>
+                        A tua password expira hoje
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "💬 Email 06 — Convite Teams",
-        safe: true,
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    A tua password vai expirar dentro de 24 horas.
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Para manteres o acesso aos sistemas,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Não introduzas a password numa página aberta através de um link inesperado. Usa o portal oficial diretamente."
+                    >
+                        clica aqui para renovar a password
+                    </span>.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de bloqueio aumenta a pressão para agir rapidamente."
+                    >
+                        Caso contrário, a tua conta será bloqueada.
+                    </span>
+                </p>
 
-                        <span>
-                            Microsoft Teams
-                            &lt;noreply@teams.microsoft.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Uma indicação de que uma password vai expirar pode ser perfeitamente legítima. O problema é a forma como o pedido é apresentado."
+                    >
+                        A password vai expirar dentro de 24 horas.
+                    </span>
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    IT Helpdesk
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span>
-                            Convite para reunião
-                        </span>
-                    </div>
+/* ============================================================
+   06 — LEGÍTIMO
+============================================================ */
 
+{
+    title: "💬 Email 06 — Convite Teams",
+
+    safe: true,
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O remetente utiliza um domínio associado ao serviço Microsoft Teams."
+                    >
+                        Microsoft Teams
+                        &lt;noreply@teams.microsoft.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Foste convidado para uma reunião do
-                        Microsoft Teams.
-                    </p>
-
-                    <p>
-                        <strong>
-                            Reunião semanal de equipa
-                        </strong>
-                    </p>
-
-                    <p>
-                        Data: 23/10/2026<br>
-                        Hora: 10:00
-                    </p>
-
-                    <p>
-                        Organizador: João Silva
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="false"
-                            data-feedback="ℹ️ Este elemento não apresenta, por si só, um sinal de phishing."
-                        >
-                            Participar na reunião
-                        </span>
-                    </p>
-
+                    <span>
+                        Convite para reunião
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "📦 Email 07 — Encomenda",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Foste convidado para uma reunião do
+                    Microsoft Teams.
+                </p>
 
-                <div class="email-header">
+                <p>
+                    <strong>
+                        Reunião semanal de equipa
+                    </strong>
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Data: 23/10/2026<br>
+                    Hora: 10:00
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 O domínio não corresponde claramente a uma transportadora conhecida. Confirma o remetente antes de clicar."
-                        >
-                            CTT Expresso
-                            &lt;entregas@ctt-expresso-support.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    Organizador:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ A identificação do organizador é informação normal num convite de reunião."
+                    >
+                        João Silva
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O botão para participar numa reunião é normal neste contexto. Como sempre, verifica o destino real antes de clicar."
+                    >
+                        Participar na reunião
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span>
-                            Não foi possível entregar a sua encomenda
-                        </span>
-                    </div>
+/* ============================================================
+   07
+============================================================ */
 
+{
+    title: "📦 Email 07 — Encomenda",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio não corresponde claramente ao domínio oficial da transportadora."
+                    >
+                        CTT Expresso
+                        &lt;entregas@ctt-expresso-support.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Tentámos entregar a sua encomenda hoje,
-                        mas não foi possível concluir a entrega.
-                    </p>
-
-                    <p>
-                        Para reagendar a entrega,
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Links inesperados relacionados com entregas são frequentemente usados para recolher dados pessoais ou bancários."
-                        >
-                            confirme os seus dados aqui
-                        </span>.
-                    </p>
-
-                    <p>
-                        Será aplicada uma taxa de 2,99€.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Um pequeno pagamento pode ser usado para recolher dados do cartão ou validar um método de pagamento."
-                        >
-                            Efetuar pagamento
-                        </span>
-                    </p>
-
+                    <span>
+                        Não foi possível entregar a sua encomenda
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "🚨 Email 08 — Alerta de segurança",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Tentámos entregar a sua encomenda hoje,
+                    mas não foi possível concluir a entrega.
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Para reagendar a entrega,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Links inesperados relacionados com entregas podem ser usados para recolher dados pessoais ou bancários."
+                    >
+                        confirme os seus dados aqui
+                    </span>.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Será aplicada uma taxa de
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pequenos pagamentos são frequentemente usados como pretexto para recolher dados de cartão."
+                    >
+                        2,99€
+                    </span>.
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 O endereço parece imitar um serviço legítimo, mas o domínio deve ser validado cuidadosamente."
-                        >
-                            Security Alert
-                            &lt;security@micosoft-security.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Um botão de pagamento recebido inesperadamente deve ser tratado com cautela."
+                    >
+                        Efetuar pagamento
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de existir uma encomenda não é, por si só, um indicador de phishing."
+                    >
+                        Número de encomenda: 84729381
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
 
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="3"
-                            data-feedback="🚩 Repara no domínio: 'micosoft' está escrito de forma diferente de 'microsoft'. Isto é um exemplo de typosquatting."
-                        >
-                            🚨 Atividade suspeita detetada
-                        </span>
-                    </div>
+/* ============================================================
+   08
+============================================================ */
 
+{
+    title: "🚨 Email 08 — Alerta de segurança",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Repara no domínio: 'micosoft' está escrito de forma diferente de 'microsoft'. Isto é um exemplo de typosquatting."
+                    >
+                        Security Alert
+                        &lt;security@micosoft-security.com&gt;
+                    </span>
                 </div>
 
 
-                <div class="email-body">
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
 
-                    <p>
-                        Detetámos uma tentativa de acesso à tua conta.
-                    </p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A utilização de 'URGENTE' tenta aumentar a pressão para agir rapidamente."
+                    >
+                        🚨 URGENTE — Atividade suspeita detetada
+                    </span>
+                </div>
 
-                    <p>
-                        Localização:
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Detetámos uma tentativa de acesso à tua conta.
+                </p>
+
+                <p>
+                    Localização:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Mostrar uma localização num alerta de segurança pode ser uma informação legítima. O contexto é que deve ser avaliado."
+                    >
                         Lisboa, Portugal
-                    </p>
+                    </span>
+                </p>
 
-                    <p>
-                        Se não reconheces esta atividade,
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="4"
-                            data-feedback="🚩 O botão leva o utilizador a agir imediatamente. Em vez disso, abre diretamente o portal oficial e verifica a atividade."
-                        >
-                            verifica agora a tua conta
-                        </span>.
-                    </p>
+                <p>
+                    Data:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ A data e hora de um evento de segurança podem aparecer normalmente num alerta legítimo."
+                    >
+                        18/09/2026 — 14:31
+                    </span>
+                </p>
 
+                <p>
+                    Se não reconheces esta atividade,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O botão leva o utilizador a agir imediatamente. Em vez disso, abre diretamente o portal oficial e verifica a atividade."
+                    >
+                        verifica agora a tua conta
+                    </span>.
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    Security Team
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   09 — LEGÍTIMO
+============================================================ */
+
+{
+    title: "☁️ Email 09 — OneDrive",
+
+    safe: true,
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O remetente utiliza um domínio associado ao serviço OneDrive/Microsoft."
+                    >
+                        OneDrive
+                        &lt;no-reply@onedrive.microsoft.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        Um ficheiro foi partilhado contigo
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "☁️ Email 09 — OneDrive",
-        safe: true,
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    João Silva partilhou um ficheiro contigo.
+                </p>
 
-                <div class="email-header">
+                <p>
+                    <strong>
+                        Projeto Cyber Challenge 2026
+                    </strong>
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    O ficheiro está disponível no OneDrive.
+                </p>
 
-                        <span>
-                            OneDrive
-                            &lt;no-reply@onedrive.microsoft.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Um botão para abrir um ficheiro partilhado pode ser perfeitamente legítimo. Verifica sempre o destino real antes de clicar."
+                    >
+                        Ver ficheiro
+                    </span>
+                </p>
 
-
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
-
-                        <span>
-                            Um ficheiro foi partilhado contigo
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <div class="email-body">
-
-                    <p>
-                        João Silva partilhou um ficheiro contigo.
-                    </p>
-
-                    <p>
-                        <strong>
-                            Projeto Cyber Challenge 2026
-                        </strong>
-                    </p>
-
-                    <p>
-                        O ficheiro está disponível no OneDrive.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="false"
-                            data-feedback="ℹ️ O facto de existir um link num email não significa automaticamente que seja phishing. É necessário avaliar o contexto e o destino real."
-                        >
-                            Ver ficheiro
-                        </span>
-                    </p>
-
-                    <p>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Recomendar que confirmes ficheiros inesperados é uma boa prática de segurança."
+                    >
                         Se não esperavas este ficheiro,
                         confirma primeiro com o remetente.
-                    </p>
+                    </span>
+                </p>
 
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   10 — BOSS FINAL
+============================================================ */
+
+{
+    title: "👑 BOSS FINAL — O verdadeiro teste",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 O domínio 'sp0rtv-security.com' usa uma aparência semelhante ao domínio legítimo. O zero em 'sp0rtv' é um sinal de alerta."
+                    >
+                        Diretor IT
+                        &lt;f.rocha@sp0rtv-security.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 O assunto cria urgência e pressão para executar uma ação rapidamente."
+                    >
+                        URGENTE — preciso disto nos próximos 10 minutos
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O endereço do destinatário estar correto não torna o email legítimo nem ilegítimo."
+                    >
+                        tu@sporttv.pt
+                    </span>
                 </div>
 
             </div>
-        `
-    },
 
 
-    {
-        title: "👑 BOSS FINAL — O verdadeiro teste",
+            <div class="email-body">
 
-        html: `
-            <div class="email">
+                <p>
+                    Olá,
+                </p>
 
-                <div class="email-header">
+                <p>
+                    Estou fora do escritório e preciso que me ajudes
+                    com uma situação urgente.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">De:</span>
+                <p>
+                    Preciso que acedas ao seguinte documento:
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 O nome apresentado pode parecer legítimo, mas o endereço real do remetente é o que interessa."
-                        >
-                            Diretor IT
-                            &lt;f.rocha@sp0rtv-security.com&gt;
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Antes de abrir um anexo inesperado, verifica a origem e o contexto do pedido."
+                    >
+                        📎 Documento_Confidencial_2026.pdf
+                    </span>
+                </p>
 
+                <p>
+                    Depois disso preciso que
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedidos inesperados de transferência de dinheiro devem ser confirmados através de outro canal."
+                    >
+                        transfiras 750€ para a conta indicada no documento
+                    </span>.
+                </p>
 
-                    <div class="email-row">
-                        <span class="email-label">Assunto:</span>
+                <p>
+                    Não quero envolver mais ninguém neste momento.
+                </p>
 
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 O assunto cria urgência e pressão para executar uma ação rapidamente."
-                        >
-                            URGENTE — preciso disto nos próximos 10 minutos
-                        </span>
-                    </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedir segredo ou isolamento reduz a possibilidade de o pedido ser verificado por outra pessoa."
+                    >
+                        Mantém isto confidencial.
+                    </span>
+                </p>
 
-                </div>
-
-
-                <div class="email-body">
-
-                    <p>
-                        Olá,
-                    </p>
-
-                    <p>
-                        Estou fora do escritório e preciso que me ajudes
-                        com uma situação urgente.
-                    </p>
-
-                    <p>
-                        Preciso que acedas ao seguinte documento:
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 Antes de clicar num link, verifica sempre o endereço real e se o pedido faz sentido no contexto."
-                        >
-                            📎 Documento_Confidencial_2026.pdf
-                        </span>
-                    </p>
-
-                    <p>
-                        Depois disso preciso que
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 Pedidos inesperados para transferir dinheiro devem ser sempre confirmados através de outro canal."
-                        >
-                            transfiras 750€ para a conta indicada no documento
-                        </span>.
-                    </p>
-
-                    <p>
-                        Não quero envolver mais ninguém neste momento.
-                    </p>
-
-                    <p>
-                        <span
-                            class="clickable"
-                            data-suspect="true"
-                            data-points="2"
-                            data-feedback="🚩 Pedir segredo ou isolamento é um forte sinal de alerta. Confirma a identidade do remetente por telefone ou outro canal conhecido."
-                        >
-                            Mantém isto confidencial.
-                        </span>
-                    </p>
-
-                </div>
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Estar fora do escritório é perfeitamente possível. O problema é o conjunto dos restantes sinais."
+                    >
+                        Estou fora do escritório.
+                    </span>
+                </p>
 
             </div>
-        `
-    }
+
+        </div>
+    `
+}
 
 ];
 
 
+
 /* ============================================================
-   VARIÁVEIS
-   ============================================================ */
+   VARIÁVEIS DO JOGO
+============================================================ */
 
 let currentQuestion = 0;
+
 let score = 0;
+
 let codename = "";
 
 let startTime = null;
+
 let timerInterval = null;
+
+let answeredCurrentQuestion = false;
+
 
 
 /* ============================================================
-   INICIAR JOGO
-   ============================================================ */
+   START GAME
+============================================================ */
 
 function startGame() {
 
@@ -1472,6 +1677,7 @@ function startGame() {
 
     codename =
         input.value.trim();
+
 
     if (!codename) {
 
@@ -1501,9 +1707,13 @@ function startGame() {
 
     currentQuestion = 0;
 
+    answeredCurrentQuestion = false;
+
+
     document
         .getElementById("startScreen")
         .classList.add("hidden");
+
 
     document
         .getElementById("gameScreen")
@@ -1525,9 +1735,10 @@ function startGame() {
 }
 
 
+
 /* ============================================================
    TIMER
-   ============================================================ */
+============================================================ */
 
 function updateTimer() {
 
@@ -1561,14 +1772,19 @@ function updateTimer() {
 }
 
 
+
 /* ============================================================
-   CARREGAR DESAFIO
-   ============================================================ */
+   LOAD QUESTION
+============================================================ */
 
 function loadQuestion() {
 
     const question =
         questions[currentQuestion];
+
+
+    answeredCurrentQuestion =
+        false;
 
 
     document
@@ -1608,57 +1824,60 @@ function loadQuestion() {
     feedback.className =
         "feedback hidden";
 
+
     feedback.innerHTML =
         "";
+
+
+    /*
+       O botão está SEMPRE disponível.
+    */
+
+    const safeButton =
+        document.getElementById("safeButton");
+
+
+    safeButton.classList.remove(
+        "hidden"
+    );
 
 
     const nextButton =
         document.getElementById("nextButton");
 
 
-    nextButton.classList.add("hidden");
-
-
-    const safeButton =
-        document.getElementById("safeButton");
-
-
-    safeButton.classList.add("hidden");
+    nextButton.classList.add(
+        "hidden"
+    );
 
 
     /*
-       Se o email for legítimo,
-       mostramos a opção de declarar
-       que não existem sinais suspeitos.
+       Ativar os elementos clicáveis.
     */
-
-    if (question.safe === true) {
-
-        safeButton.classList.remove("hidden");
-
-    }
-
 
     document
         .querySelectorAll(".clickable")
-        .forEach(element => {
+        .forEach(
+            element => {
 
-            element.addEventListener(
-                "click",
-                function () {
+                element.addEventListener(
+                    "click",
+                    function() {
 
-                    checkAnswer(this);
+                        checkAnswer(this);
 
-                }
-            );
+                    }
+                );
 
-        });
+            }
+        );
 }
 
 
+
 /* ============================================================
-   VERIFICAR CLIQUE
-   ============================================================ */
+   CLICK NUM ELEMENTO
+============================================================ */
 
 function checkAnswer(element) {
 
@@ -1669,6 +1888,10 @@ function checkAnswer(element) {
 
         return;
     }
+
+
+    answeredCurrentQuestion =
+        true;
 
 
     const suspect =
@@ -1689,24 +1912,42 @@ function checkAnswer(element) {
         document.getElementById("feedback");
 
 
+    /*
+       SINAL REAL
+    */
+
     if (suspect) {
 
         score += points;
 
 
-        element.classList.add("correct");
+        element.classList.add(
+            "correct"
+        );
 
 
         feedback.className =
             "feedback good";
 
 
-        feedback.innerHTML =
-            `<strong>✅ Boa deteção!</strong><br>
-             ${feedbackText}<br><br>
-             <strong>+${points} pontos</strong>`;
+        feedback.innerHTML = `
+            <strong>🚨 Boa deteção!</strong><br><br>
 
-    } else {
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>+${points} pontos</strong>
+        `;
+
+    }
+
+
+    /*
+       FALSO POSITIVO
+    */
+
+    else {
 
         score -= 3;
 
@@ -1716,17 +1957,24 @@ function checkAnswer(element) {
         }
 
 
-        element.classList.add("wrong");
+        element.classList.add(
+            "wrong"
+        );
 
 
         feedback.className =
             "feedback bad";
 
 
-        feedback.innerHTML =
-            `<strong>❌ Cuidado!</strong><br>
-             ${feedbackText}<br><br>
-             <strong>-3 pontos</strong>`;
+        feedback.innerHTML = `
+            <strong>❌ Falso positivo</strong><br><br>
+
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>-3 pontos</strong>
+        `;
     }
 
 
@@ -1736,28 +1984,39 @@ function checkAnswer(element) {
         score;
 
 
-    feedback.classList.remove("hidden");
+    feedback.classList.remove(
+        "hidden"
+    );
 
+
+    /*
+       Depois de clicar num elemento,
+       continuamos a permitir "não encontrei mais nada".
+    */
+
+    const safeButton =
+        document.getElementById("safeButton");
+
+
+    safeButton.textContent =
+        "🛡️ Não encontrei mais nada suspeito";
+
+
+    /*
+       O jogador pode avançar depois
+       de tomar uma decisão.
+    */
 
     document
         .getElementById("nextButton")
         .classList.remove("hidden");
-
-
-    /*
-       Depois de começar a clicar,
-       escondemos a opção de "email seguro".
-    */
-
-    document
-        .getElementById("safeButton")
-        .classList.add("hidden");
 }
 
 
+
 /* ============================================================
-   EMAIL LEGÍTIMO
-   ============================================================ */
+   BOTÃO "NÃO ENCONTREI NADA"
+============================================================ */
 
 function answerSafe() {
 
@@ -1765,58 +2024,127 @@ function answerSafe() {
         questions[currentQuestion];
 
 
-    if (!question.safe) {
-
-        return;
-    }
-
-
-    /*
-       O jogador identificou corretamente
-       que não existem sinais suspeitos.
-    */
-
-    score += 10;
-
-
-    document
-        .getElementById("score")
-        .textContent =
-        score;
-
-
     const feedback =
         document.getElementById("feedback");
 
 
-    feedback.className =
-        "feedback info";
+    /*
+       EMAIL LEGÍTIMO
+    */
+
+    if (
+        question.safe === true
+    ) {
+
+        /*
+           Se já foi dada uma resposta,
+           não atribuir novamente os pontos.
+        */
+
+        if (
+            answeredCurrentQuestion
+        ) {
+
+            return;
+
+        }
 
 
-    feedback.innerHTML =
-        `<strong>🛡️ Boa análise!</strong><br>
-         Não encontraste sinais suspeitos porque este email
-         foi desenhado como uma situação legítima.<br><br>
-         <strong>+10 pontos</strong>`;
+        answeredCurrentQuestion =
+            true;
 
 
-    feedback.classList.remove("hidden");
+        score += 10;
 
 
-    document
-        .getElementById("safeButton")
-        .classList.add("hidden");
+        document
+            .getElementById("score")
+            .textContent =
+            score;
+
+
+        feedback.className =
+            "feedback good";
+
+
+        feedback.innerHTML = `
+            <strong>🛡️ Boa análise!</strong><br><br>
+
+            Este email foi desenhado como uma situação legítima.
+            Não encontraste sinais suspeitos porque, neste caso,
+            não havia nenhum indicador principal de phishing.
+
+            <br><br>
+
+            <strong>+10 pontos</strong>
+        `;
+
+    }
+
+
+    /*
+       EMAIL SUSPEITO
+    */
+
+    else {
+
+        score -= 5;
+
+
+        if (score < 0) {
+            score = 0;
+        }
+
+
+        document
+            .getElementById("score")
+            .textContent =
+            score;
+
+
+        feedback.className =
+            "feedback bad";
+
+
+        feedback.innerHTML = `
+            <strong>🚨 Há sinais suspeitos neste email!</strong><br><br>
+
+            Uma análise mais cuidadosa teria permitido
+            identificar pelo menos um indicador de phishing,
+            fraude ou engenharia social.
+
+            <br><br>
+
+            <strong>-5 pontos</strong>
+        `;
+
+    }
+
+
+    feedback.classList.remove(
+        "hidden"
+    );
 
 
     document
         .getElementById("nextButton")
-        .classList.remove("hidden");
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("safeButton")
+        .classList.add(
+            "hidden"
+        );
 }
 
 
+
 /* ============================================================
-   PRÓXIMO DESAFIO
-   ============================================================ */
+   NEXT QUESTION
+============================================================ */
 
 function nextQuestion() {
 
@@ -1838,13 +2166,16 @@ function nextQuestion() {
 }
 
 
+
 /* ============================================================
-   FINAL DO DESAFIO 01
-   ============================================================ */
+   END GAME
+============================================================ */
 
 function endGame() {
 
-    clearInterval(timerInterval);
+    clearInterval(
+        timerInterval
+    );
 
 
     const elapsed =
@@ -1865,12 +2196,16 @@ function endGame() {
 
     document
         .getElementById("gameScreen")
-        .classList.add("hidden");
+        .classList.add(
+            "hidden"
+        );
 
 
     document
         .getElementById("endScreen")
-        .classList.remove("hidden");
+        .classList.remove(
+            "hidden"
+        );
 
 
     document
@@ -1891,42 +2226,61 @@ function endGame() {
         `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
 
-    let message = "";
+    let message;
 
 
-    if (score >= 90) {
+    if (
+        score >= 90
+    ) {
 
-        message =
-            `🔥 <strong>Excelente!</strong><br>
-             Tens um radar de phishing bastante afinado.
-             Um verdadeiro Cyber Ninja.`;
+        message = `
+            🔥 <strong>Excelente!</strong><br><br>
 
-    }
-
-    else if (score >= 70) {
-
-        message =
-            `🛡️ <strong>Bom trabalho!</strong><br>
-             Identificaste a maioria dos sinais.
-             Ainda há alguns detalhes a afinar.`;
+            Tens um radar de phishing muito bem afinado.
+            Identificaste os sinais sem cair nos falsos positivos.
+            Um verdadeiro Cyber Ninja.
+        `;
 
     }
 
-    else if (score >= 50) {
+    else if (
+        score >= 70
+    ) {
 
-        message =
-            `👀 <strong>Há margem para melhorar.</strong><br>
-             Alguns emails conseguiram passar pelo teu radar.
-             Na vida real, abranda e verifica antes de clicar.`;
+        message = `
+            🛡️ <strong>Bom trabalho!</strong><br><br>
+
+            Identificaste os principais sinais.
+            Agora sabes também que nem tudo o que parece
+            estranho é necessariamente um ataque.
+        `;
+
+    }
+
+    else if (
+        score >= 50
+    ) {
+
+        message = `
+            👀 <strong>Há margem para melhorar.</strong><br><br>
+
+            Alguns sinais passaram pelo teu radar e alguns
+            falsos positivos enganaram-te.
+            Na dúvida: para, verifica e confirma.
+        `;
 
     }
 
     else {
 
-        message =
-            `🚨 <strong>O phish quase ganhou.</strong><br>
-             Está na altura de reforçar o radar de phishing.
-             Na dúvida: para, verifica e confirma.`;
+        message = `
+            🚨 <strong>O phish deu luta.</strong><br><br>
+
+            Este desafio mostrou porque devemos analisar
+            o contexto, o remetente, os links e os pedidos
+            antes de agir.
+        `;
+
     }
 
 
@@ -1943,9 +2297,10 @@ function endGame() {
 }
 
 
+
 /* ============================================================
-   IR PARA DESAFIO 02
-   ============================================================ */
+   DESAFIO 02
+============================================================ */
 
 function goToChallenge02() {
 

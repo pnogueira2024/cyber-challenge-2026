@@ -294,72 +294,358 @@
 
   const questions = [
 
-    {
-      title: "📧 Email 01 — A tua conta precisa de atenção",
+  {
+    title: "📧 Email 01 — A tua conta Microsoft 365",
 
-      content: `
-        <div class="email-header">
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Microsoft 365 Support &lt;security@microsoft-support.com&gt;
+        </span>
+        <br><br>
 
-          <strong>De:</strong>
-          <span
-            class="clickable"
-            data-suspect="true"
-            onclick="checkAnswer(this)">
-            Microsoft 365 Support
-            &lt;security@microsoft-support.com&gt;
-          </span>
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          ⚠️ A sua conta será suspensa
+        </span>
+      </div>
 
-          <br><br>
+      <div class="email-body">
+        Olá,<br><br>
 
-          <strong>Assunto:</strong>
-          <span
-            class="clickable"
-            data-suspect="true"
-            onclick="checkAnswer(this)">
-            ⚠️ A sua conta será suspensa
-          </span>
+        Detetámos uma atividade suspeita na sua conta Microsoft 365.<br><br>
 
-        </div>
+        Para evitar a suspensão da sua conta,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          valide imediatamente os seus dados através deste link
+        </span>.<br><br>
 
-        <div class="email-body">
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Tem apenas 30 minutos para concluir esta operação.
+        </span><br><br>
 
-          Olá,
+        Obrigado,<br>
+        Microsoft Security Team
+      </div>
+    `
+  },
 
-          <br><br>
 
-          Detetámos uma atividade suspeita na sua conta
-          Microsoft 365.
+  {
+    title: "📧 Email 02 — Documento partilhado",
 
-          <br><br>
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          João Silva &lt;joao.silva@sporttv.pt&gt;
+        </span>
+        <br><br>
 
-          Para evitar a suspensão da sua conta,
-          <span
-            class="clickable"
-            data-suspect="true"
-            onclick="checkAnswer(this)">
-            valide imediatamente os seus dados através deste link
-          </span>.
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Documento urgente — acesso necessário
+        </span>
+      </div>
 
-          <br><br>
+      <div class="email-body">
+        Olá,<br><br>
 
-          <span
-            class="clickable"
-            data-suspect="true"
-            onclick="checkAnswer(this)">
-            Tem apenas 30 minutos para concluir esta operação.
-          </span>
+        Partilhei contigo o documento da reunião de amanhã.<br><br>
 
-          <br><br>
+        Podes consultar o documento no SharePoint através do
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          link abaixo
+        </span>.<br><br>
 
-          Obrigado,<br>
-          Microsoft Security Team
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Precisamos que confirmes a tua password para desbloquear o documento.
+        </span><br><br>
 
-        </div>
-      `
-    }
+        Obrigado.
+      </div>
+    `
+  },
 
-  ];
 
+  {
+    title: "📧 Email 03 — Fatura pendente",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Financeiro &lt;financeiro@fornecedor-pagamentos.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Fatura em atraso — pagamento imediato
+        </span>
+      </div>
+
+      <div class="email-body">
+        Boa tarde,<br><br>
+
+        Informamos que existe uma fatura pendente.<br><br>
+
+        Para evitar custos adicionais,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          o pagamento deverá ser efetuado ainda hoje
+        </span>.<br><br>
+
+        Em anexo encontra-se o documento para consulta.<br><br>
+
+        Cumprimentos,<br>
+        Departamento Financeiro
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 04 — Pedido da Direção",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Diretor &lt;diretor@sportv-portugal.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Preciso da tua ajuda rapidamente
+        </span>
+      </div>
+
+      <div class="email-body">
+        Olá,<br><br>
+
+        Estou numa reunião e preciso de resolver uma situação urgente.<br><br>
+
+        Podes comprar um cartão-presente e enviar-me o código?
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          É importante que isto fique entre nós.
+        </span><br><br>
+
+        Assim que terminares, envia-me o código por email.<br><br>
+
+        Obrigado.
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 05 — Password expirada",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          IT Helpdesk &lt;helpdesk@support-office365.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          A sua password expira hoje
+        </span>
+      </div>
+
+      <div class="email-body">
+        Olá,<br><br>
+
+        A sua password encontra-se prestes a expirar.<br><br>
+
+        Para manter o acesso aos serviços,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          confirme a sua password através deste formulário
+        </span>.<br><br>
+
+        Caso contrário,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          a conta será bloqueada automaticamente.
+        </span>
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 06 — Reunião Teams",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Microsoft Teams &lt;noreply@teams.microsoft.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Convite para reunião
+        </span>
+      </div>
+
+      <div class="email-body">
+        Foste convidado para uma reunião Teams.<br><br>
+
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Data: 14 de outubro
+        </span><br><br>
+
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Organizador: IT Department
+        </span><br><br>
+
+        Consulta o convite no calendário para obter mais informações.
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 07 — Envio de encomenda",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Transportadora &lt;entregas@tracking-portugal.net&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        Encomenda não entregue
+      </div>
+
+      <div class="email-body">
+        Tentámos entregar a sua encomenda mas não foi possível.<br><br>
+
+        Para reagendar a entrega,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          efetue o pagamento de 1,99 € através deste link
+        </span>.<br><br>
+
+        O pagamento deverá ser efetuado nas próximas
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          2 horas
+        </span>.
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 08 — Segurança da conta",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Security Alert &lt;security-alert@micros0ft.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        Novo início de sessão
+      </div>
+
+      <div class="email-body">
+        Foi detetado um novo início de sessão na sua conta.<br><br>
+
+        Se não reconhece esta atividade,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          clique aqui para proteger imediatamente a sua conta
+        </span>.<br><br>
+
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Ignore esta mensagem se já efetuou a validação.
+        </span>
+      </div>
+    `
+  },
+
+
+  {
+    title: "📧 Email 09 — Partilha OneDrive",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          OneDrive &lt;sharing@onedrive-notification.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        Um documento foi partilhado consigo
+      </div>
+
+      <div class="email-body">
+        Um documento foi partilhado consigo.<br><br>
+
+        Documento:
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Plano de Projeto 2026
+        </span><br><br>
+
+        Para visualizar o documento,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          introduza as suas credenciais Microsoft nesta página
+        </span>.<br><br>
+
+        A ligação expira em 24 horas.
+      </div>
+    `
+  },
+
+
+  {
+    title: "🧠 BOSS FINAL — O email perfeito",
+
+    content: `
+      <div class="email-header">
+        <strong>De:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Microsoft Support &lt;support@micros0ft-security.com&gt;
+        </span>
+        <br><br>
+
+        <strong>Assunto:</strong>
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          Confirmação de segurança necessária
+        </span>
+      </div>
+
+      <div class="email-body">
+        Olá,<br><br>
+
+        Foi identificada uma tentativa de acesso à sua conta.<br><br>
+
+        Para verificar a atividade,
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          utilize o botão abaixo para iniciar a verificação
+        </span>.<br><br>
+
+        <span class="clickable" data-suspect="true" onclick="checkAnswer(this)">
+          A verificação deve ser concluída hoje.
+        </span><br><br>
+
+        <span class="clickable" data-suspect="false" onclick="checkAnswer(this)">
+          Equipa de Segurança Microsoft
+        </span>
+      </div>
+    `
+  }
+
+];
 
   let currentQuestion = 0;
   let score = 0;

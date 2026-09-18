@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Cyber Challenge 2026</title>
 
   <style>
@@ -14,12 +15,12 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #0b1020;
-      color: #ffffff;
+      color: white;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
       padding: 30px 20px;
     }
@@ -27,22 +28,22 @@
     .logo {
       font-size: 28px;
       font-weight: bold;
-      margin-bottom: 40px;
+      margin-bottom: 35px;
     }
 
     .logo span {
-      opacity: 0.6;
+      opacity: .5;
     }
 
     .card {
       background: #151c32;
       border-radius: 16px;
-      padding: 35px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
     }
 
     h1 {
-      font-size: 42px;
+      font-size: 40px;
       margin-top: 0;
     }
 
@@ -51,7 +52,7 @@
     }
 
     p {
-      color: #b9c2d9;
+      color: #bbc4da;
       line-height: 1.6;
     }
 
@@ -70,7 +71,7 @@
       padding: 14px 24px;
       border: 0;
       border-radius: 8px;
-      background: #ffffff;
+      background: white;
       color: #0b1020;
       font-size: 16px;
       font-weight: bold;
@@ -78,7 +79,7 @@
     }
 
     button:hover {
-      opacity: 0.85;
+      opacity: .85;
     }
 
     .hidden {
@@ -92,8 +93,23 @@
       font-weight: bold;
     }
 
+    .progress {
+      height: 8px;
+      background: #2a334c;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: white;
+      transition: width .3s;
+    }
+
     .email {
-      background: #ffffff;
+      background: white;
       color: #20242c;
       border-radius: 10px;
       overflow: hidden;
@@ -109,16 +125,14 @@
       line-height: 1.7;
     }
 
-    .suspect {
-      background: #fff2a8;
-      color: #000;
-      padding: 3px 6px;
-      border-radius: 4px;
+    .clickable {
       cursor: pointer;
+      border-radius: 4px;
+      padding: 2px 5px;
     }
 
-    .suspect:hover {
-      outline: 3px solid #ff9800;
+    .clickable:hover {
+      outline: 2px solid #ff9800;
     }
 
     .feedback {
@@ -128,8 +142,22 @@
       background: #26304a;
     }
 
+    .correct {
+      background: #b7f7c1 !important;
+      color: #123b19;
+    }
+
+    .wrong {
+      background: #ffb5b5 !important;
+      color: #591111;
+    }
+
+    .next-button {
+      margin-top: 20px;
+    }
+
     .score {
-      font-size: 32px;
+      font-size: 42px;
       font-weight: bold;
     }
   </style>
@@ -143,18 +171,24 @@
     CYBER CHALLENGE <span>2026</span>
   </div>
 
-  <!-- ECRÃ INICIAL -->
+
+  <!-- INÍCIO -->
+
   <div id="startScreen" class="card">
 
     <h1>🕵️ O Caça-Phish</h1>
 
     <p>
-      Um email aparentemente legítimo acabou de chegar à tua caixa de correio.
-      Consegues identificar os sinais de phishing antes de ser tarde demais?
+      Um email aparentemente legítimo acabou de chegar à tua caixa
+      de correio.
     </p>
 
     <p>
-      <strong>10 perguntas · 100 pontos</strong>
+      Analisa cada mensagem e identifica os sinais de phishing.
+    </p>
+
+    <p>
+      <strong>10 emails · 100 pontos</strong>
     </p>
 
     <input
@@ -172,68 +206,49 @@
 
 
   <!-- JOGO -->
+
   <div id="gameScreen" class="hidden">
 
     <div class="topbar">
-      <div>Pontuação: <span id="score">0</span></div>
-      <div>⏱️ <span id="timer">0</span>s</div>
+
+      <div>
+        Desafio <span id="questionNumber">1</span>/10
+      </div>
+
+      <div>
+        🏆 <span id="score">0</span> pts
+      </div>
+
+      <div>
+        ⏱️ <span id="timer">0</span>s
+      </div>
+
     </div>
+
+
+    <div class="progress">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
 
     <div class="card">
 
-      <h2>📧 Tens um novo email</h2>
+      <h2 id="emailTitle"></h2>
 
       <p>
-        Analisa cuidadosamente a mensagem.
-        <strong>Clica nos elementos que consideras suspeitos.</strong>
+        👀 Clica nos elementos que consideras suspeitos.
       </p>
 
-      <div class="email">
-
-        <div class="email-header">
-          <strong>De:</strong>
-          <span class="suspect" onclick="found(20, this)">
-            Microsoft 365 Support &lt;security@microsoft-support.com&gt;
-          </span>
-          <br><br>
-
-          <strong>Assunto:</strong>
-          <span class="suspect" onclick="found(20, this)">
-            ⚠️ A sua conta será suspensa
-          </span>
-        </div>
-
-        <div class="email-body">
-
-          Olá,
-
-          <br><br>
-
-          Detetámos uma atividade suspeita na sua conta Microsoft 365.
-
-          <br><br>
-
-          Para evitar a suspensão da sua conta,
-          <span class="suspect" onclick="found(20, this)">
-            valide imediatamente os seus dados através deste link
-          </span>.
-
-          <br><br>
-
-          <span class="suspect" onclick="found(20, this)">
-            Tem apenas 30 minutos para concluir esta operação.
-          </span>
-
-          <br><br>
-
-          Obrigado,<br>
-          Microsoft Security Team
-
-        </div>
-
-      </div>
+      <div id="email" class="email"></div>
 
       <div id="feedback" class="feedback hidden"></div>
+
+      <button
+        id="nextButton"
+        class="next-button hidden"
+        onclick="nextQuestion()">
+        Próximo email →
+      </button>
 
     </div>
 
@@ -241,18 +256,22 @@
 
 
   <!-- RESULTADO -->
+
   <div id="resultScreen" class="card hidden">
 
     <h1>🏆 Desafio concluído!</h1>
 
     <p>Cyber Codename:</p>
+
     <h2 id="finalCodename"></h2>
 
     <p>Pontuação:</p>
-    <div class="score" id="finalScore"></div>
+
+    <div id="finalScore" class="score"></div>
 
     <p>
-      Tempo: <span id="finalTime"></span> segundos
+      Tempo total:
+      <strong><span id="finalTime"></span> segundos</strong>
     </p>
 
   </div>
@@ -262,58 +281,238 @@
 
 <script>
 
+  /*
+   * ============================================
+   * CONFIGURAÇÃO DOS DESAFIOS
+   * ============================================
+   *
+   * Cada email vale 10 pontos.
+   *
+   * "suspect" = true
+   * significa que esse elemento é suspeito.
+   */
+
+  const questions = [
+
+    {
+      title: "📧 Email 01 — A tua conta precisa de atenção",
+
+      content: `
+        <div class="email-header">
+
+          <strong>De:</strong>
+          <span
+            class="clickable"
+            data-suspect="true"
+            onclick="checkAnswer(this)">
+            Microsoft 365 Support
+            &lt;security@microsoft-support.com&gt;
+          </span>
+
+          <br><br>
+
+          <strong>Assunto:</strong>
+          <span
+            class="clickable"
+            data-suspect="true"
+            onclick="checkAnswer(this)">
+            ⚠️ A sua conta será suspensa
+          </span>
+
+        </div>
+
+        <div class="email-body">
+
+          Olá,
+
+          <br><br>
+
+          Detetámos uma atividade suspeita na sua conta
+          Microsoft 365.
+
+          <br><br>
+
+          Para evitar a suspensão da sua conta,
+          <span
+            class="clickable"
+            data-suspect="true"
+            onclick="checkAnswer(this)">
+            valide imediatamente os seus dados através deste link
+          </span>.
+
+          <br><br>
+
+          <span
+            class="clickable"
+            data-suspect="true"
+            onclick="checkAnswer(this)">
+            Tem apenas 30 minutos para concluir esta operação.
+          </span>
+
+          <br><br>
+
+          Obrigado,<br>
+          Microsoft Security Team
+
+        </div>
+      `
+    }
+
+  ];
+
+
+  let currentQuestion = 0;
   let score = 0;
   let time = 0;
   let timerInterval;
   let codename = "";
-  let foundItems = 0;
+  let answersThisQuestion = 0;
+  let suspectsThisQuestion = 0;
+
 
   function startGame() {
 
-    codename = document.getElementById("codename").value.trim();
+    codename =
+      document.getElementById("codename").value.trim();
 
     if (!codename) {
+
       alert("Introduz primeiro o teu Cyber Codename.");
+
       return;
     }
 
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("gameScreen").classList.remove("hidden");
+    document
+      .getElementById("startScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("gameScreen")
+      .classList.remove("hidden");
 
     timerInterval = setInterval(function() {
+
       time++;
-      document.getElementById("timer").textContent = time;
+
+      document
+        .getElementById("timer")
+        .textContent = time;
+
     }, 1000);
+
+    loadQuestion();
+
   }
 
 
-  function found(points, element) {
+  function loadQuestion() {
 
-    if (element.dataset.found === "true") {
+    const question = questions[currentQuestion];
+
+    answersThisQuestion = 0;
+
+    suspectsThisQuestion =
+      document.querySelectorAll(
+        '[data-suspect="true"]'
+      ).length;
+
+    document
+      .getElementById("questionNumber")
+      .textContent = currentQuestion + 1;
+
+    document
+      .getElementById("emailTitle")
+      .textContent = question.title;
+
+    document
+      .getElementById("email")
+      .innerHTML = question.content;
+
+    document
+      .getElementById("feedback")
+      .classList.add("hidden");
+
+    document
+      .getElementById("nextButton")
+      .classList.add("hidden");
+
+    document
+      .getElementById("progressBar")
+      .style.width =
+      ((currentQuestion + 1) / 10 * 100) + "%";
+
+  }
+
+
+  function checkAnswer(element) {
+
+    if (element.dataset.clicked === "true") {
+
       return;
+
     }
 
-    element.dataset.found = "true";
-    element.style.background = "#b7f7c1";
-    element.style.outline = "3px solid #3aaa4d";
+    element.dataset.clicked = "true";
 
-    score += points;
-    foundItems++;
+    answersThisQuestion++;
 
-    document.getElementById("score").textContent = score;
-
-    const feedback = document.getElementById("feedback");
+    const feedback =
+      document.getElementById("feedback");
 
     feedback.classList.remove("hidden");
 
-    feedback.innerHTML =
-      "🎯 <strong>Boa!</strong> Identificaste um indicador de phishing. +" +
-      points +
-      " pontos.";
+    if (element.dataset.suspect === "true") {
 
-    if (foundItems === 4) {
-      setTimeout(endGame, 1200);
+      score += 10;
+
+      element.classList.add("correct");
+
+      feedback.innerHTML =
+        "🎯 <strong>Boa!</strong> Identificaste um sinal de phishing. +10 pontos.";
+
     }
+
+    else {
+
+      score -= 5;
+
+      element.classList.add("wrong");
+
+      feedback.innerHTML =
+        "❌ Cuidado! Esse elemento não era suspeito. -5 pontos.";
+
+    }
+
+    document
+      .getElementById("score")
+      .textContent = score;
+
+
+    if (answersThisQuestion >= suspectsThisQuestion) {
+
+      document
+        .getElementById("nextButton")
+        .classList.remove("hidden");
+
+    }
+
+  }
+
+
+  function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+
+      endGame();
+
+      return;
+
+    }
+
+    loadQuestion();
+
   }
 
 
@@ -321,12 +520,25 @@
 
     clearInterval(timerInterval);
 
-    document.getElementById("gameScreen").classList.add("hidden");
-    document.getElementById("resultScreen").classList.remove("hidden");
+    document
+      .getElementById("gameScreen")
+      .classList.add("hidden");
 
-    document.getElementById("finalCodename").textContent = codename;
-    document.getElementById("finalScore").textContent = score + " / 80";
-    document.getElementById("finalTime").textContent = time;
+    document
+      .getElementById("resultScreen")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("finalCodename")
+      .textContent = codename;
+
+    document
+      .getElementById("finalScore")
+      .textContent = score + " / 100";
+
+    document
+      .getElementById("finalTime")
+      .textContent = time;
 
   }
 

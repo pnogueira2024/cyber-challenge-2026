@@ -1842,6 +1842,10 @@ function loadQuestion() {
     );
 
 
+    safeButton.textContent =
+        "🛡️ Não encontrei nada suspeito";
+
+
     const nextButton =
         document.getElementById("nextButton");
 
@@ -2192,6 +2196,18 @@ function endGame() {
 
     const seconds =
         elapsed % 60;
+
+
+    /*
+       NOVO:
+       Guardar a pontuação final do Desafio 01
+       para o Boss Final.
+    */
+
+    localStorage.setItem(
+        "cyberChallenge_d1",
+        score
+    );
 
 
     document

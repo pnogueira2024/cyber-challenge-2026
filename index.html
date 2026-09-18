@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Challenge 2026</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+    }
+
+    .logo span {
+      opacity: 0.6;
+    }
+
+    .card {
+      background: #151c32;
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    p {
+      color: #b9c2d9;
+      line-height: 1.6;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      border: 1px solid #39445f;
+      background: #0e1528;
+      color: white;
+      font-size: 17px;
+    }
+
+    button {
+      padding: 14px 24px;
+      border: 0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #0b1020;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .email {
+      background: #ffffff;
+      color: #20242c;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .email-header {
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .email-body {
+      padding: 25px;
+      line-height: 1.7;
+    }
+
+    .suspect {
+      background: #fff2a8;
+      color: #000;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .suspect:hover {
+      outline: 3px solid #ff9800;
+    }
+
+    .feedback {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #26304a;
+    }
+
+    .score {
+      font-size: 32px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">
+    CYBER CHALLENGE <span>2026</span>
+  </div>
+
+  <!-- ECRÃ INICIAL -->
+  <div id="startScreen" class="card">
+
+    <h1>🕵️ O Caça-Phish</h1>
+
+    <p>
+      Um email aparentemente legítimo acabou de chegar à tua caixa de correio.
+      Consegues identificar os sinais de phishing antes de ser tarde demais?
+    </p>
+
+    <p>
+      <strong>10 perguntas · 100 pontos</strong>
+    </p>
+
+    <input
+      id="codename"
+      type="text"
+      maxlength="20"
+      placeholder="Introduz o teu Cyber Codename"
+    >
+
+    <button onclick="startGame()">
+      🚀 Começar desafio
+    </button>
+
+  </div>
+
+
+  <!-- JOGO -->
+  <div id="gameScreen" class="hidden">
+
+    <div class="topbar">
+      <div>Pontuação: <span id="score">0</span></div>
+      <div>⏱️ <span id="timer">0</span>s</div>
+    </div>
+
+    <div class="card">
+
+      <h2>📧 Tens um novo email</h2>
+
+      <p>
+        Analisa cuidadosamente a mensagem.
+        <strong>Clica nos elementos que consideras suspeitos.</strong>
+      </p>
+
+      <div class="email">
+
+        <div class="email-header">
+          <strong>De:</strong>
+          <span class="suspect" onclick="found(20, this)">
+            Microsoft 365 Support &lt;security@microsoft-support.com&gt;
+          </span>
+          <br><br>
+
+          <strong>Assunto:</strong>
+          <span class="suspect" onclick="found(20, this)">
+            ⚠️ A sua conta será suspensa
+          </span>
+        </div>
+
+        <div class="email-body">
+
+          Olá,
+
+          <br><br>
+
+          Detetámos uma atividade suspeita na sua conta Microsoft 365.
+
+          <br><br>
+
+          Para evitar a suspensão da sua conta,
+          <span class="suspect" onclick="found(20, this)">
+            valide imediatamente os seus dados através deste link
+          </span>.
+
+          <br><br>
+
+          <span class="suspect" onclick="found(20, this)">
+            Tem apenas 30 minutos para concluir esta operação.
+          </span>
+
+          <br><br>
+
+          Obrigado,<br>
+          Microsoft Security Team
+
+        </div>
+
+      </div>
+
+      <div id="feedback" class="feedback hidden"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESULTADO -->
+  <div id="resultScreen" class="card hidden">
+
+    <h1>🏆 Desafio concluído!</h1>
+
+    <p>Cyber Codename:</p>
+    <h2 id="finalCodename"></h2>
+
+    <p>Pontuação:</p>
+    <div class="score" id="finalScore"></div>
+
+    <p>
+      Tempo: <span id="finalTime"></span> segundos
+    </p>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  let score = 0;
+  let time = 0;
+  let timerInterval;
+  let codename = "";
+  let foundItems = 0;
+
+  function startGame() {
+
+    codename = document.getElementById("codename").value.trim();
+
+    if (!codename) {
+      alert("Introduz primeiro o teu Cyber Codename.");
+      return;
+    }
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    timerInterval = setInterval(function() {
+      time++;
+      document.getElementById("timer").textContent = time;
+    }, 1000);
+  }
+
+
+  function found(points, element) {
+
+    if (element.dataset.found === "true") {
+      return;
+    }
+
+    element.dataset.found = "true";
+    element.style.background = "#b7f7c1";
+    element.style.outline = "3px solid #3aaa4d";
+
+    score += points;
+    foundItems++;
+
+    document.getElementById("score").textContent = score;
+
+    const feedback = document.getElementById("feedback");
+
+    feedback.classList.remove("hidden");
+
+    feedback.innerHTML =
+      "🎯 <strong>Boa!</strong> Identificaste um indicador de phishing. +" +
+      points +
+      " pontos.";
+
+    if (foundItems === 4) {
+      setTimeout(endGame, 1200);
+    }
+  }
+
+
+  function endGame() {
+
+    clearInterval(timerInterval);
+
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("resultScreen").classList.remove("hidden");
+
+    document.getElementById("finalCodename").textContent = codename;
+    document.getElementById("finalScore").textContent = score + " / 80";
+    document.getElementById("finalTime").textContent = time;
+
+  }
+
+</script>
+
+</body>
+</html>

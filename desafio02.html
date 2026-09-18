@@ -8,333 +8,313 @@
 
 <style>
 
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background:
-            radial-gradient(circle at top, #172033 0%, #0b0f17 45%, #05070b 100%);
-        color: #f4f7fb;
-        min-height: 100vh;
-    }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #f4f7fb;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #172033 0%,
+            #0b0f17 45%,
+            #05070b 100%
+        );
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px 18px 50px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.logo {
+    font-size: 40px;
+}
+
+h1 {
+    margin: 4px 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: #9ba8bb;
+    margin-top: 8px;
+}
+
+.card {
+    background: rgba(17,24,39,.96);
+    border: 1px solid #263246;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.stat {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 10px;
+    padding: 10px 15px;
+    min-width: 125px;
+}
+
+.stat-label {
+    color: #7f8da3;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.progress-wrapper {
+    height: 8px;
+    background: #1c2635;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #4ade80;
+    transition: width .3s;
+}
+
+.instructions {
+    color: #c7d0dc;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.instructions strong {
+    color: #4ade80;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #39475c;
+    background: #000;
+}
+
+.image-wrapper img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.hotspot {
+    position: absolute;
+    cursor: pointer;
+
+    /*
+       Invisível até ser clicado.
+       Não existem caixas verdes/vermelhas
+       a denunciar os locais.
+    */
+
+    background: transparent;
+    border: 0;
+    outline: none;
+
+    z-index: 5;
+}
+
+.hotspot:hover {
+    background: transparent;
+}
+
+.hotspot.found {
+    background: rgba(239,68,68,.35);
+    outline: 3px solid #ef4444;
+}
+
+.hotspot.bonus-found {
+    background: rgba(74,222,128,.30);
+    outline: 3px solid #4ade80;
+}
+
+.feedback {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #101827;
+    border: 1px solid #2c394d;
+    line-height: 1.55;
+}
+
+.feedback.good {
+    border-color: #4ade80;
+}
+
+.feedback.bad {
+    border-color: #ef4444;
+}
+
+.feedback.info {
+    border-color: #60a5fa;
+}
+
+.progress-text {
+    margin-top: 15px;
+    color: #9ba8bb;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+
+    background: #4ade80;
+    color: #06110a;
+
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+button:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.next-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.end-screen {
+    text-align: center;
+}
+
+.big-score {
+    font-size: 64px;
+    font-weight: bold;
+    color: #4ade80;
+    margin: 20px 0;
+}
+
+.message {
+    color: #c6d0dd;
+    line-height: 1.6;
+    font-size: 17px;
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.next-box {
+    margin-top: 30px;
+    padding: 24px;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(74,222,128,.10),
+            rgba(37,99,235,.10)
+        );
+
+    border: 1px solid #35516c;
+}
+
+.next-box .unlock {
+    color: #4ade80;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.next-box h3 {
+    font-size: 23px;
+    margin: 10px 0;
+}
+
+.footer {
+    text-align: center;
+    color: #68768a;
+    font-size: 12px;
+    margin-top: 25px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 650px) {
 
     .container {
-        width: 100%;
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 25px 18px 50px;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .logo {
-        font-size: 42px;
-        margin-bottom: 5px;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 30px;
-        letter-spacing: 1px;
-    }
-
-    .subtitle {
-        color: #9ba8bb;
-        margin-top: 8px;
+        padding: 15px 10px 35px;
     }
 
     .card {
-        background: rgba(17, 24, 39, 0.96);
-        border: 1px solid #263246;
-        border-radius: 18px;
-        padding: 25px;
-        box-shadow: 0 15px 50px rgba(0,0,0,.35);
+        padding: 15px;
     }
 
-    .hidden {
-        display: none !important;
+    h1 {
+        font-size: 25px;
     }
 
-    .instructions {
-        background: #0c1320;
-        border: 1px solid #263246;
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 20px;
-        line-height: 1.6;
-    }
-
-    .instructions strong {
-        color: #4ade80;
-    }
-
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 15px;
+    .logo {
+        font-size: 34px;
     }
 
     .stat {
-        background: #0c1320;
-        border: 1px solid #263246;
-        border-radius: 10px;
-        padding: 10px 14px;
-        min-width: 130px;
+        flex: 1;
+        min-width: 100px;
     }
 
-    .stat-label {
-        color: #7f8da3;
-        font-size: 12px;
-        text-transform: uppercase;
+    .next-area {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .stat-value {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 3px;
-    }
-
-    .progress-wrapper {
-        height: 8px;
-        background: #1c2635;
-        border-radius: 20px;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    .progress {
-        height: 100%;
-        width: 0%;
-        background: #4ade80;
-        transition: width .3s;
-    }
-
-    /* =====================================================
-       IMAGEM DO DESAFIO
-       ===================================================== */
-
-    .image-wrapper {
-        position: relative;
+    .next-area button {
         width: 100%;
-        overflow: hidden;
-        border-radius: 14px;
-        background: #000;
-        box-shadow: 0 10px 35px rgba(0,0,0,.4);
-    }
-
-    .challenge-image {
-        display: block;
-        width: 100%;
-        height: auto;
-        user-select: none;
-        -webkit-user-drag: none;
-    }
-
-
-    /* =====================================================
-       HOTSPOTS
-       Invisíveis até serem clicados
-       ===================================================== */
-
-    .hotspot {
-        position: absolute;
-        border: none;
-        background: transparent;
-        padding: 0;
-        margin: 0;
-        cursor: crosshair;
-        border-radius: 8px;
-        outline: none;
-    }
-
-    .hotspot:hover {
-        background: transparent;
-        transform: none;
-        filter: none;
-    }
-
-    .hotspot.found {
-        background: rgba(34, 197, 94, 0.32);
-        border: 3px solid #22c55e;
-    }
-
-    .hotspot.bonus-found {
-        background: rgba(96, 165, 250, 0.30);
-        border: 3px solid #60a5fa;
-    }
-
-
-    /* =====================================================
-       FEEDBACK
-       ===================================================== */
-
-    .feedback {
-        margin-top: 18px;
-        padding: 17px;
-        border-radius: 12px;
-        line-height: 1.55;
-        border: 1px solid #334155;
-        background: #101827;
-    }
-
-    .feedback.good {
-        border-color: #22c55e;
-    }
-
-    .feedback.bonus {
-        border-color: #60a5fa;
-    }
-
-    .feedback.wrong {
-        border-color: #ef4444;
-    }
-
-
-    /* =====================================================
-       BOTÕES
-       ===================================================== */
-
-    .button-area {
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    button.action {
-        border: 0;
-        border-radius: 10px;
-        padding: 14px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        background: #4ade80;
-        color: #06110a;
-        transition: .2s;
-    }
-
-    button.action:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.08);
-    }
-
-    button.secondary {
-        background: #263246;
-        color: #e7edf5;
-    }
-
-
-    /* =====================================================
-       FINAL
-       ===================================================== */
-
-    .final {
-        text-align: center;
-        padding: 20px 5px;
-    }
-
-    .final h2 {
-        font-size: 28px;
     }
 
     .big-score {
-        font-size: 68px;
-        font-weight: bold;
-        color: #4ade80;
-        margin: 15px 0;
+        font-size: 50px;
     }
-
-    .final-message {
-        max-width: 700px;
-        margin: 20px auto;
-        color: #c5cfdb;
-        font-size: 17px;
-        line-height: 1.65;
-    }
-
-    .next-box {
-        margin-top: 30px;
-        padding: 25px;
-        border-radius: 15px;
-        background:
-            linear-gradient(
-                135deg,
-                rgba(74,222,128,.10),
-                rgba(37,99,235,.10)
-            );
-        border: 1px solid #35516c;
-    }
-
-    .unlock {
-        color: #4ade80;
-        font-size: 13px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .next-box h3 {
-        font-size: 23px;
-        margin: 10px 0;
-    }
-
-    .next-box p {
-        color: #b7c2d1;
-        line-height: 1.6;
-    }
-
-    .footer {
-        text-align: center;
-        color: #68768a;
-        font-size: 12px;
-        margin-top: 25px;
-    }
-
-
-    @media (max-width: 600px) {
-
-        .container {
-            padding: 15px 10px 35px;
-        }
-
-        h1 {
-            font-size: 25px;
-        }
-
-        .logo {
-            font-size: 34px;
-        }
-
-        .card {
-            padding: 16px;
-        }
-
-        .stat {
-            flex: 1;
-            min-width: 100px;
-        }
-
-        .big-score {
-            font-size: 52px;
-        }
-
-        .button-area {
-            flex-direction: column;
-        }
-
-        .button-area button {
-            width: 100%;
-        }
-    }
+}
 
 </style>
 </head>
@@ -345,330 +325,77 @@
 <div class="container">
 
 
-    <!-- =====================================================
-         HEADER
-         ===================================================== -->
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-    <div class="header">
+<div class="header">
 
-        <div class="logo">
-            🕵️‍♂️
-        </div>
-
-        <h1>
-            CYBER CHALLENGE 2026
-        </h1>
-
-        <div class="subtitle">
-            Desafio 02 — Clear Desk
-        </div>
-
+    <div class="logo">
+        🗂️
     </div>
 
+    <h1>
+        CYBER CHALLENGE 2026
+    </h1>
+
+    <div class="subtitle">
+        Nem tudo o que está numa secretária devia estar ali.
+    </div>
+
+</div>
 
 
-    <!-- =====================================================
-         GAME
-         ===================================================== -->
 
-    <div id="gameScreen">
+<!-- =========================================================
+     GAME
+========================================================= -->
+
+<div id="gameScreen">
 
 
-        <div class="topbar">
+    <div class="topbar">
 
-            <div class="stat">
+        <div class="stat">
 
-                <div class="stat-label">
-                    Falhas encontradas
-                </div>
-
-                <div
-                    id="foundCounter"
-                    class="stat-value"
-                >
-                    0 / 5
-                </div>
-
+            <div class="stat-label">
+                Desafio
             </div>
 
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Pontuação
-                </div>
-
-                <div
-                    id="score"
-                    class="stat-value"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Tempo
-                </div>
-
-                <div
-                    id="timer"
-                    class="stat-value"
-                >
-                    00:00
-                </div>
-
+            <div class="stat-value">
+                02 / 04
             </div>
 
         </div>
 
 
-        <div class="progress-wrapper">
+        <div class="stat">
+
+            <div class="stat-label">
+                Falhas encontradas
+            </div>
 
             <div
-                id="progress"
-                class="progress"
-            ></div>
+                id="foundCount"
+                class="stat-value"
+            >
+                0 / 5
+            </div>
 
         </div>
 
 
-        <div class="card">
+        <div class="stat">
 
-
-            <h2>
-                🔎 Encontra as 5 falhas de segurança
-            </h2>
-
-
-            <div class="instructions">
-
-                <strong>Missão:</strong>
-
-                Analisa cuidadosamente a imagem.
-
-                <br><br>
-
-                Existem <strong>5 falhas de segurança</strong>
-                escondidas nesta secretária.
-
-                <br>
-
-                Além disso, existem
-                <strong>2 boas práticas</strong>
-                que podes encontrar como bónus.
-
-                <br><br>
-
-                ⚠️
-                <strong>
-                    As zonas clicáveis não estão assinaladas.
-                </strong>
-
-                <br>
-
-                Clica diretamente nos elementos que consideras
-                relevantes.
-
+            <div class="stat-label">
+                Pontuação
             </div>
-
-
-
-            <!-- =================================================
-                 IMAGEM
-                 ================================================= -->
-
-            <div class="image-wrapper">
-
-                <img
-                    src="imagem1_semlabel.png"
-                    alt="Secretária de escritório com vários elementos relacionados com segurança"
-                    class="challenge-image"
-                    draggable="false"
-                >
-
-
-                <!-- =============================================
-                     FALHA 1 — PASSWORD NO POST-IT
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="password"
-                    data-type="fault"
-                    data-points="15"
-                    data-title="Password exposta"
-                    data-feedback="🔑 A password está escrita num post-it e deixada à vista. Passwords nunca devem ser guardadas desta forma."
-                    style="
-                        left: 33.5%;
-                        top: 31.0%;
-                        width: 7.0%;
-                        height: 8.5%;
-                    "
-                    aria-label="Zona suspeita"
-                ></button>
-
-
-
-                <!-- =============================================
-                     FALHA 2 — DOCUMENTO CONFIDENCIAL
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="documento"
-                    data-type="fault"
-                    data-points="15"
-                    data-title="Documento confidencial exposto"
-                    data-feedback="📄 O documento está claramente identificado como CONFIDENCIAL e encontra-se exposto numa secretária. Informação sensível deve ser protegida quando não está a ser utilizada."
-                    style="
-                        left: 7.0%;
-                        top: 34.5%;
-                        width: 20.5%;
-                        height: 35%;
-                    "
-                    aria-label="Zona suspeita"
-                ></button>
-
-
-
-                <!-- =============================================
-                     FALHA 3 — PEN USB
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="usb"
-                    data-type="fault"
-                    data-points="15"
-                    data-title="Pen USB abandonada"
-                    data-feedback="💾 Uma pen USB deixada numa secretária pode representar um risco. Dispositivos USB desconhecidos ou não autorizados não devem ser ligados aos equipamentos da empresa."
-                    style="
-                        left: 35.0%;
-                        top: 58.5%;
-                        width: 5.8%;
-                        height: 7.0%;
-                    "
-                    aria-label="Zona suspeita"
-                ></button>
-
-
-
-                <!-- =============================================
-                     FALHA 4 — BADGE
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="badge"
-                    data-type="fault"
-                    data-points="15"
-                    data-title="Badge deixado na secretária"
-                    data-feedback="🪪 O cartão de identificação e acesso está abandonado na secretária. Um badge deve ser tratado como um meio de acesso físico e não deve ficar exposto ou sem supervisão."
-                    style="
-                        left: 53.5%;
-                        top: 58.0%;
-                        width: 9.0%;
-                        height: 13.0%;
-                    "
-                    aria-label="Zona suspeita"
-                ></button>
-
-
-
-                <!-- =============================================
-                     FALHA 5 — CHAVE NA FECHADURA
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="key"
-                    data-type="fault"
-                    data-points="20"
-                    data-title="Chave deixada na fechadura"
-                    data-feedback="🔐 A chave ficou colocada na fechadura do armário. Isto facilita o acesso físico não autorizado ao conteúdo do armário."
-                    style="
-                        left: 92.0%;
-                        top: 15.0%;
-                        width: 3.8%;
-                        height: 11.0%;
-                    "
-                    aria-label="Zona suspeita"
-                ></button>
-
-
-
-                <!-- =============================================
-                     BÓNUS 1 — DESTRUIDORA
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="shredder"
-                    data-type="bonus"
-                    data-points="10"
-                    data-title="Boa prática: destruidora de papel"
-                    data-feedback="🗑️ Boa prática! A existência de uma destruidora permite eliminar documentos de forma adequada em vez de os deixar acessíveis ou colocá-los simplesmente no lixo."
-                    style="
-                        left: 0%;
-                        top: 2%;
-                        width: 17%;
-                        height: 30%;
-                    "
-                    aria-label="Bónus"
-                ></button>
-
-
-
-                <!-- =============================================
-                     BÓNUS 2 — ECRÃ BLOQUEADO
-                     ============================================= -->
-
-                <button
-                    class="hotspot"
-                    id="lockedScreen"
-                    data-type="bonus"
-                    data-points="10"
-                    data-title="Boa prática: ecrã bloqueado"
-                    data-feedback="🔒 Boa prática! O computador está bloqueado. Bloquear o ecrã quando nos afastamos do posto impede que outra pessoa utilize a sessão aberta."
-                    style="
-                        left: 28%;
-                        top: 8%;
-                        width: 43%;
-                        height: 26%;
-                    "
-                    aria-label="Bónus"
-                ></button>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 FEEDBACK
-                 ================================================= -->
 
             <div
-                id="feedback"
-                class="feedback hidden"
-            ></div>
-
-
-
-            <div class="button-area">
-
-                <button
-                    id="finishButton"
-                    class="action"
-                    onclick="finishChallenge()"
-                    disabled
-                >
-                    🏁 Terminei a análise
-                </button>
-
+                id="score"
+                class="stat-value"
+            >
+                0
             </div>
 
         </div>
@@ -676,79 +403,500 @@
     </div>
 
 
+    <div class="progress-wrapper">
 
-    <!-- =====================================================
-         FINAL
-         ===================================================== -->
+        <div
+            id="progress"
+            class="progress"
+        ></div>
 
-    <div
-        id="finalScreen"
-        class="card hidden"
-    >
+    </div>
 
-        <div class="final">
 
-            <h2>
-                🏆 DESAFIO 02 CONCLUÍDO
-            </h2>
+    <div class="card">
+
+        <h2>
+            🔎 Desafio 02 — Clear Desk
+        </h2>
+
+
+        <div class="instructions">
+
+            <p>
+                Tens diante de ti uma secretária.
+                <strong>Há 5 falhas de segurança escondidas.</strong>
+            </p>
+
+            <p>
+                Encontra-as todas.
+            </p>
+
+            <p>
+                Mas atenção:
+                <strong>há também alguns elementos perfeitamente normais.</strong>
+                Não cliques à toa.
+            </p>
+
+            <p>
+                💡 Algumas zonas têm vários objetos juntos.
+                Analisa os detalhes.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             IMAGEM + HOTSPOTS
+        ================================================= -->
+
+        <div class="image-wrapper">
+
+            <img
+                src="imagem1_semlabel.png"
+                alt="Secretária de escritório"
+            >
+
+
+            <!-- =================================================
+                 FALHA 1 — PASSWORD NO POST-IT
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="fault"
+                data-points="15"
+                style="
+                    left: 33.5%;
+                    top: 31%;
+                    width: 7%;
+                    height: 8.5%;
+                "
+                aria-label="Objeto suspeito"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALHA 2 — DOCUMENTO CONFIDENCIAL
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="fault"
+                data-points="15"
+                style="
+                    left: 7%;
+                    top: 34.5%;
+                    width: 20.5%;
+                    height: 35%;
+                "
+                aria-label="Documento"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALHA 3 — USB
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="fault"
+                data-points="15"
+                style="
+                    left: 35%;
+                    top: 58.5%;
+                    width: 5.8%;
+                    height: 7%;
+                "
+                aria-label="USB"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALHA 4 — BADGE
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="fault"
+                data-points="15"
+                style="
+                    left: 53.5%;
+                    top: 58%;
+                    width: 9%;
+                    height: 13%;
+                "
+                aria-label="Badge"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALHA 5 — CHAVE NA FECHADURA
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="fault"
+                data-points="20"
+                style="
+                    left: 92%;
+                    top: 15%;
+                    width: 3.8%;
+                    height: 11%;
+                "
+                aria-label="Chave"
+            ></button>
+
+
+
+            <!-- =================================================
+                 BONUS — DESTRUIDOR DE DOCUMENTOS
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="bonus"
+                data-points="10"
+                data-feedback="
+                    🟢 Boa prática!
+                    A destruição segura de documentação sensível
+                    ajuda a impedir que informação confidencial
+                    seja recuperada por terceiros.
+                "
+                style="
+                    left: 0%;
+                    top: 2%;
+                    width: 17%;
+                    height: 30%;
+                "
+                aria-label="Destruidor de documentos"
+            ></button>
+
+
+
+            <!-- =================================================
+                 BONUS — ECRÃ BLOQUEADO
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="bonus"
+                data-points="10"
+                data-feedback="
+                    🟢 Boa prática!
+                    Bloquear o computador quando nos afastamos
+                    reduz o risco de acesso não autorizado.
+                "
+                style="
+                    left: 28%;
+                    top: 8%;
+                    width: 43%;
+                    height: 26%;
+                "
+                aria-label="Computador bloqueado"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALSOS HOTSPOTS — POST-ITS
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Um post-it vazio ou com informação sem
+                    relevância não constitui, por si só,
+                    uma falha de segurança.
+                "
+                style="
+                    left: 40%;
+                    top: 30%;
+                    width: 9%;
+                    height: 9%;
+                "
+                aria-label="Post-it"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Ter vários post-its na secretária não é
+                    automaticamente uma falha.
+                    O conteúdo é que importa.
+                "
+                style="
+                    left: 44%;
+                    top: 36%;
+                    width: 10%;
+                    height: 10%;
+                "
+                aria-label="Bloco de post-its"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Uma nota de trabalho sem dados sensíveis
+                    pode estar perfeitamente visível.
+                "
+                style="
+                    left: 49%;
+                    top: 31%;
+                    width: 8%;
+                    height: 8%;
+                "
+                aria-label="Nota"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALSOS HOTSPOTS — CADERNO
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Um caderno de trabalho não é uma falha
+                    de segurança por si só.
+                "
+                style="
+                    left: 66%;
+                    top: 39%;
+                    width: 17%;
+                    height: 23%;
+                "
+                aria-label="Caderno"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    'Ideias', 'planos' ou 'resultados' podem ser
+                    simples notas de trabalho. O conteúdo
+                    concreto é que determina o risco.
+                "
+                style="
+                    left: 68%;
+                    top: 42%;
+                    width: 7%;
+                    height: 7%;
+                "
+                aria-label="Ideias"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Uma página com planeamento de trabalho
+                    não é automaticamente informação confidencial.
+                "
+                style="
+                    left: 75%;
+                    top: 44%;
+                    width: 7%;
+                    height: 7%;
+                "
+                aria-label="Planos"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    A palavra 'resultados' isoladamente não
+                    indica exposição de informação sensível.
+                "
+                style="
+                    left: 70%;
+                    top: 51%;
+                    width: 9%;
+                    height: 7%;
+                "
+                aria-label="Resultados"
+            ></button>
+
+
+
+            <!-- =================================================
+                 FALSOS HOTSPOTS — OUTROS OBJETOS
+            ================================================= -->
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Um objeto pessoal numa secretária não é,
+                    por si só, um incidente de segurança.
+                "
+                style="
+                    left: 81%;
+                    top: 63%;
+                    width: 9%;
+                    height: 10%;
+                "
+                aria-label="Objeto pessoal"
+            ></button>
+
+
+            <button
+                class="hotspot"
+                data-type="false"
+                data-feedback="
+                    ℹ️ Falso positivo.
+                    Material de escritório normal não representa
+                    necessariamente qualquer risco.
+                "
+                style="
+                    left: 43%;
+                    top: 67%;
+                    width: 10%;
+                    height: 10%;
+                "
+                aria-label="Material de escritório"
+            ></button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FEEDBACK
+        ================================================= -->
+
+        <div
+            id="feedback"
+            class="feedback hidden"
+        ></div>
+
+
+        <div
+            id="progressText"
+            class="progress-text"
+        >
+            Encontra as 5 falhas de segurança.
+        </div>
+
+
+        <div class="next-area">
+
+            <div>
+                <span id="statusText">
+                    🔍 Procura bem...
+                </span>
+            </div>
+
+
+            <button
+                id="finishButton"
+                disabled
+                onclick="finishChallenge()"
+            >
+                🔓 Concluir Desafio 02
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     END SCREEN
+========================================================= -->
+
+<div
+    id="endScreen"
+    class="card hidden"
+>
+
+    <div class="end-screen">
+
+        <h2>
+            🏆 DESAFIO 02 CONCLUÍDO
+        </h2>
+
+
+        <div
+            id="finalScore"
+            class="big-score"
+        >
+            0 / 100
+        </div>
+
+
+        <div
+            id="finalMessage"
+            class="message"
+        ></div>
+
+
+        <div class="next-box">
+
+            <div class="unlock">
+                🔓 NOVO DESAFIO DESBLOQUEADO
+            </div>
+
+
+            <h3>
+                DESAFIO 03 — CYBER SORTER
+            </h3>
 
 
             <p>
-                Boa análise, <strong id="finalCodename">CyberNinja</strong>.
+                Agora vamos testar se consegues distinguir
+                conceitos de cibersegurança no meio da confusão.
             </p>
 
 
-            <div
-                id="finalScore"
-                class="big-score"
+            <p>
+                Vais ter de <strong>arrastar e largar</strong>
+                os conceitos no sítio certo.
+            </p>
+
+
+            <button
+                onclick="goToChallenge03()"
             >
-                0 / 100
-            </div>
-
-
-            <p id="finalTime"></p>
-
-
-            <div
-                id="finalMessage"
-                class="final-message"
-            ></div>
-
-
-
-            <div class="next-box">
-
-                <div class="unlock">
-                    🔒 PRÓXIMO DESAFIO
-                </div>
-
-
-                <h3>
-                    DESAFIO 03
-                </h3>
-
-
-                <p>
-                    O próximo desafio será desbloqueado em breve.
-                </p>
-
-
-                <p>
-                    Continua atento. A segurança não termina
-                    quando sais da caixa de correio.
-                </p>
-
-            </div>
+                🧠 Aceitar Desafio 03 →
+            </button>
 
         </div>
 
     </div>
 
+</div>
 
 
-    <div class="footer">
-        Cyber Challenge 2026 · Sport TV
-    </div>
+<div class="footer">
+    Cyber Challenge 2026 · Sport TV
+</div>
+
 
 </div>
 
@@ -756,67 +904,22 @@
 
 <script>
 
-
 /* ============================================================
-   VARIÁVEIS
-   ============================================================ */
-
-let score = 0;
+   ESTADO
+============================================================ */
 
 let foundFaults = 0;
 
-let foundElements = new Set();
+let score = 0;
 
-let startTime = Date.now();
+const totalFaults = 5;
 
-let timerInterval = null;
-
-
-/* ============================================================
-   INICIAR TIMER
-   ============================================================ */
-
-timerInterval =
-    setInterval(
-        updateTimer,
-        1000
-    );
-
-
-/* ============================================================
-   TIMER
-   ============================================================ */
-
-function updateTimer() {
-
-    const elapsed =
-        Math.floor(
-            (Date.now() - startTime) / 1000
-        );
-
-
-    const minutes =
-        Math.floor(
-            elapsed / 60
-        );
-
-
-    const seconds =
-        elapsed % 60;
-
-
-    document
-        .getElementById("timer")
-        .textContent =
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(seconds).padStart(2, "0");
-}
+const maxScore = 100;
 
 
 /* ============================================================
    HOTSPOTS
-   ============================================================ */
+============================================================ */
 
 document
     .querySelectorAll(".hotspot")
@@ -836,22 +939,17 @@ document
     );
 
 
+
 /* ============================================================
-   PROCESSAR HOTSPOT
-   ============================================================ */
+   HOTSPOT LOGIC
+============================================================ */
 
-function handleHotspot(element) {
-
-    const id =
-        element.id;
-
-
-    /*
-       Impede pontuação duplicada.
-    */
+function handleHotspot(hotspot) {
 
     if (
-        foundElements.has(id)
+        hotspot.classList.contains("found") ||
+        hotspot.classList.contains("bonus-found") ||
+        hotspot.dataset.clicked === "true"
     ) {
 
         return;
@@ -859,25 +957,11 @@ function handleHotspot(element) {
     }
 
 
-    foundElements.add(id);
+    hotspot.dataset.clicked = "true";
 
 
     const type =
-        element.dataset.type;
-
-
-    const points =
-        parseInt(
-            element.dataset.points
-        );
-
-
-    const title =
-        element.dataset.title;
-
-
-    const feedbackText =
-        element.dataset.feedback;
+        hotspot.dataset.type;
 
 
     const feedback =
@@ -885,19 +969,26 @@ function handleHotspot(element) {
 
 
     /* ========================================================
-       FALHA
-       ======================================================== */
+       FALHA REAL
+    ======================================================== */
 
     if (
         type === "fault"
     ) {
 
-        score += points;
+        const points =
+            parseInt(
+                hotspot.dataset.points || "0"
+            );
+
 
         foundFaults++;
 
 
-        element.classList.add(
+        score += points;
+
+
+        hotspot.classList.add(
             "found"
         );
 
@@ -906,12 +997,30 @@ function handleHotspot(element) {
             "feedback good";
 
 
+        const explanations = {
+
+            "15": `
+                🚨 <strong>Falha de segurança encontrada!</strong><br><br>
+
+                Este elemento contém informação que não deveria
+                estar exposta numa secretária.
+            `,
+
+            "20": `
+                🚨 <strong>Falha de segurança encontrada!</strong><br><br>
+
+                Uma chave deixada na fechadura permite acesso físico
+                sem que seja necessário ultrapassar qualquer controlo
+                digital.
+            `
+
+        };
+
+
         feedback.innerHTML = `
-            <strong>🚨 Falha encontrada!</strong><br><br>
-
-            <strong>${title}</strong><br>
-
-            ${feedbackText}
+            ${explanations[points] || `
+                🚨 <strong>Falha encontrada!</strong>
+            `}
 
             <br><br>
 
@@ -922,31 +1031,33 @@ function handleHotspot(element) {
 
 
     /* ========================================================
-       BÓNUS
-       ======================================================== */
+       BONUS
+    ======================================================== */
 
     else if (
         type === "bonus"
     ) {
 
+        const points =
+            parseInt(
+                hotspot.dataset.points || "0"
+            );
+
+
         score += points;
 
 
-        element.classList.add(
+        hotspot.classList.add(
             "bonus-found"
         );
 
 
         feedback.className =
-            "feedback bonus";
+            "feedback info";
 
 
         feedback.innerHTML = `
-            <strong>💙 Boa prática encontrada!</strong><br><br>
-
-            <strong>${title}</strong><br>
-
-            ${feedbackText}
+            ${hotspot.dataset.feedback}
 
             <br><br>
 
@@ -957,8 +1068,57 @@ function handleHotspot(element) {
 
 
     /* ========================================================
-       ATUALIZAR UI
-       ======================================================== */
+       FALSO POSITIVO
+    ======================================================== */
+
+    else {
+
+        score -= 3;
+
+
+        if (
+            score < 0
+        ) {
+
+            score = 0;
+
+        }
+
+
+        feedback.className =
+            "feedback bad";
+
+
+        feedback.innerHTML = `
+            <strong>❌ Falso positivo</strong><br><br>
+
+            ${hotspot.dataset.feedback}
+
+            <br><br>
+
+            <strong>-3 pontos</strong>
+        `;
+
+    }
+
+
+    updateInterface();
+
+}
+
+
+
+/* ============================================================
+   INTERFACE
+============================================================ */
+
+function updateInterface() {
+
+    document
+        .getElementById("foundCount")
+        .textContent =
+        `${foundFaults} / ${totalFaults}`;
+
 
     document
         .getElementById("score")
@@ -967,59 +1127,61 @@ function handleHotspot(element) {
 
 
     document
-        .getElementById("foundCounter")
-        .textContent =
-        `${foundFaults} / 5`;
-
-
-    /*
-       A barra representa as 5 falhas principais.
-    */
-
-    const progress =
-        Math.min(
-            (foundFaults / 5) * 100,
-            100
-        );
-
-
-    document
         .getElementById("progress")
         .style.width =
-        progress + "%";
+        `${(foundFaults / totalFaults) * 100}%`;
 
 
-    feedback.classList.remove(
-        "hidden"
-    );
+    const status =
+        document.getElementById("statusText");
 
 
-    /*
-       Só permite terminar depois
-       das 5 falhas serem encontradas.
-    */
+    const progressText =
+        document.getElementById("progressText");
+
 
     if (
-        foundFaults >= 5
+        foundFaults < totalFaults
     ) {
+
+        status.textContent =
+            "🔍 Continua a procurar...";
+
+
+        progressText.textContent =
+            `Ainda faltam ${totalFaults - foundFaults} falha(s).`;
+
+    }
+
+    else {
+
+        status.textContent =
+            "🎯 Encontraste todas as falhas!";
+
+
+        progressText.textContent =
+            "Excelente. Podes concluir o desafio.";
+
 
         document
             .getElementById("finishButton")
-            .disabled = false;
+            .disabled =
+            false;
 
     }
 
 }
 
 
+
 /* ============================================================
-   TERMINAR DESAFIO
-   ============================================================ */
+   FINISH
+============================================================ */
 
 function finishChallenge() {
 
     if (
-        foundFaults < 5
+        foundFaults < totalFaults
     ) {
 
         return;
@@ -1027,39 +1189,14 @@ function finishChallenge() {
     }
 
 
-    clearInterval(
-        timerInterval
-    );
-
-
-    const elapsed =
-        Math.floor(
-            (Date.now() - startTime) / 1000
-        );
-
-
-    const minutes =
-        Math.floor(
-            elapsed / 60
-        );
-
-
-    const seconds =
-        elapsed % 60;
-
-
     document
         .getElementById("gameScreen")
-        .classList.add(
-            "hidden"
-        );
+        .classList.add("hidden");
 
 
     document
-        .getElementById("finalScreen")
-        .classList.remove(
-            "hidden"
-        );
+        .getElementById("endScreen")
+        .classList.remove("hidden");
 
 
     document
@@ -1068,25 +1205,31 @@ function finishChallenge() {
         `${score} / 100`;
 
 
-    document
-        .getElementById("finalTime")
-        .textContent =
-        `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-
-
     let message;
 
 
     if (
+        score >= 100
+    ) {
+
+        message = `
+            🔥 <strong>Secretária limpa, radar afinado!</strong><br><br>
+
+            Encontraste as 5 falhas e ainda identificaste
+            as boas práticas existentes.
+        `;
+
+    }
+
+    else if (
         score >= 90
     ) {
 
         message = `
-            🔥 <strong>Excelente análise!</strong><br><br>
+            🛡️ <strong>Muito bom trabalho!</strong><br><br>
 
-            Encontraste as cinco falhas e ainda
-            descobriste praticamente todas as boas práticas.
-            Tens olho para segurança física.
+            Encontraste todas as falhas e estiveste atento
+            aos falsos positivos.
         `;
 
     }
@@ -1096,11 +1239,12 @@ function finishChallenge() {
     ) {
 
         message = `
-            🛡️ <strong>Boa análise!</strong><br><br>
+            👀 <strong>Bom trabalho.</strong><br><br>
 
-            Encontraste todas as falhas principais.
-            Continua atento aos pequenos detalhes:
-            muitas vezes são eles que fazem a diferença.
+            Encontraste os problemas principais.
+            Mas cuidado com os falsos positivos:
+            segurança também é saber distinguir risco de
+            simples desorganização.
         `;
 
     }
@@ -1108,11 +1252,11 @@ function finishChallenge() {
     else {
 
         message = `
-            👀 <strong>Missão cumprida!</strong><br><br>
+            🔎 <strong>Missão cumprida.</strong><br><br>
 
-            Encontraste as cinco falhas principais.
-            Agora já sabes algumas das coisas que deves
-            procurar numa verdadeira situação de Clear Desk.
+            Encontraste as falhas, mas alguns objetos normais
+            enganaram o teu radar.
+            Na vida real, contexto é tudo.
         `;
 
     }
@@ -1125,6 +1269,18 @@ function finishChallenge() {
 
 }
 
+
+
+/* ============================================================
+   DESAFIO 03
+============================================================ */
+
+function goToChallenge03() {
+
+    window.location.href =
+        "desafio03.html";
+
+}
 
 </script>
 

@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cyber Challenge 2026 — Desafio 04</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #f4f7fb;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #172033 0%,
+            #0b0f17 45%,
+            #05070b 100%
+        );
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px 18px 50px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.logo {
+    font-size: 42px;
+}
+
+h1 {
+    margin: 4px 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: #9ba8bb;
+    margin-top: 8px;
+}
+
+.card {
+    background: rgba(17,24,39,.97);
+    border: 1px solid #263246;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.stat {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 10px;
+    padding: 10px 15px;
+    min-width: 125px;
+}
+
+.stat-label {
+    color: #7f8da3;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.progress-wrapper {
+    height: 8px;
+    background: #1c2635;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #4ade80;
+    transition: width .3s;
+}
+
+.instructions {
+    color: #c7d0dc;
+    line-height: 1.6;
+}
+
+.instructions strong {
+    color: #4ade80;
+}
+
+
+/* ============================================================
+   MATCHING AREA
+============================================================ */
+
+.matching-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.column {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.column-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.column-title span {
+    color: #7f8da3;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+
+/* ============================================================
+   TEXTOS
+============================================================ */
+
+.question {
+    background: #151e2d;
+    border: 1px solid #344258;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    line-height: 1.55;
+
+    min-height: 110px;
+
+    transition: .2s;
+}
+
+.question:hover {
+    border-color: #4b5d77;
+}
+
+.question-number {
+    color: #4ade80;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.question.matched {
+    border-color: #4ade80;
+}
+
+
+/* ============================================================
+   RESPOSTAS
+============================================================ */
+
+.answer {
+    background: #182233;
+    border: 1px solid #344258;
+    border-radius: 12px;
+
+    padding: 16px;
+    margin-bottom: 14px;
+
+    min-height: 82px;
+
+    cursor: grab;
+    user-select: none;
+
+    transition: .2s;
+}
+
+.answer:hover {
+    transform: translateY(-1px);
+    border-color: #60a5fa;
+}
+
+.answer.dragging {
+    opacity: .45;
+}
+
+.answer.selected {
+    border-color: #60a5fa;
+
+    box-shadow:
+        0 0 0 2px rgba(96,165,250,.18);
+}
+
+.answer.used {
+    opacity: .35;
+    cursor: default;
+}
+
+.answer.correct {
+    border-color: #4ade80;
+    background: #102519;
+}
+
+.answer.wrong {
+    border-color: #ef4444;
+    background: #2a1418;
+}
+
+
+/* ============================================================
+   DROP ZONE
+============================================================ */
+
+.dropzone {
+    margin-top: 12px;
+
+    min-height: 45px;
+
+    border: 2px dashed #536176;
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px;
+
+    color: #7f8da3;
+    font-size: 13px;
+
+    transition: .2s;
+}
+
+.dropzone.drag-over {
+    border-color: #60a5fa;
+    background: #101d31;
+    color: #60a5fa;
+}
+
+.dropzone.correct {
+    border-style: solid;
+    border-color: #4ade80;
+    background: #102519;
+    color: #86efac;
+}
+
+.dropzone.wrong {
+    border-style: solid;
+    border-color: #ef4444;
+    background: #2a1418;
+    color: #fca5a5;
+}
+
+
+/* ============================================================
+   FEEDBACK
+============================================================ */
+
+.feedback {
+    margin-top: 20px;
+    padding: 16px;
+
+    border-radius: 10px;
+
+    background: #101827;
+    border: 1px solid #2c394d;
+
+    line-height: 1.55;
+}
+
+.feedback.good {
+    border-color: #4ade80;
+}
+
+.feedback.bad {
+    border-color: #ef4444;
+}
+
+.feedback.info {
+    border-color: #60a5fa;
+}
+
+.next-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+    flex-wrap: wrap;
+
+    margin-top: 20px;
+}
+
+.status {
+    color: #9ba8bb;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+
+    padding: 14px 20px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background: #4ade80;
+    color: #06110a;
+
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+button:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ============================================================
+   END SCREEN
+============================================================ */
+
+.end-screen {
+    text-align: center;
+}
+
+.big-score {
+    font-size: 64px;
+    font-weight: bold;
+    color: #4ade80;
+
+    margin: 20px 0;
+}
+
+.message {
+    color: #c6d0dd;
+    line-height: 1.6;
+
+    font-size: 17px;
+
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.boss-box {
+    margin-top: 30px;
+
+    padding: 28px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(239,68,68,.12),
+            rgba(74,222,128,.08)
+        );
+
+    border: 1px solid #5b3940;
+}
+
+.boss-label {
+    color: #f87171;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.boss-box h3 {
+    font-size: 28px;
+    margin: 10px 0;
+}
+
+.boss-box p {
+    color: #c7d0dc;
+}
+
+.boss-button {
+    margin-top: 15px;
+
+    background: #ef4444;
+    color: white;
+
+    font-size: 17px;
+
+    padding: 15px 25px;
+}
+
+.boss-button:hover {
+    filter: brightness(1.12);
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 760px) {
+
+    .container {
+        padding: 15px 10px 35px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    .logo {
+        font-size: 34px;
+    }
+
+    .matching-area {
+        grid-template-columns: 1fr;
+    }
+
+    .next-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .next-area button {
+        width: 100%;
+    }
+
+    .big-score {
+        font-size: 50px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="header">
+
+    <div class="logo">
+        🔗
+    </div>
+
+    <h1>
+        CYBER CHALLENGE 2026
+    </h1>
+
+    <div class="subtitle">
+        Liga os pontos. Encontra o padrão.
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     GAME
+========================================================= -->
+
+<div id="gameScreen">
+
+    <div class="topbar">
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Desafio
+            </div>
+
+            <div class="stat-value">
+                04 / 04
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Ligações
+            </div>
+
+            <div
+                id="foundCount"
+                class="stat-value"
+            >
+                0 / 4
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Pontuação
+            </div>
+
+            <div
+                id="score"
+                class="stat-value"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-wrapper">
+
+        <div
+            id="progress"
+            class="progress"
+        ></div>
+
+    </div>
+
+
+
+    <div class="card">
+
+
+        <h2>
+            🔗 Desafio 04 — Liga os Pontos
+        </h2>
+
+
+        <div class="instructions">
+
+            <p>
+                Quatro situações.
+                Quatro respostas.
+            </p>
+
+            <p>
+                O objetivo é descobrir
+                <strong>qual resposta corresponde a cada situação</strong>.
+            </p>
+
+            <p>
+                <strong>
+                    Arrasta uma resposta para o texto correspondente.
+                </strong>
+            </p>
+
+            <p>
+                No telemóvel:
+                <strong>
+                    toca numa resposta e depois toca no texto.
+                </strong>
+            </p>
+
+            <p>
+                ⚠️ Podes fazer ligações erradas.
+                Mas cada erro <strong>custa pontos</strong>.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             DUAS COLUNAS
+        ================================================= -->
+
+        <div class="matching-area">
+
+
+            <!-- =================================================
+                 COLUNA ESQUERDA
+            ================================================= -->
+
+            <div class="column">
+
+                <div class="column-title">
+                    📄 Situações
+                    <br>
+                    <span>
+                        Onde encaixa cada resposta?
+                    </span>
+                </div>
+
+
+
+                <!-- SITUAÇÃO 1 -->
+
+                <div
+                    class="question"
+                    data-answer="q1"
+                >
+
+                    <div class="question-number">
+                        Situação 01
+                    </div>
+
+                    Recebes um email aparentemente enviado
+                    pelo departamento de IT a pedir que
+                    confirmes imediatamente a tua password
+                    através de um link.
+
+                    <div
+                        class="dropzone"
+                        data-question="q1"
+                    >
+                        Arrasta a resposta para aqui
+                    </div>
+
+                </div>
+
+
+
+                <!-- SITUAÇÃO 2 -->
+
+                <div
+                    class="question"
+                    data-answer="q2"
+                >
+
+                    <div class="question-number">
+                        Situação 02
+                    </div>
+
+                    Encontras uma pen USB no parque de
+                    estacionamento da empresa. Não sabes
+                    quem é o proprietário.
+
+                    <div
+                        class="dropzone"
+                        data-question="q2"
+                    >
+                        Arrasta a resposta para aqui
+                    </div>
+
+                </div>
+
+
+
+                <!-- SITUAÇÃO 3 -->
+
+                <div
+                    class="question"
+                    data-answer="q3"
+                >
+
+                    <div class="question-number">
+                        Situação 03
+                    </div>
+
+                    Um colega pede-te a tua password porque
+                    precisa de aceder rapidamente a uma
+                    aplicação enquanto a conta dele está
+                    bloqueada.
+
+                    <div
+                        class="dropzone"
+                        data-question="q3"
+                    >
+                        Arrasta a resposta para aqui
+                    </div>
+
+                </div>
+
+
+
+                <!-- SITUAÇÃO 4 -->
+
+                <div
+                    class="question"
+                    data-answer="q4"
+                >
+
+                    <div class="question-number">
+                        Situação 04
+                    </div>
+
+                    Vais sair da secretária durante alguns
+                    minutos e deixas documentos de trabalho
+                    visíveis e o computador desbloqueado.
+
+                    <div
+                        class="dropzone"
+                        data-question="q4"
+                    >
+                        Arrasta a resposta para aqui
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 COLUNA DIREITA
+            ================================================= -->
+
+            <div class="column">
+
+                <div class="column-title">
+                    🧠 Respostas
+                    <br>
+                    <span>
+                        Arrasta para a situação correta
+                    </span>
+                </div>
+
+
+
+                <!-- RESPOSTA 1 -->
+
+                <div
+                    class="answer"
+                    draggable="true"
+                    data-answer="q1"
+                >
+
+                    🎣 <strong>Phishing</strong>
+
+                    <br>
+
+                    <small>
+                        Tentativa de enganar o utilizador
+                        para obter informação ou levá-lo
+                        a executar uma ação.
+                    </small>
+
+                </div>
+
+
+
+                <!-- RESPOSTA 2 -->
+
+                <div
+                    class="answer"
+                    draggable="true"
+                    data-answer="q2"
+                >
+
+                    💾 <strong>Dispositivo desconhecido</strong>
+
+                    <br>
+
+                    <small>
+                        Uma pen ou outro dispositivo encontrado
+                        não deve ser ligado aos equipamentos
+                        da empresa sem validação.
+                    </small>
+
+                </div>
+
+
+
+                <!-- RESPOSTA 3 -->
+
+                <div
+                    class="answer"
+                    draggable="true"
+                    data-answer="q3"
+                >
+
+                    🔐 <strong>Credenciais pessoais</strong>
+
+                    <br>
+
+                    <small>
+                        As credenciais são individuais e
+                        não devem ser partilhadas com terceiros.
+                    </small>
+
+                </div>
+
+
+
+                <!-- RESPOSTA 4 -->
+
+                <div
+                    class="answer"
+                    draggable="true"
+                    data-answer="q4"
+                >
+
+                    🖥️ <strong>Clear Desk / Clear Screen</strong>
+
+                    <br>
+
+                    <small>
+                        Documentos devem ser protegidos e os
+                        equipamentos bloqueados quando nos
+                        afastamos da secretária.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FEEDBACK
+        ================================================= -->
+
+        <div
+            id="feedback"
+            class="feedback hidden"
+        ></div>
+
+
+
+        <div class="next-area">
+
+            <div
+                id="status"
+                class="status"
+            >
+                🎯 Tens 4 ligações para descobrir.
+            </div>
+
+
+            <button
+                id="finishButton"
+                disabled
+                onclick="finishChallenge()"
+            >
+                🔓 Concluir Desafio 04
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     END SCREEN
+========================================================= -->
+
+<div
+    id="endScreen"
+    class="card hidden"
+>
+
+    <div class="end-screen">
+
+
+        <h2>
+            🏆 DESAFIO 04 CONCLUÍDO
+        </h2>
+
+
+        <div
+            id="finalScore"
+            class="big-score"
+        >
+            0 / 100
+        </div>
+
+
+        <div
+            id="finalMessage"
+            class="message"
+        ></div>
+
+
+
+        <div class="boss-box">
+
+            <div class="boss-label">
+                ⚠️ ÚLTIMO NÍVEL
+            </div>
+
+
+            <h3>
+                BOSS LEVEL
+            </h3>
+
+
+            <p>
+                Chegaste ao fim dos quatro desafios.
+            </p>
+
+
+            <p>
+                Agora já não há pistas.
+                Só tu, o problema e o relógio.
+            </p>
+
+
+            <button
+                class="boss-button"
+                onclick="goToBoss()"
+            >
+                ☠️ ENTRAR NO BOSS LEVEL →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="footer">
+    Cyber Challenge 2026 · Sport TV
+</div>
+
+
+</div>
+
+
+
+<script>
+
+/* ============================================================
+   ESTADO
+============================================================ */
+
+let score = 0;
+
+let correctAnswers = 0;
+
+let selectedAnswer = null;
+
+let draggedAnswer = null;
+
+const totalAnswers = 4;
+
+const pointsPerCorrect = 25;
+
+const penaltyWrong = 5;
+
+
+
+/* ============================================================
+   ELEMENTOS
+============================================================ */
+
+const answers =
+    document.querySelectorAll(".answer");
+
+const dropzones =
+    document.querySelectorAll(".dropzone");
+
+
+
+/* ============================================================
+   DRAG & DROP
+============================================================ */
+
+answers.forEach(
+    answer => {
+
+
+        answer.addEventListener(
+            "dragstart",
+            function(event) {
+
+                if (
+                    this.classList.contains("used")
+                ) {
+                    event.preventDefault();
+                    return;
+                }
+
+
+                draggedAnswer = this;
+
+
+                this.classList.add(
+                    "dragging"
+                );
+
+
+                event.dataTransfer.effectAllowed =
+                    "move";
+
+
+                event.dataTransfer.setData(
+                    "text/plain",
+                    this.dataset.answer
+                );
+
+            }
+        );
+
+
+        answer.addEventListener(
+            "dragend",
+            function() {
+
+                this.classList.remove(
+                    "dragging"
+                );
+
+
+                draggedAnswer = null;
+
+            }
+        );
+
+
+
+        /*
+           Suporte para telemóvel:
+           selecionar resposta com toque.
+        */
+
+        answer.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    this.classList.contains("used")
+                ) {
+                    return;
+                }
+
+
+                answers.forEach(
+                    item => {
+
+                        item.classList.remove(
+                            "selected"
+                        );
+
+                    }
+                );
+
+
+                selectedAnswer =
+                    this;
+
+
+                this.classList.add(
+                    "selected"
+                );
+
+
+                showFeedback(
+                    "info",
+                    `
+                    🧠 <strong>Resposta selecionada.</strong><br><br>
+
+                    Agora toca no texto onde achas
+                    que esta resposta pertence.
+                    `
+                );
+
+            }
+        );
+
+    }
+);
+
+
+
+/* ============================================================
+   DROPZONES
+============================================================ */
+
+dropzones.forEach(
+    zone => {
+
+
+        zone.addEventListener(
+            "dragover",
+            function(event) {
+
+                event.preventDefault();
+
+
+                if (
+                    this.classList.contains("correct")
+                ) {
+                    return;
+                }
+
+
+                this.classList.add(
+                    "drag-over"
+                );
+
+            }
+        );
+
+
+        zone.addEventListener(
+            "dragleave",
+            function() {
+
+                this.classList.remove(
+                    "drag-over"
+                );
+
+            }
+        );
+
+
+        zone.addEventListener(
+            "drop",
+            function(event) {
+
+                event.preventDefault();
+
+
+                this.classList.remove(
+                    "drag-over"
+                );
+
+
+                if (
+                    this.classList.contains("correct")
+                ) {
+                    return;
+                }
+
+
+                let answer =
+                    draggedAnswer;
+
+
+                if (!answer) {
+
+                    const answerName =
+                        event.dataTransfer.getData(
+                            "text/plain"
+                        );
+
+
+                    answer =
+                        document.querySelector(
+                            `.answer[data-answer="${answerName}"]`
+                        );
+
+                }
+
+
+                if (answer) {
+
+                    tryAnswer(
+                        answer,
+                        this
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /*
+           Clique no dropzone:
+           usa a resposta selecionada.
+        */
+
+        zone.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    !selectedAnswer
+                ) {
+                    return;
+                }
+
+
+                if (
+                    this.classList.contains("correct")
+                ) {
+                    return;
+                }
+
+
+                tryAnswer(
+                    selectedAnswer,
+                    this
+                );
+
+            }
+        );
+
+    }
+);
+
+
+
+/* ============================================================
+   TENTATIVA
+============================================================ */
+
+function tryAnswer(
+    answer,
+    zone
+) {
+
+    const answerValue =
+        answer.dataset.answer;
+
+
+    const questionValue =
+        zone.dataset.question;
+
+
+    /*
+       CORRETO
+    */
+
+    if (
+        answerValue === questionValue
+    ) {
+
+        correctAnswers++;
+
+
+        score += pointsPerCorrect;
+
+
+        zone.textContent =
+            "✓ " +
+            answer.textContent.trim();
+
+
+        zone.classList.remove(
+            "wrong"
+        );
+
+
+        zone.classList.add(
+            "correct"
+        );
+
+
+        answer.classList.add(
+            "used"
+        );
+
+
+        answer.classList.remove(
+            "selected"
+        );
+
+
+        answer.setAttribute(
+            "draggable",
+            "false"
+        );
+
+
+        zone.closest(".question")
+            .classList.add(
+                "matched"
+            );
+
+
+        selectedAnswer = null;
+
+
+        showFeedback(
+            "good",
+            `
+            🟢 <strong>Ligação correta!</strong><br><br>
+
+            Encontraste a correspondência certa.
+
+            <br><br>
+
+            <strong>+${pointsPerCorrect} pontos</strong>
+            `
+        );
+
+    }
+
+
+    /*
+       ERRADO
+    */
+
+    else {
+
+        score -= penaltyWrong;
+
+
+        if (
+            score < 0
+        ) {
+            score = 0;
+        }
+
+
+        zone.classList.add(
+            "wrong"
+        );
+
+
+        showFeedback(
+            "bad",
+            `
+            🔴 <strong>Ligação errada.</strong><br><br>
+
+            Essa resposta não corresponde a esta situação.
+
+            <br><br>
+
+            Podes tentar novamente.
+
+            <br><br>
+
+            <strong>-${penaltyWrong} pontos</strong>
+            `
+        );
+
+
+        setTimeout(
+            () => {
+
+                zone.classList.remove(
+                    "wrong"
+                );
+
+            },
+            800
+        );
+
+    }
+
+
+    updateInterface();
+
+}
+
+
+
+/* ============================================================
+   FEEDBACK
+============================================================ */
+
+function showFeedback(
+    type,
+    message
+) {
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    feedback.className =
+        `feedback ${type}`;
+
+
+    feedback.innerHTML =
+        message;
+
+
+    feedback.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+
+/* ============================================================
+   INTERFACE
+============================================================ */
+
+function updateInterface() {
+
+    document
+        .getElementById("foundCount")
+        .textContent =
+        `${correctAnswers} / ${totalAnswers}`;
+
+
+    document
+        .getElementById("score")
+        .textContent =
+        score;
+
+
+    document
+        .getElementById("progress")
+        .style.width =
+        `${(correctAnswers / totalAnswers) * 100}%`;
+
+
+    const status =
+        document.getElementById("status");
+
+
+    const finishButton =
+        document.getElementById("finishButton");
+
+
+    if (
+        correctAnswers < totalAnswers
+    ) {
+
+        const remaining =
+            totalAnswers - correctAnswers;
+
+
+        status.textContent =
+            `🎯 Ainda faltam ${remaining} ligação(ões).`;
+
+
+        finishButton.disabled =
+            true;
+
+    }
+
+    else {
+
+        status.textContent =
+            "🎯 Todas as ligações foram encontradas!";
+
+
+        finishButton.disabled =
+            false;
+
+    }
+
+}
+
+
+
+/* ============================================================
+   FINAL
+============================================================ */
+
+function finishChallenge() {
+
+    if (
+        correctAnswers < totalAnswers
+    ) {
+        return;
+    }
+
+
+    document
+        .getElementById("gameScreen")
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("endScreen")
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("finalScore")
+        .textContent =
+        `${score} / 100`;
+
+
+    let message;
+
+
+    if (
+        score >= 100
+    ) {
+
+        message = `
+            🔥 <strong>Perfeito.</strong><br><br>
+
+            Quatro situações.
+            Quatro ligações.
+            Zero erros.
+            <br><br>
+            Estás pronto para o último nível.
+        `;
+
+    }
+
+    else if (
+        score >= 90
+    ) {
+
+        message = `
+            🧠 <strong>Excelente trabalho!</strong><br><br>
+
+            Identificaste rapidamente as situações
+            e praticamente não deste pontos ao inimigo.
+        `;
+
+    }
+
+    else if (
+        score >= 70
+    ) {
+
+        message = `
+            👍 <strong>Bom trabalho!</strong><br><br>
+
+            Chegaste ao fim, mas algumas ligações
+            erradas fizeram estragos na pontuação.
+        `;
+
+    }
+
+    else {
+
+        message = `
+            😈 <strong>Sobreviveste.</strong><br><br>
+
+            Mas o Boss não vai facilitar.
+            Talvez seja melhor manter os olhos bem abertos.
+        `;
+
+    }
+
+
+    document
+        .getElementById("finalMessage")
+        .innerHTML =
+        message;
+
+}
+
+
+
+/* ============================================================
+   BOSS LEVEL
+============================================================ */
+
+function goToBoss() {
+
+    window.location.href =
+        "boss.html";
+
+}
+
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+============================================================ */
+
+updateInterface();
+
+</script>
+
+</body>
+</html>

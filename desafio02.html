@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cyber Challenge 2026 — Desafio 02</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+            radial-gradient(circle at top, #172033 0%, #0b0f17 45%, #05070b 100%);
+        color: #f4f7fb;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 25px 18px 50px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .logo {
+        font-size: 42px;
+        margin-bottom: 5px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 30px;
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        color: #9ba8bb;
+        margin-top: 8px;
+    }
+
+    .card {
+        background: rgba(17, 24, 39, 0.96);
+        border: 1px solid #263246;
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 15px 50px rgba(0,0,0,.35);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .instructions {
+        background: #0c1320;
+        border: 1px solid #263246;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .instructions strong {
+        color: #4ade80;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .stat {
+        background: #0c1320;
+        border: 1px solid #263246;
+        border-radius: 10px;
+        padding: 10px 14px;
+        min-width: 130px;
+    }
+
+    .stat-label {
+        color: #7f8da3;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 3px;
+    }
+
+    .progress-wrapper {
+        height: 8px;
+        background: #1c2635;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .progress {
+        height: 100%;
+        width: 0%;
+        background: #4ade80;
+        transition: width .3s;
+    }
+
+    /* =====================================================
+       IMAGEM DO DESAFIO
+       ===================================================== */
+
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #000;
+        box-shadow: 0 10px 35px rgba(0,0,0,.4);
+    }
+
+    .challenge-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+
+    /* =====================================================
+       HOTSPOTS
+       Invisíveis até serem clicados
+       ===================================================== */
+
+    .hotspot {
+        position: absolute;
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        cursor: crosshair;
+        border-radius: 8px;
+        outline: none;
+    }
+
+    .hotspot:hover {
+        background: transparent;
+        transform: none;
+        filter: none;
+    }
+
+    .hotspot.found {
+        background: rgba(34, 197, 94, 0.32);
+        border: 3px solid #22c55e;
+    }
+
+    .hotspot.bonus-found {
+        background: rgba(96, 165, 250, 0.30);
+        border: 3px solid #60a5fa;
+    }
+
+
+    /* =====================================================
+       FEEDBACK
+       ===================================================== */
+
+    .feedback {
+        margin-top: 18px;
+        padding: 17px;
+        border-radius: 12px;
+        line-height: 1.55;
+        border: 1px solid #334155;
+        background: #101827;
+    }
+
+    .feedback.good {
+        border-color: #22c55e;
+    }
+
+    .feedback.bonus {
+        border-color: #60a5fa;
+    }
+
+    .feedback.wrong {
+        border-color: #ef4444;
+    }
+
+
+    /* =====================================================
+       BOTÕES
+       ===================================================== */
+
+    .button-area {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    button.action {
+        border: 0;
+        border-radius: 10px;
+        padding: 14px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #4ade80;
+        color: #06110a;
+        transition: .2s;
+    }
+
+    button.action:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.08);
+    }
+
+    button.secondary {
+        background: #263246;
+        color: #e7edf5;
+    }
+
+
+    /* =====================================================
+       FINAL
+       ===================================================== */
+
+    .final {
+        text-align: center;
+        padding: 20px 5px;
+    }
+
+    .final h2 {
+        font-size: 28px;
+    }
+
+    .big-score {
+        font-size: 68px;
+        font-weight: bold;
+        color: #4ade80;
+        margin: 15px 0;
+    }
+
+    .final-message {
+        max-width: 700px;
+        margin: 20px auto;
+        color: #c5cfdb;
+        font-size: 17px;
+        line-height: 1.65;
+    }
+
+    .next-box {
+        margin-top: 30px;
+        padding: 25px;
+        border-radius: 15px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(74,222,128,.10),
+                rgba(37,99,235,.10)
+            );
+        border: 1px solid #35516c;
+    }
+
+    .unlock {
+        color: #4ade80;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .next-box h3 {
+        font-size: 23px;
+        margin: 10px 0;
+    }
+
+    .next-box p {
+        color: #b7c2d1;
+        line-height: 1.6;
+    }
+
+    .footer {
+        text-align: center;
+        color: #68768a;
+        font-size: 12px;
+        margin-top: 25px;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .container {
+            padding: 15px 10px 35px;
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        .logo {
+            font-size: 34px;
+        }
+
+        .card {
+            padding: 16px;
+        }
+
+        .stat {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .big-score {
+            font-size: 52px;
+        }
+
+        .button-area {
+            flex-direction: column;
+        }
+
+        .button-area button {
+            width: 100%;
+        }
+    }
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="header">
+
+        <div class="logo">
+            🕵️‍♂️
+        </div>
+
+        <h1>
+            CYBER CHALLENGE 2026
+        </h1>
+
+        <div class="subtitle">
+            Desafio 02 — Clear Desk
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         GAME
+         ===================================================== -->
+
+    <div id="gameScreen">
+
+
+        <div class="topbar">
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Falhas encontradas
+                </div>
+
+                <div
+                    id="foundCounter"
+                    class="stat-value"
+                >
+                    0 / 5
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Pontuação
+                </div>
+
+                <div
+                    id="score"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Tempo
+                </div>
+
+                <div
+                    id="timer"
+                    class="stat-value"
+                >
+                    00:00
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-wrapper">
+
+            <div
+                id="progress"
+                class="progress"
+            ></div>
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h2>
+                🔎 Encontra as 5 falhas de segurança
+            </h2>
+
+
+            <div class="instructions">
+
+                <strong>Missão:</strong>
+
+                Analisa cuidadosamente a imagem.
+
+                <br><br>
+
+                Existem <strong>5 falhas de segurança</strong>
+                escondidas nesta secretária.
+
+                <br>
+
+                Além disso, existem
+                <strong>2 boas práticas</strong>
+                que podes encontrar como bónus.
+
+                <br><br>
+
+                ⚠️
+                <strong>
+                    As zonas clicáveis não estão assinaladas.
+                </strong>
+
+                <br>
+
+                Clica diretamente nos elementos que consideras
+                relevantes.
+
+            </div>
+
+
+
+            <!-- =================================================
+                 IMAGEM
+                 ================================================= -->
+
+            <div class="image-wrapper">
+
+                <img
+                    src="imagem1_semlabel.png"
+                    alt="Secretária de escritório com vários elementos relacionados com segurança"
+                    class="challenge-image"
+                    draggable="false"
+                >
+
+
+                <!-- =============================================
+                     FALHA 1 — PASSWORD NO POST-IT
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="password"
+                    data-type="fault"
+                    data-points="15"
+                    data-title="Password exposta"
+                    data-feedback="🔑 A password está escrita num post-it e deixada à vista. Passwords nunca devem ser guardadas desta forma."
+                    style="
+                        left: 33.5%;
+                        top: 31.0%;
+                        width: 7.0%;
+                        height: 8.5%;
+                    "
+                    aria-label="Zona suspeita"
+                ></button>
+
+
+
+                <!-- =============================================
+                     FALHA 2 — DOCUMENTO CONFIDENCIAL
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="documento"
+                    data-type="fault"
+                    data-points="15"
+                    data-title="Documento confidencial exposto"
+                    data-feedback="📄 O documento está claramente identificado como CONFIDENCIAL e encontra-se exposto numa secretária. Informação sensível deve ser protegida quando não está a ser utilizada."
+                    style="
+                        left: 7.0%;
+                        top: 34.5%;
+                        width: 20.5%;
+                        height: 35%;
+                    "
+                    aria-label="Zona suspeita"
+                ></button>
+
+
+
+                <!-- =============================================
+                     FALHA 3 — PEN USB
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="usb"
+                    data-type="fault"
+                    data-points="15"
+                    data-title="Pen USB abandonada"
+                    data-feedback="💾 Uma pen USB deixada numa secretária pode representar um risco. Dispositivos USB desconhecidos ou não autorizados não devem ser ligados aos equipamentos da empresa."
+                    style="
+                        left: 35.0%;
+                        top: 58.5%;
+                        width: 5.8%;
+                        height: 7.0%;
+                    "
+                    aria-label="Zona suspeita"
+                ></button>
+
+
+
+                <!-- =============================================
+                     FALHA 4 — BADGE
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="badge"
+                    data-type="fault"
+                    data-points="15"
+                    data-title="Badge deixado na secretária"
+                    data-feedback="🪪 O cartão de identificação e acesso está abandonado na secretária. Um badge deve ser tratado como um meio de acesso físico e não deve ficar exposto ou sem supervisão."
+                    style="
+                        left: 53.5%;
+                        top: 58.0%;
+                        width: 9.0%;
+                        height: 13.0%;
+                    "
+                    aria-label="Zona suspeita"
+                ></button>
+
+
+
+                <!-- =============================================
+                     FALHA 5 — CHAVE NA FECHADURA
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="key"
+                    data-type="fault"
+                    data-points="20"
+                    data-title="Chave deixada na fechadura"
+                    data-feedback="🔐 A chave ficou colocada na fechadura do armário. Isto facilita o acesso físico não autorizado ao conteúdo do armário."
+                    style="
+                        left: 92.0%;
+                        top: 15.0%;
+                        width: 3.8%;
+                        height: 11.0%;
+                    "
+                    aria-label="Zona suspeita"
+                ></button>
+
+
+
+                <!-- =============================================
+                     BÓNUS 1 — DESTRUIDORA
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="shredder"
+                    data-type="bonus"
+                    data-points="10"
+                    data-title="Boa prática: destruidora de papel"
+                    data-feedback="🗑️ Boa prática! A existência de uma destruidora permite eliminar documentos de forma adequada em vez de os deixar acessíveis ou colocá-los simplesmente no lixo."
+                    style="
+                        left: 0%;
+                        top: 2%;
+                        width: 17%;
+                        height: 30%;
+                    "
+                    aria-label="Bónus"
+                ></button>
+
+
+
+                <!-- =============================================
+                     BÓNUS 2 — ECRÃ BLOQUEADO
+                     ============================================= -->
+
+                <button
+                    class="hotspot"
+                    id="lockedScreen"
+                    data-type="bonus"
+                    data-points="10"
+                    data-title="Boa prática: ecrã bloqueado"
+                    data-feedback="🔒 Boa prática! O computador está bloqueado. Bloquear o ecrã quando nos afastamos do posto impede que outra pessoa utilize a sessão aberta."
+                    style="
+                        left: 28%;
+                        top: 8%;
+                        width: 43%;
+                        height: 26%;
+                    "
+                    aria-label="Bónus"
+                ></button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FEEDBACK
+                 ================================================= -->
+
+            <div
+                id="feedback"
+                class="feedback hidden"
+            ></div>
+
+
+
+            <div class="button-area">
+
+                <button
+                    id="finishButton"
+                    class="action"
+                    onclick="finishChallenge()"
+                    disabled
+                >
+                    🏁 Terminei a análise
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FINAL
+         ===================================================== -->
+
+    <div
+        id="finalScreen"
+        class="card hidden"
+    >
+
+        <div class="final">
+
+            <h2>
+                🏆 DESAFIO 02 CONCLUÍDO
+            </h2>
+
+
+            <p>
+                Boa análise, <strong id="finalCodename">CyberNinja</strong>.
+            </p>
+
+
+            <div
+                id="finalScore"
+                class="big-score"
+            >
+                0 / 100
+            </div>
+
+
+            <p id="finalTime"></p>
+
+
+            <div
+                id="finalMessage"
+                class="final-message"
+            ></div>
+
+
+
+            <div class="next-box">
+
+                <div class="unlock">
+                    🔒 PRÓXIMO DESAFIO
+                </div>
+
+
+                <h3>
+                    DESAFIO 03
+                </h3>
+
+
+                <p>
+                    O próximo desafio será desbloqueado em breve.
+                </p>
+
+
+                <p>
+                    Continua atento. A segurança não termina
+                    quando sais da caixa de correio.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="footer">
+        Cyber Challenge 2026 · Sport TV
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* ============================================================
+   VARIÁVEIS
+   ============================================================ */
+
+let score = 0;
+
+let foundFaults = 0;
+
+let foundElements = new Set();
+
+let startTime = Date.now();
+
+let timerInterval = null;
+
+
+/* ============================================================
+   INICIAR TIMER
+   ============================================================ */
+
+timerInterval =
+    setInterval(
+        updateTimer,
+        1000
+    );
+
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+
+function updateTimer() {
+
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+
+    const minutes =
+        Math.floor(
+            elapsed / 60
+        );
+
+
+    const seconds =
+        elapsed % 60;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+}
+
+
+/* ============================================================
+   HOTSPOTS
+   ============================================================ */
+
+document
+    .querySelectorAll(".hotspot")
+    .forEach(
+        hotspot => {
+
+            hotspot.addEventListener(
+                "click",
+                function() {
+
+                    handleHotspot(this);
+
+                }
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   PROCESSAR HOTSPOT
+   ============================================================ */
+
+function handleHotspot(element) {
+
+    const id =
+        element.id;
+
+
+    /*
+       Impede pontuação duplicada.
+    */
+
+    if (
+        foundElements.has(id)
+    ) {
+
+        return;
+
+    }
+
+
+    foundElements.add(id);
+
+
+    const type =
+        element.dataset.type;
+
+
+    const points =
+        parseInt(
+            element.dataset.points
+        );
+
+
+    const title =
+        element.dataset.title;
+
+
+    const feedbackText =
+        element.dataset.feedback;
+
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    /* ========================================================
+       FALHA
+       ======================================================== */
+
+    if (
+        type === "fault"
+    ) {
+
+        score += points;
+
+        foundFaults++;
+
+
+        element.classList.add(
+            "found"
+        );
+
+
+        feedback.className =
+            "feedback good";
+
+
+        feedback.innerHTML = `
+            <strong>🚨 Falha encontrada!</strong><br><br>
+
+            <strong>${title}</strong><br>
+
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>+${points} pontos</strong>
+        `;
+
+    }
+
+
+    /* ========================================================
+       BÓNUS
+       ======================================================== */
+
+    else if (
+        type === "bonus"
+    ) {
+
+        score += points;
+
+
+        element.classList.add(
+            "bonus-found"
+        );
+
+
+        feedback.className =
+            "feedback bonus";
+
+
+        feedback.innerHTML = `
+            <strong>💙 Boa prática encontrada!</strong><br><br>
+
+            <strong>${title}</strong><br>
+
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>+${points} pontos de bónus</strong>
+        `;
+
+    }
+
+
+    /* ========================================================
+       ATUALIZAR UI
+       ======================================================== */
+
+    document
+        .getElementById("score")
+        .textContent =
+        score;
+
+
+    document
+        .getElementById("foundCounter")
+        .textContent =
+        `${foundFaults} / 5`;
+
+
+    /*
+       A barra representa as 5 falhas principais.
+    */
+
+    const progress =
+        Math.min(
+            (foundFaults / 5) * 100,
+            100
+        );
+
+
+    document
+        .getElementById("progress")
+        .style.width =
+        progress + "%";
+
+
+    feedback.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+       Só permite terminar depois
+       das 5 falhas serem encontradas.
+    */
+
+    if (
+        foundFaults >= 5
+    ) {
+
+        document
+            .getElementById("finishButton")
+            .disabled = false;
+
+    }
+
+}
+
+
+/* ============================================================
+   TERMINAR DESAFIO
+   ============================================================ */
+
+function finishChallenge() {
+
+    if (
+        foundFaults < 5
+    ) {
+
+        return;
+
+    }
+
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+
+    const minutes =
+        Math.floor(
+            elapsed / 60
+        );
+
+
+    const seconds =
+        elapsed % 60;
+
+
+    document
+        .getElementById("gameScreen")
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("finalScreen")
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("finalScore")
+        .textContent =
+        `${score} / 100`;
+
+
+    document
+        .getElementById("finalTime")
+        .textContent =
+        `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+
+    let message;
+
+
+    if (
+        score >= 90
+    ) {
+
+        message = `
+            🔥 <strong>Excelente análise!</strong><br><br>
+
+            Encontraste as cinco falhas e ainda
+            descobriste praticamente todas as boas práticas.
+            Tens olho para segurança física.
+        `;
+
+    }
+
+    else if (
+        score >= 70
+    ) {
+
+        message = `
+            🛡️ <strong>Boa análise!</strong><br><br>
+
+            Encontraste todas as falhas principais.
+            Continua atento aos pequenos detalhes:
+            muitas vezes são eles que fazem a diferença.
+        `;
+
+    }
+
+    else {
+
+        message = `
+            👀 <strong>Missão cumprida!</strong><br><br>
+
+            Encontraste as cinco falhas principais.
+            Agora já sabes algumas das coisas que deves
+            procurar numa verdadeira situação de Clear Desk.
+        `;
+
+    }
+
+
+    document
+        .getElementById("finalMessage")
+        .innerHTML =
+        message;
+
+}
+
+
+</script>
+
+</body>
+</html>

@@ -7,6 +7,7 @@
 <title>Cyber Challenge 2026</title>
 
 <style>
+
     * {
         box-sizing: border-box;
     }
@@ -99,6 +100,13 @@
         color: #e7edf5;
     }
 
+    button.next-challenge {
+        background: #4ade80;
+        color: #06110a;
+        font-size: 17px;
+        padding: 16px 25px;
+    }
+
     .rules {
         background: #0c1320;
         border: 1px solid #263246;
@@ -173,6 +181,10 @@
         font-size: 14px;
     }
 
+    .email-row:last-child {
+        margin-bottom: 0;
+    }
+
     .email-label {
         display: inline-block;
         width: 75px;
@@ -190,16 +202,20 @@
         margin-top: 0;
     }
 
+    /*
+       IMPORTANTE:
+       Os elementos clicáveis NÃO têm qualquer
+       destaque antes de serem selecionados.
+    */
+
     .clickable {
         cursor: pointer;
         border-radius: 4px;
-        padding: 2px 4px;
-        transition: .15s;
-        background: rgba(255, 193, 7, .12);
+        padding: 1px 2px;
     }
 
     .clickable:hover {
-        background: rgba(255, 193, 7, .35);
+        background: transparent;
     }
 
     .clickable.correct {
@@ -229,8 +245,16 @@
         border-color: #ef4444;
     }
 
+    .feedback.info {
+        border-color: #60a5fa;
+    }
+
     .next-area {
-        text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
         margin-top: 18px;
     }
 
@@ -239,9 +263,18 @@
         color: #b7c2d1;
     }
 
+    .safe-button {
+        background: #263246;
+        color: #e7edf5;
+    }
+
+    .safe-button:hover {
+        background: #344258;
+    }
+
     .final-score {
         text-align: center;
-        padding: 30px 10px;
+        padding: 25px 10px;
     }
 
     .final-score .big {
@@ -255,18 +288,39 @@
         font-size: 18px;
         color: #c5cfdb;
         line-height: 1.6;
+        margin: 20px auto;
+        max-width: 650px;
     }
 
-    .warning {
-        color: #fbbf24;
+    .next-challenge-box {
+        margin-top: 30px;
+        padding: 25px;
+        border-radius: 15px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(74,222,128,.10),
+                rgba(37,99,235,.10)
+            );
+        border: 1px solid #35516c;
     }
 
-    .danger {
-        color: #f87171;
+    .next-challenge-box h3 {
+        margin-top: 5px;
+        font-size: 23px;
     }
 
-    .success {
+    .next-challenge-box p {
+        color: #b7c2d1;
+        line-height: 1.6;
+    }
+
+    .unlock {
         color: #4ade80;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .footer {
@@ -310,21 +364,44 @@
         .final-score .big {
             font-size: 50px;
         }
+
+        .next-area {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .next-area button {
+            width: 100%;
+        }
+
     }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
     <div class="header">
+
         <div class="logo">🕵️‍♂️</div>
-        <h1>CYBER CHALLENGE 2026</h1>
+
+        <h1>
+            CYBER CHALLENGE 2026
+        </h1>
+
         <div class="subtitle">
             Consegues apanhar o phish antes que ele te apanhe?
         </div>
+
     </div>
+
 
     <!-- ========================= -->
     <!-- START SCREEN -->
@@ -332,11 +409,13 @@
 
     <div id="startScreen" class="card">
 
-        <h2>🎯 Desafio 01 — O Caça-Phish</h2>
+        <h2>
+            🎯 Desafio 01 — O Caça-Phish
+        </h2>
 
         <p>
-            A tua missão é analisar <strong>10 emails</strong> e identificar
-            os sinais que podem indicar phishing ou fraude.
+            A tua missão é analisar <strong>10 emails</strong>
+            e identificar os sinais que podem indicar phishing ou fraude.
         </p>
 
         <div class="rules">
@@ -344,15 +423,39 @@
             <strong>Como jogar:</strong>
 
             <ul>
-                <li>Analisa cada email com atenção.</li>
-                <li>Clica nos elementos que consideras suspeitos.</li>
-                <li>Cada desafio vale <strong>10 pontos</strong>.</li>
-                <li>Encontrar uma pista suspeita dá pontos.</li>
-                <li>Clicar numa pista legítima pode tirar pontos.</li>
-                <li>Há apenas <strong>uma tentativa</strong>.</li>
+
+                <li>
+                    Analisa cada email com atenção.
+                </li>
+
+                <li>
+                    Clica nos elementos que consideras suspeitos.
+                </li>
+
+                <li>
+                    Cada desafio vale <strong>10 pontos</strong>.
+                </li>
+
+                <li>
+                    Encontrar uma pista suspeita dá pontos.
+                </li>
+
+                <li>
+                    Clicar numa situação legítima pode tirar pontos.
+                </li>
+
+                <li>
+                    Alguns emails são legítimos — tens de reconhecer isso.
+                </li>
+
+                <li>
+                    Há apenas <strong>uma tentativa</strong>.
+                </li>
+
             </ul>
 
         </div>
+
 
         <label for="codename">
             <strong>Escolhe o teu Cyber Codename</strong>
@@ -366,6 +469,7 @@
             autocomplete="off"
         >
 
+
         <button onclick="startGame()">
             🚀 Começar o desafio
         </button>
@@ -374,7 +478,7 @@
 
 
     <!-- ========================= -->
-    <!-- GAME -->
+    <!-- GAME SCREEN -->
     <!-- ========================= -->
 
     <div id="gameScreen" class="hidden">
@@ -382,31 +486,64 @@
         <div class="topbar">
 
             <div class="stat">
-                <div class="stat-label">Desafio</div>
-                <div id="challengeNumber" class="stat-value">
+
+                <div class="stat-label">
+                    Desafio
+                </div>
+
+                <div
+                    id="challengeNumber"
+                    class="stat-value"
+                >
                     1 / 10
                 </div>
+
             </div>
 
+
             <div class="stat">
-                <div class="stat-label">Pontuação</div>
-                <div id="score" class="stat-value">
+
+                <div class="stat-label">
+                    Pontuação
+                </div>
+
+                <div
+                    id="score"
+                    class="stat-value"
+                >
                     0
                 </div>
+
             </div>
+
 
             <div class="stat">
-                <div class="stat-label">Tempo</div>
-                <div id="timer" class="stat-value">
+
+                <div class="stat-label">
+                    Tempo
+                </div>
+
+                <div
+                    id="timer"
+                    class="stat-value"
+                >
                     00:00
                 </div>
+
             </div>
 
         </div>
 
+
         <div class="progress-wrapper">
-            <div id="progress" class="progress"></div>
+
+            <div
+                id="progress"
+                class="progress"
+            ></div>
+
         </div>
+
 
         <div class="card">
 
@@ -414,15 +551,31 @@
                 Email 01
             </h2>
 
+
             <div class="instruction">
-                🔎 Clica nos elementos do email que consideras suspeitos.
+                🔎 Analisa o email e identifica os sinais suspeitos.
             </div>
+
 
             <div id="emailContainer"></div>
 
-            <div id="feedback" class="feedback hidden"></div>
+
+            <div
+                id="feedback"
+                class="feedback hidden"
+            ></div>
+
 
             <div class="next-area">
+
+                <button
+                    id="safeButton"
+                    class="safe-button hidden"
+                    onclick="answerSafe()"
+                >
+                    🛡️ Não encontrei sinais suspeitos
+                </button>
+
 
                 <button
                     id="nextButton"
@@ -440,37 +593,83 @@
 
 
     <!-- ========================= -->
-    <!-- FINAL -->
+    <!-- END SCREEN -->
     <!-- ========================= -->
 
     <div id="endScreen" class="card hidden">
 
         <div class="final-score">
 
-            <h2>🏆 Desafio concluído!</h2>
+            <h2>
+                🏆 DESAFIO 01 CONCLUÍDO
+            </h2>
+
 
             <p>
                 Cyber Codename:
                 <strong id="finalCodename"></strong>
             </p>
 
-            <div id="finalScore" class="big">
+
+            <div
+                id="finalScore"
+                class="big"
+            >
                 0 / 100
             </div>
 
+
             <p id="finalTime"></p>
 
-            <div id="finalMessage" class="final-message"></div>
 
-            <br>
+            <div
+                id="finalMessage"
+                class="final-message"
+            ></div>
 
-            <button onclick="location.reload()">
-                🔄 Jogar novamente
-            </button>
+
+            <!-- ========================= -->
+            <!-- NEXT CHALLENGE -->
+            <!-- ========================= -->
+
+            <div class="next-challenge-box">
+
+                <div class="unlock">
+                    🔓 NOVO DESAFIO DESBLOQUEADO
+                </div>
+
+
+                <h3>
+                    DESAFIO 02 — CLEAR DESK
+                </h3>
+
+
+                <p>
+                    O phishing não foi suficiente para te apanhar.
+                    Agora vamos sair da caixa de correio.
+                </p>
+
+
+                <p>
+                    Há <strong>5 falhas de segurança</strong>
+                    escondidas numa secretária.
+                    E há ainda alguns exemplos de boas práticas.
+                </p>
+
+
+                <button
+                    class="next-challenge"
+                    onclick="goToChallenge02()"
+                >
+                    🔍 Aceitar Desafio 02 →
+                </button>
+
+            </div>
 
         </div>
 
     </div>
+
 
     <div class="footer">
         Cyber Challenge 2026 · Sport TV
@@ -481,10 +680,9 @@
 
 <script>
 
+
 /* ============================================================
    PERGUNTAS
-   Cada desafio vale no máximo 10 pontos.
-   data-points define quantos pontos vale cada pista.
    ============================================================ */
 
 const questions = [
@@ -499,18 +697,22 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="4"
                             data-feedback="🚩 O domínio do remetente não é microsoft.com. Um endereço que parece oficial pode esconder um domínio completamente diferente."
                         >
-                            Microsoft 365 Support &lt;support@microsoft-support.com&gt;
+                            Microsoft 365 Support
+                            &lt;support@microsoft-support.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
@@ -522,6 +724,7 @@ const questions = [
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -571,13 +774,16 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span>
                             João Silva &lt;joao.silva@sporttv.pt&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
@@ -589,6 +795,7 @@ const questions = [
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -645,24 +852,29 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="4"
                             data-feedback="🚩 O endereço usa um domínio que não corresponde claramente ao fornecedor. Confirma sempre o domínio real."
                         >
-                            Contabilidade &lt;financeiro@empresa-faturas.com&gt;
+                            Contabilidade
+                            &lt;financeiro@empresa-faturas.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             Fatura #48392 — pagamento pendente
                         </span>
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -715,24 +927,29 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="3"
                             data-feedback="🚩 O endereço pode parecer pertencer ao chefe, mas o domínio deve ser confirmado com atenção."
                         >
-                            Diretor &lt;diretor.sporttv@gmail-support.com&gt;
+                            Diretor
+                            &lt;diretor.sporttv@gmail-support.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             Preciso de uma ajuda rápida
                         </span>
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -741,8 +958,8 @@ const questions = [
                     </p>
 
                     <p>
-                        Estou numa reunião e preciso que trates de uma
-                        coisa rapidamente.
+                        Estou numa reunião e preciso que trates
+                        de uma coisa rapidamente.
                     </p>
 
                     <p>
@@ -758,8 +975,8 @@ const questions = [
                     </p>
 
                     <p>
-                        Envia-me os códigos por email assim que estiveres
-                        com eles.
+                        Envia-me os códigos por email assim que
+                        estiveres com eles.
                     </p>
 
                     <p>
@@ -790,24 +1007,29 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="3"
                             data-feedback="🚩 O endereço não pertence claramente ao domínio oficial da organização."
                         >
-                            IT Helpdesk &lt;support@it-helpdesk-security.com&gt;
+                            IT Helpdesk
+                            &lt;support@it-helpdesk-security.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             A tua password expira hoje
                         </span>
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -847,6 +1069,7 @@ const questions = [
 
     {
         title: "💬 Email 06 — Convite Teams",
+        safe: true,
 
         html: `
             <div class="email">
@@ -855,13 +1078,17 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span>
-                            Microsoft Teams &lt;noreply@teams.microsoft.com&gt;
+                            Microsoft Teams
+                            &lt;noreply@teams.microsoft.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             Convite para reunião
                         </span>
@@ -869,10 +1096,12 @@ const questions = [
 
                 </div>
 
+
                 <div class="email-body">
 
                     <p>
-                        Foste convidado para uma reunião do Microsoft Teams.
+                        Foste convidado para uma reunião do
+                        Microsoft Teams.
                     </p>
 
                     <p>
@@ -887,15 +1116,14 @@ const questions = [
                     </p>
 
                     <p>
-                        Organizador:
-                        João Silva
+                        Organizador: João Silva
                     </p>
 
                     <p>
                         <span
                             class="clickable"
                             data-suspect="false"
-                            data-feedback="ℹ️ Este elemento, por si só, não apresenta um sinal de phishing. Nem tudo num email é uma ameaça."
+                            data-feedback="ℹ️ Este elemento não apresenta, por si só, um sinal de phishing."
                         >
                             Participar na reunião
                         </span>
@@ -918,24 +1146,29 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="4"
                             data-feedback="🚩 O domínio não corresponde claramente a uma transportadora conhecida. Confirma o remetente antes de clicar."
                         >
-                            CTT Expresso &lt;entregas@ctt-expresso-support.com&gt;
+                            CTT Expresso
+                            &lt;entregas@ctt-expresso-support.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             Não foi possível entregar a sua encomenda
                         </span>
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -988,18 +1221,22 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="3"
                             data-feedback="🚩 O endereço parece imitar um serviço legítimo, mas o domínio deve ser validado cuidadosamente."
                         >
-                            Security Alert &lt;security@micosoft-security.com&gt;
+                            Security Alert
+                            &lt;security@micosoft-security.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
@@ -1011,6 +1248,7 @@ const questions = [
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -1044,6 +1282,7 @@ const questions = [
 
     {
         title: "☁️ Email 09 — OneDrive",
+        safe: true,
 
         html: `
             <div class="email">
@@ -1052,19 +1291,24 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span>
-                            OneDrive &lt;no-reply@onedrive.microsoft.com&gt;
+                            OneDrive
+                            &lt;no-reply@onedrive.microsoft.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span>
                             Um ficheiro foi partilhado contigo
                         </span>
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -1114,18 +1358,22 @@ const questions = [
 
                     <div class="email-row">
                         <span class="email-label">De:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
                             data-points="2"
                             data-feedback="🚩 O nome apresentado pode parecer legítimo, mas o endereço real do remetente é o que interessa."
                         >
-                            Diretor IT &lt;f.rocha@sp0rtv-security.com&gt;
+                            Diretor IT
+                            &lt;f.rocha@sp0rtv-security.com&gt;
                         </span>
                     </div>
 
+
                     <div class="email-row">
                         <span class="email-label">Assunto:</span>
+
                         <span
                             class="clickable"
                             data-suspect="true"
@@ -1137,6 +1385,7 @@ const questions = [
                     </div>
 
                 </div>
+
 
                 <div class="email-body">
 
@@ -1201,7 +1450,7 @@ const questions = [
 
 
 /* ============================================================
-   VARIÁVEIS DO JOGO
+   VARIÁVEIS
    ============================================================ */
 
 let currentQuestion = 0;
@@ -1213,39 +1462,64 @@ let timerInterval = null;
 
 
 /* ============================================================
-   INICIAR
+   INICIAR JOGO
    ============================================================ */
 
 function startGame() {
 
-    const input = document.getElementById("codename");
+    const input =
+        document.getElementById("codename");
 
-    codename = input.value.trim();
+    codename =
+        input.value.trim();
 
     if (!codename) {
-        alert("Escolhe primeiro o teu Cyber Codename.");
+
+        alert(
+            "Escolhe primeiro o teu Cyber Codename."
+        );
+
         input.focus();
+
         return;
     }
+
 
     if (codename.length < 2) {
-        alert("O Cyber Codename deve ter pelo menos 2 caracteres.");
+
+        alert(
+            "O Cyber Codename deve ter pelo menos 2 caracteres."
+        );
+
         input.focus();
+
         return;
     }
 
+
     score = 0;
+
     currentQuestion = 0;
 
-    document.getElementById("startScreen")
+    document
+        .getElementById("startScreen")
         .classList.add("hidden");
 
-    document.getElementById("gameScreen")
+    document
+        .getElementById("gameScreen")
         .classList.remove("hidden");
 
-    startTime = Date.now();
 
-    timerInterval = setInterval(updateTimer, 1000);
+    startTime =
+        Date.now();
+
+
+    timerInterval =
+        setInterval(
+            updateTimer,
+            1000
+        );
+
 
     loadQuestion();
 }
@@ -1257,16 +1531,30 @@ function startGame() {
 
 function updateTimer() {
 
-    if (!startTime) return;
+    if (!startTime) {
+        return;
+    }
 
-    const elapsed = Math.floor(
-        (Date.now() - startTime) / 1000
-    );
 
-    const minutes = Math.floor(elapsed / 60);
-    const seconds = elapsed % 60;
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
 
-    document.getElementById("timer").textContent =
+
+    const minutes =
+        Math.floor(
+            elapsed / 60
+        );
+
+
+    const seconds =
+        elapsed % 60;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
         String(minutes).padStart(2, "0") +
         ":" +
         String(seconds).padStart(2, "0");
@@ -1274,47 +1562,82 @@ function updateTimer() {
 
 
 /* ============================================================
-   CARREGAR PERGUNTA
+   CARREGAR DESAFIO
    ============================================================ */
 
 function loadQuestion() {
 
-    const question = questions[currentQuestion];
+    const question =
+        questions[currentQuestion];
 
-    document.getElementById("challengeNumber")
+
+    document
+        .getElementById("challengeNumber")
         .textContent =
         `${currentQuestion + 1} / ${questions.length}`;
 
-    document.getElementById("challengeTitle")
+
+    document
+        .getElementById("challengeTitle")
         .textContent =
         question.title;
 
-    document.getElementById("score")
+
+    document
+        .getElementById("score")
         .textContent =
         score;
 
-    document.getElementById("progress")
-        .style.width =
-        `${((currentQuestion) / questions.length) * 100}%`;
 
-    document.getElementById("emailContainer")
+    document
+        .getElementById("progress")
+        .style.width =
+        `${(currentQuestion / questions.length) * 100}%`;
+
+
+    document
+        .getElementById("emailContainer")
         .innerHTML =
         question.html;
+
 
     const feedback =
         document.getElementById("feedback");
 
+
     feedback.className =
         "feedback hidden";
 
-    feedback.innerHTML = "";
+    feedback.innerHTML =
+        "";
+
 
     const nextButton =
         document.getElementById("nextButton");
 
+
     nextButton.classList.add("hidden");
 
-    /* Reiniciar listeners */
+
+    const safeButton =
+        document.getElementById("safeButton");
+
+
+    safeButton.classList.add("hidden");
+
+
+    /*
+       Se o email for legítimo,
+       mostramos a opção de declarar
+       que não existem sinais suspeitos.
+    */
+
+    if (question.safe === true) {
+
+        safeButton.classList.remove("hidden");
+
+    }
+
 
     document
         .querySelectorAll(".clickable")
@@ -1339,72 +1662,154 @@ function loadQuestion() {
 
 function checkAnswer(element) {
 
-    /* Não permitir clicar novamente */
-
-    if (element.classList.contains("correct") ||
-        element.classList.contains("wrong")) {
+    if (
+        element.classList.contains("correct") ||
+        element.classList.contains("wrong")
+    ) {
 
         return;
     }
 
+
     const suspect =
         element.dataset.suspect === "true";
 
+
     const points =
-        parseInt(element.dataset.points || "0");
+        parseInt(
+            element.dataset.points || "0"
+        );
+
 
     const feedbackText =
-        element.dataset.feedback ||
-        "";
+        element.dataset.feedback || "";
+
 
     const feedback =
         document.getElementById("feedback");
+
 
     if (suspect) {
 
         score += points;
 
+
         element.classList.add("correct");
+
 
         feedback.className =
             "feedback good";
 
+
         feedback.innerHTML =
-            `<strong>✅ Boa deteção!</strong><br>${feedbackText}`;
+            `<strong>✅ Boa deteção!</strong><br>
+             ${feedbackText}<br><br>
+             <strong>+${points} pontos</strong>`;
 
     } else {
 
         score -= 3;
 
-        /* Nunca deixar a pontuação abaixo de zero */
 
         if (score < 0) {
             score = 0;
         }
 
+
         element.classList.add("wrong");
+
 
         feedback.className =
             "feedback bad";
 
-        feedback.innerHTML =
-            `<strong>❌ Cuidado!</strong><br>${feedbackText}<br><br>
-             <strong>-3 pontos</strong>`;
 
+        feedback.innerHTML =
+            `<strong>❌ Cuidado!</strong><br>
+             ${feedbackText}<br><br>
+             <strong>-3 pontos</strong>`;
     }
 
-    document.getElementById("score")
+
+    document
+        .getElementById("score")
         .textContent =
         score;
 
+
     feedback.classList.remove("hidden");
 
+
+    document
+        .getElementById("nextButton")
+        .classList.remove("hidden");
+
+
     /*
-       O botão de avançar aparece depois
-       da primeira análise.
+       Depois de começar a clicar,
+       escondemos a opção de "email seguro".
     */
 
-    document.getElementById("nextButton")
+    document
+        .getElementById("safeButton")
+        .classList.add("hidden");
+}
+
+
+/* ============================================================
+   EMAIL LEGÍTIMO
+   ============================================================ */
+
+function answerSafe() {
+
+    const question =
+        questions[currentQuestion];
+
+
+    if (!question.safe) {
+
+        return;
+    }
+
+
+    /*
+       O jogador identificou corretamente
+       que não existem sinais suspeitos.
+    */
+
+    score += 10;
+
+
+    document
+        .getElementById("score")
+        .textContent =
+        score;
+
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    feedback.className =
+        "feedback info";
+
+
+    feedback.innerHTML =
+        `<strong>🛡️ Boa análise!</strong><br>
+         Não encontraste sinais suspeitos porque este email
+         foi desenhado como uma situação legítima.<br><br>
+         <strong>+10 pontos</strong>`;
+
+
+    feedback.classList.remove("hidden");
+
+
+    document
+        .getElementById("safeButton")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("nextButton")
         .classList.remove("hidden");
 }
 
@@ -1417,55 +1822,77 @@ function nextQuestion() {
 
     currentQuestion++;
 
-    if (currentQuestion >= questions.length) {
+
+    if (
+        currentQuestion >=
+        questions.length
+    ) {
 
         endGame();
 
         return;
     }
 
+
     loadQuestion();
 }
 
 
 /* ============================================================
-   FINAL
+   FINAL DO DESAFIO 01
    ============================================================ */
 
 function endGame() {
 
     clearInterval(timerInterval);
 
+
     const elapsed =
         Math.floor(
             (Date.now() - startTime) / 1000
         );
 
+
     const minutes =
-        Math.floor(elapsed / 60);
+        Math.floor(
+            elapsed / 60
+        );
+
 
     const seconds =
         elapsed % 60;
 
-    document.getElementById("gameScreen")
+
+    document
+        .getElementById("gameScreen")
         .classList.add("hidden");
 
-    document.getElementById("endScreen")
+
+    document
+        .getElementById("endScreen")
         .classList.remove("hidden");
 
-    document.getElementById("finalCodename")
+
+    document
+        .getElementById("finalCodename")
         .textContent =
         codename;
 
-    document.getElementById("finalScore")
+
+    document
+        .getElementById("finalScore")
         .textContent =
         `${score} / 100`;
 
-    document.getElementById("finalTime")
+
+    document
+        .getElementById("finalTime")
         .textContent =
         `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
+
     let message = "";
+
 
     if (score >= 90) {
 
@@ -1474,21 +1901,27 @@ function endGame() {
              Tens um radar de phishing bastante afinado.
              Um verdadeiro Cyber Ninja.`;
 
-    } else if (score >= 70) {
+    }
+
+    else if (score >= 70) {
 
         message =
             `🛡️ <strong>Bom trabalho!</strong><br>
              Identificaste a maioria dos sinais.
              Ainda há alguns detalhes a afinar.`;
 
-    } else if (score >= 50) {
+    }
+
+    else if (score >= 50) {
 
         message =
             `👀 <strong>Há margem para melhorar.</strong><br>
              Alguns emails conseguiram passar pelo teu radar.
              Na vida real, abranda e verifica antes de clicar.`;
 
-    } else {
+    }
+
+    else {
 
         message =
             `🚨 <strong>O phish quase ganhou.</strong><br>
@@ -1496,14 +1929,30 @@ function endGame() {
              Na dúvida: para, verifica e confirma.`;
     }
 
-    document.getElementById("finalMessage")
+
+    document
+        .getElementById("finalMessage")
         .innerHTML =
         message;
 
-    document.getElementById("progress")
+
+    document
+        .getElementById("progress")
         .style.width =
         "100%";
 }
+
+
+/* ============================================================
+   IR PARA DESAFIO 02
+   ============================================================ */
+
+function goToChallenge02() {
+
+    window.location.href =
+        "desafio02.html";
+}
+
 
 </script>
 

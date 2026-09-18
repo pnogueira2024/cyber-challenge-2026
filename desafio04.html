@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,635 +8,629 @@
 
 <style>
 
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    color: #f4f7fb;
-
-    background:
-        radial-gradient(
-            circle at top,
-            #172033 0%,
-            #0b0f17 45%,
-            #05070b 100%
-        );
-}
-
-.container {
-    width: 100%;
-    max-width: 1150px;
-
-    margin: auto;
-
-    padding: 25px 18px 50px;
-}
-
-
-/* ============================================================
-   HEADER
-============================================================ */
-
-.header {
-    text-align: center;
-
-    margin-bottom: 22px;
-}
-
-.logo {
-    font-size: 42px;
-}
-
-h1 {
-    margin: 4px 0;
-
-    font-size: 30px;
-
-    letter-spacing: 1px;
-}
-
-.subtitle {
-    color: #9ba8bb;
-
-    margin-top: 8px;
-}
-
-
-/* ============================================================
-   TOP BAR
-============================================================ */
-
-.topbar {
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-
-    margin-bottom: 18px;
-}
-
-.stat {
-    background: #0c1320;
-
-    border: 1px solid #263246;
-
-    border-radius: 10px;
-
-    padding: 10px 15px;
-
-    min-width: 125px;
-}
-
-.stat-label {
-    color: #7f8da3;
-
-    font-size: 11px;
-
-    text-transform: uppercase;
-}
-
-.stat-value {
-    font-size: 20px;
-
-    font-weight: bold;
-
-    margin-top: 3px;
-}
-
-
-/* ============================================================
-   PROGRESS
-============================================================ */
-
-.progress-wrapper {
-    height: 8px;
-
-    background: #1c2635;
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    margin-bottom: 22px;
-}
-
-.progress {
-    height: 100%;
-
-    width: 0%;
-
-    background: #4ade80;
-
-    transition: width .3s;
-}
-
-
-/* ============================================================
-   CARD
-============================================================ */
-
-.card {
-    background: rgba(17,24,39,.96);
-
-    border: 1px solid #263246;
-
-    border-radius: 18px;
-
-    padding: 24px;
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.35);
-}
-
-
-/* ============================================================
-   INSTRUCTIONS
-============================================================ */
-
-.instructions {
-    color: #c7d0dc;
-
-    line-height: 1.6;
-
-    margin-bottom: 22px;
-}
-
-.instructions strong {
-    color: #4ade80;
-}
-
-
-/* ============================================================
-   GAME GRID
-============================================================ */
-
-.game-grid {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(260px, .75fr);
-
-    gap: 24px;
-
-    align-items: start;
-}
-
-
-/* ============================================================
-   COLUMNS
-============================================================ */
-
-.column {
-    background: #0c1320;
-
-    border: 1px solid #263246;
-
-    border-radius: 14px;
-
-    padding: 18px;
-}
-
-.column-title {
-    margin: 0 0 7px 0;
-
-    font-size: 18px;
-}
-
-.column-description {
-    color: #8492a6;
-
-    font-size: 13px;
-
-    margin-bottom: 18px;
-}
-
-
-/* ============================================================
-   SITUATIONS
-============================================================ */
-
-.situations {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 14px;
-}
-
-.situation {
-    background: #111a29;
-
-    border: 1px solid #2b394d;
-
-    border-radius: 12px;
-
-    padding: 17px;
-
-    transition:
-        border-color .15s,
-        background .15s,
-        transform .15s;
-}
-
-.situation:hover {
-    border-color: #42536d;
-}
-
-.situation.correct {
-    border-color: #4ade80;
-
-    background: #102019;
-}
-
-.situation-number {
-    color: #7f8da3;
-
-    font-size: 11px;
-
-    font-weight: bold;
-
-    text-transform: uppercase;
-
-    letter-spacing: .8px;
-
-    margin-bottom: 8px;
-}
-
-.situation-text {
-    line-height: 1.5;
-
-    color: #e5eaf1;
-
-    margin-bottom: 14px;
-}
-
-
-/* ============================================================
-   DROPZONE
-============================================================ */
-
-.dropzone {
-    min-height: 48px;
-
-    width: 100%;
-
-    border: 2px dashed #46566e;
-
-    border-radius: 10px;
-
-    background: #0a101b;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 9px;
-
-    color: #718096;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    text-align: center;
-
-    transition:
-        border-color .15s,
-        background .15s,
-        transform .15s;
-}
-
-.dropzone.drag-over {
-    border-color: #60a5fa;
-
-    background: #14243a;
-
-    transform: scale(1.02);
-}
-
-.dropzone.correct {
-    border-style: solid;
-
-    border-color: #4ade80;
-
-    background: #10271c;
-
-    color: #86efac;
-
-    cursor: default;
-}
-
-.dropzone.wrong {
-    border-color: #ef4444;
-
-    background: #321417;
-
-    animation: shake .25s;
-}
-
-@keyframes shake {
-
-    0% {
-        transform: translateX(0);
+    * {
+        box-sizing: border-box;
     }
 
-    25% {
-        transform: translateX(-5px);
+    body {
+        margin: 0;
+        background: #05070b;
+        color: #e8edf5;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
-    50% {
-        transform: translateX(5px);
+    .topbar {
+        height: 64px;
+        background: #090d14;
+        border-bottom: 1px solid #1d2633;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0 24px;
+
+        position: sticky;
+        top: 0;
+        z-index: 20;
     }
 
-    75% {
-        transform: translateX(-5px);
+    .brand {
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 1px;
     }
 
-    100% {
-        transform: translateX(0);
+    .brand span {
+        color: #00e5ff;
     }
 
-}
-
-
-/* ============================================================
-   ANSWERS
-============================================================ */
-
-.answer-list {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.answer {
-    background: #141d2c;
-
-    border: 1px solid #344257;
-
-    border-radius: 11px;
-
-    padding: 16px;
-
-    cursor: grab;
-
-    user-select: none;
-
-    font-weight: bold;
-
-    color: #f4f7fb;
-
-    transition:
-        transform .15s,
-        border-color .15s,
-        background .15s,
-        opacity .15s;
-}
-
-.answer:hover {
-    transform: translateY(-1px);
-
-    border-color: #60a5fa;
-}
-
-.answer:active {
-    cursor: grabbing;
-}
-
-.answer.selected {
-    border-color: #4ade80;
-
-    background: #172c25;
-
-    transform: scale(1.02);
-}
-
-.answer.used {
-    opacity: .35;
-
-    cursor: default;
-
-    border-color: #4ade80;
-
-    background: #102019;
-}
-
-.answer.used:hover {
-    transform: none;
-}
-
-
-/* ============================================================
-   FEEDBACK
-============================================================ */
-
-.feedback {
-    margin-top: 20px;
-
-    padding: 15px;
-
-    border-radius: 10px;
-
-    background: #101827;
-
-    border: 1px solid #2c394d;
-
-    line-height: 1.5;
-}
-
-.feedback.good {
-    border-color: #4ade80;
-}
-
-.feedback.bad {
-    border-color: #ef4444;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/* ============================================================
-   BOTTOM
-============================================================ */
-
-.bottom-area {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 15px;
-
-    flex-wrap: wrap;
-
-    margin-top: 20px;
-}
-
-.status {
-    color: #9ba8bb;
-}
-
-button {
-    border: 0;
-
-    border-radius: 10px;
-
-    padding: 14px 20px;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    background: #4ade80;
-
-    color: #06110a;
-
-    transition: .2s;
-}
-
-button:hover {
-    transform: translateY(-1px);
-
-    filter: brightness(1.08);
-}
-
-button:disabled {
-    opacity: .35;
-
-    cursor: not-allowed;
-
-    transform: none;
-
-    filter: none;
-}
-
-
-/* ============================================================
-   END SCREEN
-============================================================ */
-
-.end-screen {
-    text-align: center;
-}
-
-.big-score {
-    font-size: 64px;
-
-    font-weight: bold;
-
-    color: #4ade80;
-
-    margin: 20px 0;
-}
-
-.message {
-    color: #c6d0dd;
-
-    line-height: 1.6;
-
-    font-size: 17px;
-
-    max-width: 700px;
-
-    margin: 20px auto;
-}
-
-.next-box {
-    margin-top: 30px;
-
-    padding: 24px;
-
-    border-radius: 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(74,222,128,.10),
-            rgba(37,99,235,.10)
-        );
-
-    border: 1px solid #35516c;
-}
-
-.next-box .unlock {
-    color: #4ade80;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1px;
-}
-
-.next-box h3 {
-    font-size: 23px;
-
-    margin: 10px 0;
-}
-
-
-/* ============================================================
-   MOBILE
-============================================================ */
-
-@media (max-width: 800px) {
+    .challenge {
+        color: #8e9aaa;
+        font-size: 14px;
+    }
+
+    .score-box {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 14px;
+    }
+
+    .score {
+        color: #00e5ff;
+        font-weight: bold;
+    }
+
+    .progress {
+        width: 130px;
+        height: 8px;
+
+        background: #1a202a;
+
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+
+        background: #00e5ff;
+
+        transition: width 0.3s ease;
+    }
 
     .container {
-        padding: 15px 10px 35px;
-    }
+        max-width: 1200px;
 
-    .card {
-        padding: 15px;
+        margin: 0 auto;
+
+        padding: 35px 20px 50px;
     }
 
     h1 {
-        font-size: 25px;
+        margin: 0 0 10px;
+
+        font-size: 32px;
     }
 
-    .logo {
-        font-size: 34px;
+    .subtitle {
+        color: #9ca8b8;
+
+        margin-bottom: 25px;
+
+        line-height: 1.5;
     }
 
-    .game-grid {
-        grid-template-columns: 1fr;
+    .game-panel {
+        background: #0a0f17;
+
+        border: 1px solid #1c2633;
+
+        border-radius: 14px;
+
+        padding: 22px;
     }
 
-    .bottom-area {
+    .instructions {
+        background: #0d141e;
+
+        border-left: 4px solid #00e5ff;
+
+        padding: 14px 16px;
+
+        border-radius: 8px;
+
+        margin-bottom: 25px;
+
+        color: #b8c3d1;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       LAYOUT
+       ===================================================== */
+
+    .matching-layout {
+
+        display: grid;
+
+        grid-template-columns: 1fr 320px;
+
+        gap: 30px;
+
+        align-items: start;
+    }
+
+
+    /* =====================================================
+       SITUAÇÕES
+       ===================================================== */
+
+    .questions-panel {
+
+        display: flex;
+
         flex-direction: column;
 
-        align-items: stretch;
+        gap: 14px;
     }
 
-    .bottom-area button {
-        width: 100%;
+    .panel-title {
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        color: #dfe8f2;
+
+        margin-bottom: 2px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.8px;
+    }
+
+    .question {
+
+        background: #080d14;
+
+        border: 1px solid #1c2633;
+
+        border-radius: 12px;
+
+        padding: 18px;
+
+        color: #c7d0dc;
+
+        line-height: 1.6;
+
+        font-size: 16px;
+    }
+
+    .question-number {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        width: 28px;
+
+        height: 28px;
+
+        margin-right: 8px;
+
+        border-radius: 50%;
+
+        background: #121b27;
+
+        border: 1px solid #2b394a;
+
+        color: #00e5ff;
+
+        font-size: 13px;
+
+        font-weight: bold;
+
+        vertical-align: middle;
+    }
+
+
+    /* =====================================================
+       DROPZONE
+       ===================================================== */
+
+    .dropzone {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        min-height: 45px;
+
+        margin-top: 14px;
+
+        padding: 8px 12px;
+
+        border: 2px dashed #3a4859;
+
+        border-radius: 8px;
+
+        color: #758397;
+
+        background: #0b1119;
+
+        text-align: center;
+
+        transition: all 0.2s ease;
+    }
+
+    .dropzone.dragover {
+
+        border-color: #00e5ff;
+
+        background: #0d222a;
+
+        color: #00e5ff;
+    }
+
+    .dropzone.correct {
+
+        border-style: solid;
+
+        border-color: #7cff6b;
+
+        background: rgba(124, 255, 107, 0.08);
+
+        color: #7cff6b;
+
+        font-weight: bold;
+
+        cursor: default;
+    }
+
+    .dropzone.wrong {
+
+        border-color: #ff6b6b;
+
+        background: rgba(255, 107, 107, 0.08);
+
+        animation: shake 0.25s;
+    }
+
+    @keyframes shake {
+
+        0% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-4px);
+        }
+
+        50% {
+            transform: translateX(4px);
+        }
+
+        75% {
+            transform: translateX(-4px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+
+    /* =====================================================
+       RESPOSTAS
+       ===================================================== */
+
+    .answers-panel {
+
+        background: #080d14;
+
+        border: 1px solid #1c2633;
+
+        border-radius: 12px;
+
+        padding: 18px;
+
+        position: sticky;
+
+        top: 85px;
+    }
+
+    .answer-list {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .answer {
+
+        background: #121a25;
+
+        border: 1px solid #2a3748;
+
+        border-radius: 9px;
+
+        padding: 14px;
+
+        cursor: grab;
+
+        user-select: none;
+
+        font-weight: bold;
+
+        transition: all 0.2s ease;
+    }
+
+    .answer:hover {
+
+        border-color: #00e5ff;
+
+        transform: translateX(-3px);
+    }
+
+    .answer:active {
+
+        cursor: grabbing;
+    }
+
+    .answer.selected {
+
+        border-color: #00e5ff;
+
+        background: #10232b;
+
+        box-shadow: 0 0 0 1px #00e5ff inset;
+    }
+
+    .answer.used {
+
+        opacity: 0.35;
+
+        cursor: default;
+
+        border-color: #26313e;
+    }
+
+
+    /* =====================================================
+       FEEDBACK
+       ===================================================== */
+
+    .feedback {
+
+        min-height: 28px;
+
+        margin-top: 18px;
+
+        font-weight: bold;
+    }
+
+    .feedback.good {
+
+        color: #7cff6b;
+    }
+
+    .feedback.bad {
+
+        color: #ff6b6b;
+    }
+
+
+    /* =====================================================
+       BOTTOM
+       ===================================================== */
+
+    .bottom-panel {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 20px;
+
+        margin-top: 25px;
+
+        flex-wrap: wrap;
+    }
+
+    .status {
+
+        color: #9ca8b8;
+
+        font-size: 14px;
+    }
+
+    button {
+
+        border: 0;
+
+        border-radius: 8px;
+
+        padding: 13px 22px;
+
+        font-size: 15px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        background: #00e5ff;
+
+        color: #031017;
+
+        transition: 0.2s;
+    }
+
+    button:hover {
+
+        transform: translateY(-1px);
+
+        filter: brightness(1.08);
+    }
+
+    button:disabled {
+
+        opacity: 0.35;
+
+        cursor: not-allowed;
+
+        transform: none;
+
+        filter: none;
+    }
+
+
+    /* =====================================================
+       START / END
+       ===================================================== */
+
+    .start-screen,
+    .end-screen {
+
+        max-width: 700px;
+
+        margin: 80px auto;
+
+        text-align: center;
+
+        background: #0a0f17;
+
+        border: 1px solid #1c2633;
+
+        border-radius: 16px;
+
+        padding: 40px 30px;
+    }
+
+    .start-screen h1,
+    .end-screen h1 {
+
+        margin-bottom: 15px;
     }
 
     .big-score {
-        font-size: 50px;
+
+        font-size: 56px;
+
+        font-weight: bold;
+
+        color: #00e5ff;
+
+        margin: 20px 0;
     }
 
-}
+    .end-message {
+
+        color: #aab5c3;
+
+        margin-bottom: 30px;
+
+        line-height: 1.5;
+    }
+
+    .hidden {
+
+        display: none;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 850px) {
+
+        .matching-layout {
+
+            grid-template-columns: 1fr;
+        }
+
+        .answers-panel {
+
+            position: static;
+        }
+
+        .answer-list {
+
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .topbar {
+
+            padding: 0 14px;
+        }
+
+        .brand {
+
+            font-size: 15px;
+        }
+
+        .challenge {
+
+            display: none;
+        }
+
+        .score-box {
+
+            gap: 10px;
+        }
+
+        .progress {
+
+            width: 70px;
+        }
+
+        .container {
+
+            padding: 25px 12px 40px;
+        }
+
+        h1 {
+
+            font-size: 25px;
+        }
+
+        .game-panel {
+
+            padding: 14px;
+        }
+
+        .answer-list {
+
+            grid-template-columns: 1fr;
+        }
+
+        .question {
+
+            font-size: 15px;
+        }
+
+        .bottom-panel {
+
+            align-items: stretch;
+        }
+
+        .bottom-panel button {
+
+            width: 100%;
+        }
+
+        .start-screen,
+        .end-screen {
+
+            margin: 40px 12px;
+
+            padding: 30px 20px;
+        }
+
+        .big-score {
+
+            font-size: 46px;
+        }
+    }
 
 </style>
 </head>
@@ -644,500 +638,365 @@ button:disabled {
 
 <body>
 
-<div class="container">
 
+<!-- =====================================================
+     START SCREEN
+     ===================================================== -->
 
-<!-- ============================================================
-     HEADER
-============================================================ -->
+<div id="startScreen" class="start-screen">
 
-<div class="header">
+    <h1>🔗 Liga os Pontos</h1>
 
-    <div class="logo">
-        🔗
+    <p class="subtitle">
+        Desafio 04 — Liga cada situação à resposta de segurança correta.
+    </p>
+
+    <div class="instructions">
+
+        Tens quatro situações do dia a dia.
+
+        <br><br>
+
+        <strong>
+            Liga cada texto à resposta que consideras correta.
+        </strong>
+
+        <br><br>
+
+        Podes fazer ligações erradas:
+        cada erro custa <strong>5 pontos</strong>.
+
+        <br><br>
+
+        No telemóvel, toca numa resposta e depois toca
+        na situação onde queres colocá-la.
+
     </div>
 
-    <h1>
-        CYBER CHALLENGE 2026
-    </h1>
-
-    <div class="subtitle">
-        Conhecimento também é uma ferramenta de segurança.
-    </div>
+    <button onclick="startChallenge()">
+        🚀 Começar desafio
+    </button>
 
 </div>
 
 
 
-<!-- ============================================================
+<!-- =====================================================
      GAME SCREEN
-============================================================ -->
+     ===================================================== -->
 
-<div id="gameScreen">
+<div id="gameScreen" class="hidden">
 
-
-    <!-- ========================================================
-         TOP BAR
-    ========================================================= -->
 
     <div class="topbar">
 
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Desafio
-            </div>
-
-            <div class="stat-value">
-                04 / 04
-            </div>
-
+        <div class="brand">
+            CYBER <span>CHALLENGE</span> 2026
         </div>
 
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Ligações
-            </div>
-
-            <div
-                id="correctCount"
-                class="stat-value"
-            >
-                0 / 4
-            </div>
-
+        <div class="challenge">
+            DESAFIO 04 / 04
         </div>
 
+        <div class="score-box">
 
-        <div class="stat">
-
-            <div class="stat-label">
-                Pontuação
+            <div>
+                Pontos:
+                <span id="score" class="score">0</span>
             </div>
 
-            <div
-                id="score"
-                class="stat-value"
-            >
-                0
+            <div>
+                <span id="found">0</span> / 4
             </div>
 
-        </div>
-
-    </div>
-
-
-
-    <!-- ========================================================
-         PROGRESS
-    ========================================================= -->
-
-    <div class="progress-wrapper">
-
-        <div
-            id="progress"
-            class="progress"
-        ></div>
-
-    </div>
-
-
-
-    <!-- ========================================================
-         MAIN CARD
-    ========================================================= -->
-
-    <div class="card">
-
-
-        <h2>
-            🔗 Desafio 04 — Liga os Pontos
-        </h2>
-
-
-        <div class="instructions">
-
-            <p>
-                Quatro situações. Quatro respostas.
-            </p>
-
-            <p>
-                <strong>
-                    Liga cada situação à resposta que
-                    consideras correta.
-                </strong>
-            </p>
-
-            <p>
-                Podes experimentar qualquer combinação.
-            </p>
-
-            <p>
-                🟢 Resposta correta:
-                <strong>+25 pontos</strong>
-            </p>
-
-            <p>
-                🔴 Resposta errada:
-                <strong>-5 pontos</strong>.
-                Podes tentar novamente.
-            </p>
-
-            <p>
-                📱 No telemóvel: toca numa resposta e
-                depois toca na situação correspondente.
-            </p>
-
-        </div>
-
-
-
-        <!-- =====================================================
-             TWO COLUMNS
-        ===================================================== -->
-
-        <div class="game-grid">
-
-
-            <!-- =================================================
-                 LEFT — SITUATIONS
-            ================================================= -->
-
-            <div class="column">
-
-                <h3 class="column-title">
-                    📝 Situações
-                </h3>
-
-                <div class="column-description">
-                    Liga cada situação à resposta certa.
-                </div>
-
-
-                <div class="situations">
-
-
-                    <!-- SITUATION 1 -->
-
-                    <div
-                        class="situation"
-                        data-answer="phishing"
-                    >
-
-                        <div class="situation-number">
-                            Situação 01
-                        </div>
-
-                        <div class="situation-text">
-
-                            Recebes um email aparentemente
-                            enviado pelo departamento de IT.
-                            O email diz que precisas de
-                            confirmar imediatamente a tua
-                            password através de um link.
-
-                        </div>
-
-
-                        <div
-                            class="dropzone"
-                            data-answer="phishing"
-                        >
-                            🔗 Liga aqui uma resposta
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- SITUATION 2 -->
-
-                    <div
-                        class="situation"
-                        data-answer="usb"
-                    >
-
-                        <div class="situation-number">
-                            Situação 02
-                        </div>
-
-                        <div class="situation-text">
-
-                            Encontras uma pen USB no parque
-                            de estacionamento da empresa.
-                            Não sabes quem é o proprietário
-                            nem o que contém.
-
-                        </div>
-
-
-                        <div
-                            class="dropzone"
-                            data-answer="usb"
-                        >
-                            🔗 Liga aqui uma resposta
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- SITUATION 3 -->
-
-                    <div
-                        class="situation"
-                        data-answer="credentials"
-                    >
-
-                        <div class="situation-number">
-                            Situação 03
-                        </div>
-
-                        <div class="situation-text">
-
-                            Um colega pede-te a tua password
-                            porque precisa de aceder rapidamente
-                            a uma aplicação.
-
-                        </div>
-
-
-                        <div
-                            class="dropzone"
-                            data-answer="credentials"
-                        >
-                            🔗 Liga aqui uma resposta
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- SITUATION 4 -->
-
-                    <div
-                        class="situation"
-                        data-answer="cleardesk"
-                    >
-
-                        <div class="situation-number">
-                            Situação 04
-                        </div>
-
-                        <div class="situation-text">
-
-                            Vais sair do posto de trabalho,
-                            deixando documentos visíveis
-                            na secretária e o computador
-                            desbloqueado.
-
-                        </div>
-
-
-                        <div
-                            class="dropzone"
-                            data-answer="cleardesk"
-                        >
-                            🔗 Liga aqui uma resposta
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 RIGHT — ANSWERS
-            ================================================= -->
-
-            <div class="column">
-
-                <h3 class="column-title">
-                    🧩 Respostas
-                </h3>
-
-                <div class="column-description">
-                    As respostas aparecem numa ordem
-                    diferente em cada partida.
-                </div>
-
+            <div class="progress">
 
                 <div
-                    id="answerList"
-                    class="answer-list"
-                >
+                    id="progressBar"
+                    class="progress-bar">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
-                    <!-- ANSWER 1 -->
 
-                    <div
-                        class="answer"
-                        draggable="true"
-                        data-answer="phishing"
-                    >
-                        🎣 Phishing
+    <div class="container">
+
+        <h1>🔗 Liga os Pontos</h1>
+
+        <div class="subtitle">
+
+            Quatro situações.
+            Quatro respostas.
+            Consegues fazer as ligações certas?
+
+        </div>
+
+
+        <div class="game-panel">
+
+
+            <div class="instructions">
+
+                <strong>Como jogar:</strong>
+
+                arrasta qualquer resposta para qualquer situação.
+
+                <br>
+
+                Se estiver correto ganhas
+                <strong>+25 pontos</strong>.
+
+                Se estiver errado perdes
+                <strong>5 pontos</strong>.
+
+                <br>
+
+                Uma resposta só fica bloqueada depois de ser
+                corretamente associada.
+
+            </div>
+
+
+
+            <div class="matching-layout">
+
+
+                <!-- =========================================
+                     SITUAÇÕES
+                     ========================================= -->
+
+                <div class="questions-panel">
+
+                    <div class="panel-title">
+                        🛡️ Situações
                     </div>
 
 
-                    <!-- ANSWER 2 -->
+                    <!-- SITUAÇÃO 1 -->
 
-                    <div
-                        class="answer"
-                        draggable="true"
-                        data-answer="usb"
-                    >
-                        💾 Dispositivo desconhecido
+                    <div class="question">
+
+                        <span class="question-number">
+                            1
+                        </span>
+
+                        Recebes um email aparentemente enviado
+                        pelo departamento de IT a pedir para
+                        confirmares a tua password através de um link.
+
+                        <div
+                            class="dropzone"
+                            data-answer="Phishing"
+                        >
+                            Arrasta aqui a resposta
+                        </div>
+
                     </div>
 
 
-                    <!-- ANSWER 3 -->
+                    <!-- SITUAÇÃO 2 -->
 
-                    <div
-                        class="answer"
-                        draggable="true"
-                        data-answer="credentials"
-                    >
-                        🔐 Credenciais pessoais
+                    <div class="question">
+
+                        <span class="question-number">
+                            2
+                        </span>
+
+                        Encontras uma pen USB desconhecida
+                        no parque de estacionamento.
+
+                        <div
+                            class="dropzone"
+                            data-answer="Dispositivo desconhecido"
+                        >
+                            Arrasta aqui a resposta
+                        </div>
+
                     </div>
 
 
-                    <!-- ANSWER 4 -->
+                    <!-- SITUAÇÃO 3 -->
 
-                    <div
-                        class="answer"
-                        draggable="true"
-                        data-answer="cleardesk"
-                    >
-                        🗂️ Clear Desk / Clear Screen
+                    <div class="question">
+
+                        <span class="question-number">
+                            3
+                        </span>
+
+                        Um colega pede-te a tua password
+                        porque precisa de entrar temporariamente
+                        num sistema.
+
+                        <div
+                            class="dropzone"
+                            data-answer="Credenciais pessoais"
+                        >
+                            Arrasta aqui a resposta
+                        </div>
+
                     </div>
 
+
+                    <!-- SITUAÇÃO 4 -->
+
+                    <div class="question">
+
+                        <span class="question-number">
+                            4
+                        </span>
+
+                        Vais sair da secretária e deixas documentos
+                        visíveis enquanto o computador fica desbloqueado.
+
+                        <div
+                            class="dropzone"
+                            data-answer="Clear Desk / Clear Screen"
+                        >
+                            Arrasta aqui a resposta
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     RESPOSTAS
+                     ========================================= -->
+
+                <div class="answers-panel">
+
+                    <div class="panel-title">
+                        🎯 Respostas
+                    </div>
+
+
+                    <div
+                        id="answerList"
+                        class="answer-list"
+                    >
+
+
+                        <div
+                            class="answer"
+                            draggable="true"
+                            data-answer="Phishing"
+                        >
+                            🎣 Phishing
+                        </div>
+
+
+                        <div
+                            class="answer"
+                            draggable="true"
+                            data-answer="Dispositivo desconhecido"
+                        >
+                            💾 Dispositivo desconhecido
+                        </div>
+
+
+                        <div
+                            class="answer"
+                            draggable="true"
+                            data-answer="Credenciais pessoais"
+                        >
+                            🔐 Credenciais pessoais
+                        </div>
+
+
+                        <div
+                            class="answer"
+                            draggable="true"
+                            data-answer="Clear Desk / Clear Screen"
+                        >
+                            🖥️ Clear Desk / Clear Screen
+                        </div>
+
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-        </div>
-
-
-
-        <!-- =====================================================
-             FEEDBACK
-        ===================================================== -->
-
-        <div
-            id="feedback"
-            class="feedback hidden"
-        ></div>
-
-
-
-        <!-- =====================================================
-             BOTTOM
-        ===================================================== -->
-
-        <div class="bottom-area">
 
             <div
-                id="status"
-                class="status"
-            >
-                🔗 Liga as 4 situações corretamente.
+                id="feedback"
+                class="feedback">
             </div>
 
 
-            <button
-                id="finishButton"
-                onclick="finishChallenge()"
-                disabled
-            >
-                🏆 Concluir Desafio 04
-            </button>
+
+            <div class="bottom-panel">
+
+                <div class="status">
+
+                    <span id="statusText">
+                        Liga as quatro situações às respostas.
+                    </span>
+
+                </div>
+
+
+                <button
+                    id="finishButton"
+                    onclick="finishChallenge()"
+                    disabled
+                >
+                    🏁 Terminar desafio
+                </button>
+
+            </div>
+
 
         </div>
 
-
     </div>
-
 
 </div>
 
 
 
-<!-- ============================================================
+<!-- =====================================================
      END SCREEN
-============================================================ -->
+     ===================================================== -->
 
-<div
-    id="endScreen"
-    class="card hidden"
->
+<div id="endScreen" class="end-screen hidden">
 
-    <div class="end-screen">
-
-
-        <h2>
-            🏆 DESAFIO 04 CONCLUÍDO
-        </h2>
+    <h1 id="endTitle">
+        Desafio concluído
+    </h1>
 
 
-        <div
-            id="finalScore"
-            class="big-score"
-        >
-            0 / 100
-        </div>
+    <div class="big-score">
 
+        <span id="finalScore">
+            0
+        </span>
 
-        <div
-            id="finalMessage"
-            class="message"
-        ></div>
-
-
-        <div class="next-box">
-
-            <div class="unlock">
-                🔓 ÚLTIMO DESAFIO
-            </div>
-
-
-            <h3>
-                👑 BOSS FINAL
-            </h3>
-
-
-            <p>
-                Chegaste ao fim da cadeia.
-                Agora falta o desafio final.
-            </p>
-
-
-            <button
-                onclick="goToBoss()"
-            >
-                👑 Avançar para o Boss Final →
-            </button>
-
-        </div>
+        / 100
 
     </div>
 
-</div>
+
+    <div
+        id="endMessage"
+        class="end-message">
+    </div>
 
 
+    <button onclick="goToBoss()">
 
-<div class="footer">
-    Cyber Challenge 2026 · Sport TV
-</div>
+        👑 Enfrentar o Boss Final
 
+    </button>
 
 </div>
 
@@ -1145,60 +1004,65 @@ button:disabled {
 
 <script>
 
-/* ============================================================
-   ESTADO
-============================================================ */
+
+/* =========================================================
+   VARIÁVEIS
+   ========================================================= */
 
 let score = 0;
 
-let correctAnswers = 0;
+let found = 0;
 
 let selectedAnswer = null;
 
-let draggedAnswer = null;
-
-let finished = false;
+const totalQuestions = 4;
 
 
-const totalAnswers = 4;
+/* =========================================================
+   START
+   ========================================================= */
 
-const pointsPerCorrect = 25;
+function startChallenge() {
 
-const penaltyWrong = 5;
-
-
-/* ============================================================
-   ELEMENTOS
-============================================================ */
-
-const answers =
-    document.querySelectorAll(".answer");
-
-const dropzones =
-    document.querySelectorAll(".dropzone");
-
-const answerList =
-    document.getElementById("answerList");
+    document
+        .getElementById("startScreen")
+        .classList.add("hidden");
 
 
-/* ============================================================
-   BARALHAR RESPOSTAS
-============================================================ */
+    document
+        .getElementById("gameScreen")
+        .classList.remove("hidden");
+
+
+    shuffleAnswers();
+
+    updateUI();
+
+}
+
+
+/* =========================================================
+   SHUFFLE DAS RESPOSTAS
+   ========================================================= */
 
 function shuffleAnswers() {
 
-    const answerArray =
+    const list =
+        document.getElementById("answerList");
+
+
+    const answers =
         Array.from(
-            answerList.querySelectorAll(".answer")
+            list.querySelectorAll(".answer")
         );
 
 
     /*
-       Fisher-Yates shuffle
-    */
+     * Fisher-Yates
+     */
 
     for (
-        let i = answerArray.length - 1;
+        let i = answers.length - 1;
         i > 0;
         i--
     ) {
@@ -1210,36 +1074,117 @@ function shuffleAnswers() {
 
 
         [
-            answerArray[i],
-            answerArray[j]
+            answers[i],
+            answers[j]
         ] =
         [
-            answerArray[j],
-            answerArray[i]
+            answers[j],
+            answers[i]
         ];
 
     }
 
 
-    answerArray.forEach(
-        answer => {
+    answers.forEach(answer => {
 
-            answerList.appendChild(
-                answer
-            );
+        list.appendChild(answer);
 
-        }
-    );
+    });
 
 }
 
 
-/* ============================================================
-   DRAG — START
-============================================================ */
+/* =========================================================
+   UPDATE UI
+   ========================================================= */
 
-answers.forEach(
-    answer => {
+function updateUI() {
+
+    document
+        .getElementById("score")
+        .textContent = score;
+
+
+    document
+        .getElementById("found")
+        .textContent = found;
+
+
+    const percentage =
+        (found / totalQuestions) * 100;
+
+
+    document
+        .getElementById("progressBar")
+        .style.width =
+            percentage + "%";
+
+
+    document
+        .getElementById("finishButton")
+        .disabled =
+            found < totalQuestions;
+
+
+    if (found === totalQuestions) {
+
+        document
+            .getElementById("statusText")
+            .textContent =
+                "Todas as situações foram corretamente associadas.";
+
+    }
+
+}
+
+
+/* =========================================================
+   FEEDBACK
+   ========================================================= */
+
+function showFeedback(
+    message,
+    type
+) {
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    feedback.textContent =
+        message;
+
+
+    feedback.className =
+        "feedback " + type;
+
+
+    clearTimeout(
+        window.feedbackTimeout
+    );
+
+
+    window.feedbackTimeout =
+        setTimeout(() => {
+
+            feedback.textContent = "";
+
+            feedback.className =
+                "feedback";
+
+        }, 2200);
+
+}
+
+
+/* =========================================================
+   DRAG & DROP — RESPOSTAS
+   ========================================================= */
+
+document
+    .querySelectorAll(".answer")
+    .forEach(answer => {
+
 
         answer.addEventListener(
             "dragstart",
@@ -1255,45 +1200,27 @@ answers.forEach(
                 }
 
 
-                draggedAnswer = this;
-
-
-                event.dataTransfer.effectAllowed =
-                    "move";
-
-
                 event.dataTransfer.setData(
                     "text/plain",
                     this.dataset.answer
                 );
 
 
-                this.classList.add(
-                    "selected"
-                );
+                event.dataTransfer.effectAllowed =
+                    "move";
+
+
+                selectedAnswer =
+                    this;
 
             }
         );
 
 
-        answer.addEventListener(
-            "dragend",
-            function() {
-
-                this.classList.remove(
-                    "selected"
-                );
-
-
-                draggedAnswer = null;
-
-            }
-        );
-
-
-        /* ====================================================
-           MOBILE / CLICK
-        ==================================================== */
+        /*
+         * MOBILE:
+         * selecionar resposta
+         */
 
         answer.addEventListener(
             "click",
@@ -1306,37 +1233,15 @@ answers.forEach(
                 }
 
 
-                /*
-                   Clicar novamente remove seleção.
-                */
-
-                if (
-                    selectedAnswer === this
-                ) {
-
-                    this.classList.remove(
-                        "selected"
-                    );
-
-                    selectedAnswer = null;
-
-                    return;
-                }
-
-
-                /*
-                   Limpar seleção anterior.
-                */
-
-                answers.forEach(
-                    item => {
+                document
+                    .querySelectorAll(".answer")
+                    .forEach(item => {
 
                         item.classList.remove(
                             "selected"
                         );
 
-                    }
-                );
+                    });
 
 
                 this.classList.add(
@@ -1344,40 +1249,46 @@ answers.forEach(
                 );
 
 
-                selectedAnswer = this;
+                selectedAnswer =
+                    this;
+
+
+                showFeedback(
+                    "👉 Agora escolhe a situação onde queres colocar esta resposta.",
+                    "good"
+                );
 
             }
         );
 
-    }
-);
+    });
 
 
-/* ============================================================
+/* =========================================================
    DROPZONES
-============================================================ */
+   ========================================================= */
 
-dropzones.forEach(
-    zone => {
+document
+    .querySelectorAll(".dropzone")
+    .forEach(zone => {
 
 
         zone.addEventListener(
             "dragover",
             function(event) {
 
-                if (
-                    this.classList.contains("correct")
-                ) {
-                    return;
-                }
-
-
                 event.preventDefault();
 
 
-                this.classList.add(
-                    "drag-over"
-                );
+                if (
+                    !this.classList.contains("correct")
+                ) {
+
+                    this.classList.add(
+                        "dragover"
+                    );
+
+                }
 
             }
         );
@@ -1388,7 +1299,7 @@ dropzones.forEach(
             function() {
 
                 this.classList.remove(
-                    "drag-over"
+                    "dragover"
                 );
 
             }
@@ -1403,7 +1314,7 @@ dropzones.forEach(
 
 
                 this.classList.remove(
-                    "drag-over"
+                    "dragover"
                 );
 
 
@@ -1414,12 +1325,24 @@ dropzones.forEach(
                 }
 
 
-                if (
-                    draggedAnswer
-                ) {
+                const answerName =
+                    event.dataTransfer.getData(
+                        "text/plain"
+                    );
 
-                    placeAnswer(
-                        draggedAnswer,
+
+                const answer =
+                    document.querySelector(
+                        '.answer[data-answer="' +
+                        CSS.escape(answerName) +
+                        '"]'
+                    );
+
+
+                if (answer) {
+
+                    processDrop(
+                        answer,
                         this
                     );
 
@@ -1429,9 +1352,10 @@ dropzones.forEach(
         );
 
 
-        /* ====================================================
-           MOBILE / CLICK
-        ==================================================== */
+        /*
+         * MOBILE:
+         * resposta selecionada + toque na situação
+         */
 
         zone.addEventListener(
             "click",
@@ -1444,65 +1368,80 @@ dropzones.forEach(
                 }
 
 
-                if (
-                    selectedAnswer
-                ) {
-
-                    placeAnswer(
-                        selectedAnswer,
-                        this
-                    );
-
+                if (!selectedAnswer) {
+                    return;
                 }
+
+
+                processDrop(
+                    selectedAnswer,
+                    this
+                );
 
             }
         );
 
-    }
-);
+    });
 
 
-/* ============================================================
-   COLOCAR RESPOSTA
-============================================================ */
+/* =========================================================
+   PROCESSAR ASSOCIAÇÃO
+   ========================================================= */
 
-function placeAnswer(
+function processDrop(
     answer,
     zone
 ) {
 
     if (
         !answer ||
-        zone.classList.contains("correct") ||
+        !zone
+    ) {
+        return;
+    }
+
+
+    if (
         answer.classList.contains("used")
     ) {
         return;
     }
 
 
-    const selectedValue =
+    if (
+        zone.classList.contains("correct")
+    ) {
+        return;
+    }
+
+
+    const answerValue =
         answer.dataset.answer;
 
 
-    const expectedValue =
+    const correctValue =
         zone.dataset.answer;
 
 
-    /* ========================================================
-       CORRETO
-    ======================================================== */
+    /*
+     * RESPOSTA CERTA
+     */
 
     if (
-        selectedValue === expectedValue
+        answerValue === correctValue
     ) {
 
-        score += pointsPerCorrect;
+        score += 25;
 
-        correctAnswers++;
+        found++;
 
 
-        answer.classList.remove(
-            "selected"
+        zone.textContent =
+            answer.textContent;
+
+
+        zone.classList.add(
+            "correct"
         );
 
 
@@ -1511,72 +1450,36 @@ function placeAnswer(
         );
 
 
-        zone.classList.remove(
-            "wrong"
+        answer.classList.remove(
+            "selected"
         );
-
-
-        zone.classList.add(
-            "correct"
-        );
-
-
-        zone.textContent =
-            answer.textContent;
-
-
-        /*
-           Bloqueia também visualmente a situação.
-        */
-
-        const situation =
-            zone.closest(".situation");
-
-
-        if (
-            situation
-        ) {
-
-            situation.classList.add(
-                "correct"
-            );
-
-        }
 
 
         selectedAnswer = null;
 
 
         showFeedback(
-            "good",
-            `
-            🟢 <strong>Correto!</strong><br><br>
-
-            <strong>+${pointsPerCorrect} pontos</strong>
-            `
+            "🎯 Correto! +25 pontos.",
+            "good"
         );
 
 
-        updateInterface();
+        updateUI();
 
 
         return;
     }
 
 
-    /* ========================================================
-       ERRADO
-    ======================================================== */
+    /*
+     * RESPOSTA ERRADA
+     */
 
-    score -= penaltyWrong;
+    score -= 5;
 
 
-    if (
-        score < 0
-    ) {
-
+    if (score < 0) {
         score = 0;
-
     }
 
 
@@ -1585,193 +1488,116 @@ function placeAnswer(
     );
 
 
+    setTimeout(() => {
+
+        zone.classList.remove(
+            "wrong"
+        );
+
+    }, 300);
+
+
     showFeedback(
-        "bad",
-        `
-        🔴 <strong>Ligação incorreta.</strong><br><br>
-
-        Essa resposta pertence a outra situação.
-
-        <br><br>
-
-        <strong>-${penaltyWrong} pontos</strong>
-        `
+        "❌ Associação errada. -5 pontos. Podes tentar novamente.",
+        "bad"
     );
 
 
-    setTimeout(
-        () => {
-
-            zone.classList.remove(
-                "wrong"
-            );
-
-        },
-        500
-    );
-
-
-    updateInterface();
+    updateUI();
 
 }
 
 
-/* ============================================================
-   FEEDBACK
-============================================================ */
-
-function showFeedback(
-    type,
-    message
-) {
-
-    const feedback =
-        document.getElementById(
-            "feedback"
-        );
-
-
-    feedback.className =
-        `feedback ${type}`;
-
-
-    feedback.innerHTML =
-        message;
-
-
-    feedback.classList.remove(
-        "hidden"
-    );
-
-}
-
-
-/* ============================================================
-   INTERFACE
-============================================================ */
-
-function updateInterface() {
-
-    document
-        .getElementById("score")
-        .textContent =
-        score;
-
-
-    document
-        .getElementById("correctCount")
-        .textContent =
-        `${correctAnswers} / ${totalAnswers}`;
-
-
-    document
-        .getElementById("progress")
-        .style.width =
-        `${(correctAnswers / totalAnswers) * 100}%`;
-
-
-    const finishButton =
-        document.getElementById(
-            "finishButton"
-        );
-
-
-    const status =
-        document.getElementById(
-            "status"
-        );
-
-
-    if (
-        correctAnswers === totalAnswers
-    ) {
-
-        finishButton.disabled =
-            false;
-
-
-        status.textContent =
-            "🎯 Todas as ligações estão corretas!";
-
-    }
-
-    else {
-
-        finishButton.disabled =
-            true;
-
-
-        status.textContent =
-            `🔗 ${correctAnswers} de ${totalAnswers} ligações corretas.`;
-
-    }
-
-}
-
-
-/* ============================================================
-   TERMINAR
-============================================================ */
+/* =========================================================
+   TERMINAR DESAFIO
+   ========================================================= */
 
 function finishChallenge() {
 
     if (
-        finished
+        found < totalQuestions
     ) {
         return;
     }
 
 
-    if (
-        correctAnswers !== totalAnswers
-    ) {
-        return;
-    }
+    /*
+     * GUARDA A PONTUAÇÃO DO DESAFIO 04
+     *
+     * O Boss Final vai buscar este valor
+     * através do localStorage.
+     */
 
-
-    finished = true;
+    localStorage.setItem(
+        "cyberChallenge_d4",
+        score
+    );
 
 
     document
         .getElementById("gameScreen")
-        .classList.add(
-            "hidden"
-        );
+        .classList.add("hidden");
 
 
     document
         .getElementById("endScreen")
-        .classList.remove(
-            "hidden"
-        );
+        .classList.remove("hidden");
 
 
     document
         .getElementById("finalScore")
         .textContent =
-        `${score} / 100`;
+            score;
 
 
-    document
-        .getElementById("finalMessage")
-        .innerHTML =
-        `
-        🔗 <strong>Excelente!</strong><br><br>
+    const title =
+        document.getElementById("endTitle");
 
-        Conseguistes identificar corretamente
-        as quatro situações de segurança.
 
-        <br><br>
+    const message =
+        document.getElementById("endMessage");
 
-        Mas ainda falta um último teste...
-        `;
+
+    if (score >= 100) {
+
+        title.textContent =
+            "🏆 Ligações perfeitas!";
+
+
+        message.textContent =
+            "Fizeste todas as associações corretamente " +
+            "sem perder pontos. Estás preparado para o Boss.";
+
+    }
+    else if (score >= 75) {
+
+        title.textContent =
+            "🎯 Muito bem!";
+
+
+        message.textContent =
+            "Conseguiste fazer as quatro associações. " +
+            "Algumas tentativas erradas custaram-te alguns pontos.";
+
+    }
+    else {
+
+        title.textContent =
+            "🧠 Desafio concluído.";
+
+
+        message.textContent =
+            "As quatro associações ficaram corretas, " +
+            "mas alguns erros pelo caminho reduziram a pontuação.";
+
+    }
 
 }
 
 
-/* ============================================================
+/* =========================================================
    BOSS FINAL
-============================================================ */
+   ========================================================= */
 
 function goToBoss() {
 
@@ -1779,15 +1605,6 @@ function goToBoss() {
         "boss.html";
 
 }
-
-
-/* ============================================================
-   INICIALIZAÇÃO
-============================================================ */
-
-shuffleAnswers();
-
-updateInterface();
 
 </script>
 

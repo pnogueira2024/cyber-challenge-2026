@@ -15,7 +15,9 @@
 body {
     margin: 0;
     min-height: 100vh;
+
     font-family: Arial, Helvetica, sans-serif;
+
     color: #f4f7fb;
 
     background:
@@ -30,143 +32,227 @@ body {
 .container {
     width: 100%;
     max-width: 1100px;
+
     margin: auto;
+
     padding: 25px 18px 50px;
 }
 
 .header {
     text-align: center;
+
     margin-bottom: 22px;
 }
 
 .logo {
-    font-size: 40px;
+    font-size: 42px;
 }
 
 h1 {
     margin: 4px 0;
+
     font-size: 30px;
+
     letter-spacing: 1px;
 }
 
 .subtitle {
     color: #9ba8bb;
+
     margin-top: 8px;
 }
 
+
+/* ============================================================
+   CARD
+============================================================ */
+
 .card {
     background: rgba(17,24,39,.96);
+
     border: 1px solid #263246;
+
     border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+
+    padding: 24px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35);
 }
+
+
+/* ============================================================
+   TOP BAR
+============================================================ */
 
 .topbar {
     display: flex;
+
     justify-content: space-between;
+
     gap: 12px;
+
     flex-wrap: wrap;
+
     margin-bottom: 18px;
 }
 
 .stat {
     background: #0c1320;
+
     border: 1px solid #263246;
+
     border-radius: 10px;
+
     padding: 10px 15px;
+
     min-width: 125px;
 }
 
 .stat-label {
     color: #7f8da3;
+
     font-size: 11px;
+
     text-transform: uppercase;
 }
 
 .stat-value {
     font-size: 20px;
+
     font-weight: bold;
+
     margin-top: 3px;
 }
 
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+
 .progress-wrapper {
     height: 8px;
+
     background: #1c2635;
+
     border-radius: 20px;
+
     overflow: hidden;
+
     margin-bottom: 22px;
 }
 
 .progress {
     height: 100%;
+
     width: 0%;
+
     background: #4ade80;
+
     transition: width .3s;
 }
 
+
+/* ============================================================
+   INSTRUCTIONS
+============================================================ */
+
 .instructions {
     color: #c7d0dc;
+
     line-height: 1.6;
-    margin-bottom: 18px;
 }
 
 .instructions strong {
     color: #4ade80;
 }
 
+
+/* ============================================================
+   IMAGE AREA
+============================================================ */
+
 .image-wrapper {
     position: relative;
+
     width: 100%;
+
+    margin-top: 25px;
+
+    border-radius: 14px;
+
     overflow: hidden;
-    border-radius: 12px;
-    border: 1px solid #39475c;
-    background: #000;
+
+    background: #080c13;
+
+    border: 1px solid #263246;
 }
 
 .image-wrapper img {
     display: block;
+
     width: 100%;
+
     height: auto;
 }
 
+
+/* ============================================================
+   HOTSPOTS
+============================================================ */
+
 .hotspot {
     position: absolute;
+
     cursor: pointer;
 
-    /*
-       Invisível até ser clicado.
-       Não existem caixas verdes/vermelhas
-       a denunciar os locais.
-    */
+    border: 2px solid transparent;
+
+    border-radius: 8px;
 
     background: transparent;
-    border: 0;
-    outline: none;
 
-    z-index: 5;
+    transition: .2s;
 }
 
 .hotspot:hover {
-    background: transparent;
+    border-color: rgba(96,165,250,.65);
+
+    background: rgba(96,165,250,.08);
 }
 
 .hotspot.found {
-    background: rgba(239,68,68,.35);
-    outline: 3px solid #ef4444;
+    border-color: #4ade80;
+
+    background: rgba(74,222,128,.18);
+
+    cursor: default;
 }
 
 .hotspot.bonus-found {
-    background: rgba(74,222,128,.30);
-    outline: 3px solid #4ade80;
+    border-color: #60a5fa;
+
+    background: rgba(96,165,250,.18);
+
+    cursor: default;
 }
 
+
+/* ============================================================
+   FEEDBACK
+============================================================ */
+
 .feedback {
-    margin-top: 18px;
+    margin-top: 20px;
+
     padding: 16px;
+
     border-radius: 10px;
+
     background: #101827;
+
     border: 1px solid #2c394d;
+
     line-height: 1.55;
 }
 
@@ -182,20 +268,44 @@ h1 {
     border-color: #60a5fa;
 }
 
-.progress-text {
-    margin-top: 15px;
+
+/* ============================================================
+   BOTTOM
+============================================================ */
+
+.next-area {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin-top: 20px;
+}
+
+.status {
     color: #9ba8bb;
 }
 
 button {
     border: 0;
+
     border-radius: 10px;
+
     padding: 14px 20px;
+
     font-size: 16px;
+
     font-weight: bold;
+
     cursor: pointer;
 
     background: #4ade80;
+
     color: #06110a;
 
     transition: .2s;
@@ -203,23 +313,14 @@ button {
 
 button:hover {
     transform: translateY(-1px);
+
     filter: brightness(1.08);
 }
 
-button:disabled {
-    opacity: .35;
-    cursor: not-allowed;
-    transform: none;
-}
 
-.next-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
+/* ============================================================
+   END SCREEN
+============================================================ */
 
 .end-screen {
     text-align: center;
@@ -227,22 +328,31 @@ button:disabled {
 
 .big-score {
     font-size: 64px;
+
     font-weight: bold;
+
     color: #4ade80;
+
     margin: 20px 0;
 }
 
 .message {
     color: #c6d0dd;
+
     line-height: 1.6;
+
     font-size: 17px;
+
     max-width: 700px;
+
     margin: 20px auto;
 }
 
 .next-box {
     margin-top: 30px;
+
     padding: 24px;
+
     border-radius: 15px;
 
     background:
@@ -257,21 +367,34 @@ button:disabled {
 
 .next-box .unlock {
     color: #4ade80;
+
     font-size: 13px;
+
     font-weight: bold;
+
     text-transform: uppercase;
+
     letter-spacing: 1px;
 }
 
 .next-box h3 {
     font-size: 23px;
+
     margin: 10px 0;
 }
 
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
 .footer {
     text-align: center;
+
     color: #68768a;
+
     font-size: 12px;
+
     margin-top: 25px;
 }
 
@@ -279,7 +402,12 @@ button:disabled {
     display: none !important;
 }
 
-@media (max-width: 650px) {
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 760px) {
 
     .container {
         padding: 15px 10px 35px;
@@ -297,13 +425,9 @@ button:disabled {
         font-size: 34px;
     }
 
-    .stat {
-        flex: 1;
-        min-width: 100px;
-    }
-
     .next-area {
         flex-direction: column;
+
         align-items: stretch;
     }
 
@@ -314,6 +438,7 @@ button:disabled {
     .big-score {
         font-size: 50px;
     }
+
 }
 
 </style>
@@ -325,14 +450,14 @@ button:disabled {
 <div class="container">
 
 
-<!-- =========================================================
+<!-- ============================================================
      HEADER
-========================================================= -->
+============================================================ -->
 
 <div class="header">
 
     <div class="logo">
-        🗂️
+        🕵️
     </div>
 
     <h1>
@@ -340,21 +465,22 @@ button:disabled {
     </h1>
 
     <div class="subtitle">
-        Nem tudo o que está numa secretária devia estar ali.
+        Nem tudo o que está à vista é seguro.
     </div>
 
 </div>
 
 
 
-<!-- =========================================================
-     GAME
-========================================================= -->
+<!-- ============================================================
+     GAME SCREEN
+============================================================ -->
 
 <div id="gameScreen">
 
 
     <div class="topbar">
+
 
         <div class="stat">
 
@@ -372,7 +498,7 @@ button:disabled {
         <div class="stat">
 
             <div class="stat-label">
-                Falhas encontradas
+                Problemas encontrados
             </div>
 
             <div
@@ -403,6 +529,7 @@ button:disabled {
     </div>
 
 
+
     <div class="progress-wrapper">
 
         <div
@@ -413,379 +540,327 @@ button:disabled {
     </div>
 
 
+
     <div class="card">
 
+
         <h2>
-            🔎 Desafio 02 — Clear Desk
+            🗂️ Desafio 02 — Clear Desk
         </h2>
 
 
         <div class="instructions">
 
             <p>
-                Tens diante de ti uma secretária.
-                <strong>Há 5 falhas de segurança escondidas.</strong>
+                Olha para a secretária e encontra os elementos
+                que podem representar um risco de segurança.
             </p>
 
             <p>
-                Encontra-as todas.
+                <strong>
+                    Clica nos elementos suspeitos.
+                </strong>
             </p>
 
             <p>
-                Mas atenção:
-                <strong>há também alguns elementos perfeitamente normais.</strong>
-                Não cliques à toa.
+                Existem também alguns elementos que parecem
+                suspeitos mas não são.
             </p>
 
             <p>
-                💡 Algumas zonas têm vários objetos juntos.
-                Analisa os detalhes.
+                ⚠️ <strong>Nem tudo o que parece um problema é um problema.</strong>
+                Os falsos positivos custam pontos.
+            </p>
+
+            <p>
+                💡 Existem também <strong>2 bónus</strong> escondidos.
+            </p>
+
+            <p>
+                🏁 <strong>Podes concluir o desafio a qualquer altura.</strong>
+                Não precisas de encontrar tudo.
             </p>
 
         </div>
 
 
-        <!-- =================================================
-             IMAGEM + HOTSPOTS
-        ================================================= -->
 
-        <div class="image-wrapper">
+        <!-- =====================================================
+             IMAGE
+        ===================================================== -->
+
+        <div
+            id="imageWrapper"
+            class="image-wrapper"
+        >
+
 
             <img
                 src="imagem1_semlabel.png"
-                alt="Secretária de escritório"
+                alt="Secretária de escritório com vários objetos"
             >
 
 
+
             <!-- =================================================
-                 FALHA 1 — PASSWORD NO POST-IT
+                 PROBLEMAS REAIS
             ================================================= -->
 
-            <button
+
+            <!-- PASSWORD -->
+
+            <div
                 class="hotspot"
                 data-type="fault"
                 data-points="15"
+                data-message="🔐 Password escrita num post-it visível. Nunca devemos deixar credenciais expostas."
                 style="
-                    left: 33.5%;
-                    top: 31%;
-                    width: 7%;
-                    height: 8.5%;
+                    left:33.5%;
+                    top:31%;
+                    width:7%;
+                    height:8.5%;
                 "
-                aria-label="Objeto suspeito"
-            ></button>
+            ></div>
 
 
 
-            <!-- =================================================
-                 FALHA 2 — DOCUMENTO CONFIDENCIAL
-            ================================================= -->
+            <!-- DOCUMENTO CONFIDENCIAL -->
 
-            <button
+            <div
                 class="hotspot"
                 data-type="fault"
                 data-points="15"
+                data-message="📄 Documento com informação sensível deixado em cima da secretária."
                 style="
-                    left: 7%;
-                    top: 34.5%;
-                    width: 20.5%;
-                    height: 35%;
+                    left:7%;
+                    top:34.5%;
+                    width:20.5%;
+                    height:35%;
                 "
-                aria-label="Documento"
-            ></button>
+            ></div>
 
 
 
-            <!-- =================================================
-                 FALHA 3 — USB
-            ================================================= -->
+            <!-- USB -->
 
-            <button
+            <div
                 class="hotspot"
                 data-type="fault"
                 data-points="15"
+                data-message="💾 Dispositivo USB deixado exposto. Dispositivos desconhecidos podem representar um risco."
                 style="
-                    left: 35%;
-                    top: 58.5%;
-                    width: 5.8%;
-                    height: 7%;
+                    left:35%;
+                    top:58.5%;
+                    width:5.8%;
+                    height:7%;
                 "
-                aria-label="USB"
-            ></button>
+            ></div>
 
 
 
-            <!-- =================================================
-                 FALHA 4 — BADGE
-            ================================================= -->
+            <!-- BADGE -->
 
-            <button
+            <div
                 class="hotspot"
                 data-type="fault"
                 data-points="15"
+                data-message="🪪 Cartão de acesso deixado exposto. Um badge perdido ou acessível pode permitir acesso indevido."
                 style="
-                    left: 53.5%;
-                    top: 58%;
-                    width: 9%;
-                    height: 13%;
+                    left:53.5%;
+                    top:58%;
+                    width:9%;
+                    height:13%;
                 "
-                aria-label="Badge"
-            ></button>
+            ></div>
 
 
 
-            <!-- =================================================
-                 FALHA 5 — CHAVE NA FECHADURA
-            ================================================= -->
+            <!-- KEY -->
 
-            <button
+            <div
                 class="hotspot"
                 data-type="fault"
                 data-points="20"
+                data-message="🔑 Chave deixada na fechadura. Um acesso físico não deve ficar facilitado ou sem controlo."
                 style="
-                    left: 92%;
-                    top: 15%;
-                    width: 3.8%;
-                    height: 11%;
+                    left:92%;
+                    top:15%;
+                    width:3.8%;
+                    height:11%;
                 "
-                aria-label="Chave"
-            ></button>
+            ></div>
 
 
 
             <!-- =================================================
-                 BONUS — DESTRUIDOR DE DOCUMENTOS
+                 BÓNUS
             ================================================= -->
 
-            <button
+
+            <!-- SHREDDER -->
+
+            <div
                 class="hotspot"
                 data-type="bonus"
                 data-points="10"
-                data-feedback="
-                    🟢 Boa prática!
-                    A destruição segura de documentação sensível
-                    ajuda a impedir que informação confidencial
-                    seja recuperada por terceiros.
-                "
+                data-message="🎁 BÓNUS! O triturador ajuda a eliminar corretamente documentos que já não são necessários."
                 style="
-                    left: 0%;
-                    top: 2%;
-                    width: 17%;
-                    height: 30%;
+                    left:0%;
+                    top:2%;
+                    width:17%;
+                    height:30%;
                 "
-                aria-label="Destruidor de documentos"
-            ></button>
+            ></div>
 
 
 
-            <!-- =================================================
-                 BONUS — ECRÃ BLOQUEADO
-            ================================================= -->
+            <!-- LOCKED SCREEN -->
 
-            <button
+            <div
                 class="hotspot"
                 data-type="bonus"
                 data-points="10"
-                data-feedback="
-                    🟢 Boa prática!
-                    Bloquear o computador quando nos afastamos
-                    reduz o risco de acesso não autorizado.
-                "
+                data-message="🎁 BÓNUS! Computador bloqueado quando o utilizador se afasta. Boa prática!"
                 style="
-                    left: 28%;
-                    top: 8%;
-                    width: 43%;
-                    height: 26%;
+                    left:28%;
+                    top:8%;
+                    width:43%;
+                    height:26%;
                 "
-                aria-label="Computador bloqueado"
-            ></button>
+            ></div>
 
 
 
             <!-- =================================================
-                 FALSOS HOTSPOTS — POST-ITS
+                 FALSOS POSITIVOS
             ================================================= -->
 
-            <button
+
+            <!-- Post-it / área adjacente -->
+
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Um post-it vazio ou com informação sem
-                    relevância não constitui, por si só,
-                    uma falha de segurança.
-                "
+                data-points="-3"
+                data-message="👀 Parece suspeito, mas não é um problema de segurança."
                 style="
-                    left: 40%;
-                    top: 30%;
-                    width: 9%;
-                    height: 9%;
+                    left:29%;
+                    top:27%;
+                    width:4%;
+                    height:6%;
                 "
-                aria-label="Post-it"
-            ></button>
+            ></div>
 
 
-            <button
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Ter vários post-its na secretária não é
-                    automaticamente uma falha.
-                    O conteúdo é que importa.
-                "
+                data-points="-3"
+                data-message="👀 Boa tentativa. Este elemento não representa um risco neste cenário."
                 style="
-                    left: 44%;
-                    top: 36%;
-                    width: 10%;
-                    height: 10%;
+                    left:40%;
+                    top:27%;
+                    width:5%;
+                    height:7%;
                 "
-                aria-label="Bloco de post-its"
-            ></button>
+            ></div>
 
 
-            <button
+            <!-- Caderno / ideias -->
+
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Uma nota de trabalho sem dados sensíveis
-                    pode estar perfeitamente visível.
-                "
+                data-points="-3"
+                data-message="👀 É apenas um caderno de trabalho. Não encontraste uma falha de segurança aqui."
                 style="
-                    left: 49%;
-                    top: 31%;
-                    width: 8%;
-                    height: 8%;
+                    left:45%;
+                    top:36%;
+                    width:14%;
+                    height:16%;
                 "
-                aria-label="Nota"
-            ></button>
+            ></div>
 
 
-
-            <!-- =================================================
-                 FALSOS HOTSPOTS — CADERNO
-            ================================================= -->
-
-            <button
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Um caderno de trabalho não é uma falha
-                    de segurança por si só.
-                "
+                data-points="-3"
+                data-message="👀 Este texto faz parte do conteúdo normal do caderno."
                 style="
-                    left: 66%;
-                    top: 39%;
-                    width: 17%;
-                    height: 23%;
+                    left:56%;
+                    top:38%;
+                    width:12%;
+                    height:13%;
                 "
-                aria-label="Caderno"
-            ></button>
+            ></div>
 
 
-            <button
+            <!-- Outros objetos benignos -->
+
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    'Ideias', 'planos' ou 'resultados' podem ser
-                    simples notas de trabalho. O conteúdo
-                    concreto é que determina o risco.
-                "
+                data-points="-3"
+                data-message="👀 Nada de errado aqui. Continua a procurar."
                 style="
-                    left: 68%;
-                    top: 42%;
-                    width: 7%;
-                    height: 7%;
+                    left:72%;
+                    top:44%;
+                    width:10%;
+                    height:14%;
                 "
-                aria-label="Ideias"
-            ></button>
+            ></div>
 
 
-            <button
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Uma página com planeamento de trabalho
-                    não é automaticamente informação confidencial.
-                "
+                data-points="-3"
+                data-message="👀 Parece importante, mas não é uma falha de segurança."
                 style="
-                    left: 75%;
-                    top: 44%;
-                    width: 7%;
-                    height: 7%;
+                    left:18%;
+                    top:72%;
+                    width:13%;
+                    height:12%;
                 "
-                aria-label="Planos"
-            ></button>
+            ></div>
 
 
-            <button
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    A palavra 'resultados' isoladamente não
-                    indica exposição de informação sensível.
-                "
+                data-points="-3"
+                data-message="👀 Mais uma distração. Este objeto não é o problema."
                 style="
-                    left: 70%;
-                    top: 51%;
-                    width: 9%;
-                    height: 7%;
+                    left:64%;
+                    top:67%;
+                    width:12%;
+                    height:13%;
                 "
-                aria-label="Resultados"
-            ></button>
+            ></div>
 
 
-
-            <!-- =================================================
-                 FALSOS HOTSPOTS — OUTROS OBJETOS
-            ================================================= -->
-
-            <button
+            <div
                 class="hotspot"
                 data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Um objeto pessoal numa secretária não é,
-                    por si só, um incidente de segurança.
-                "
+                data-points="-3"
+                data-message="👀 Não há risco relevante neste objeto."
                 style="
-                    left: 81%;
-                    top: 63%;
-                    width: 9%;
-                    height: 10%;
+                    left:82%;
+                    top:70%;
+                    width:12%;
+                    height:15%;
                 "
-                aria-label="Objeto pessoal"
-            ></button>
+            ></div>
 
-
-            <button
-                class="hotspot"
-                data-type="false"
-                data-feedback="
-                    ℹ️ Falso positivo.
-                    Material de escritório normal não representa
-                    necessariamente qualquer risco.
-                "
-                style="
-                    left: 43%;
-                    top: 67%;
-                    width: 10%;
-                    height: 10%;
-                "
-                aria-label="Material de escritório"
-            ></button>
 
         </div>
 
 
 
-        <!-- =================================================
+        <!-- =====================================================
              FEEDBACK
-        ================================================= -->
+        ===================================================== -->
 
         <div
             id="feedback"
@@ -793,26 +868,29 @@ button:disabled {
         ></div>
 
 
-        <div
-            id="progressText"
-            class="progress-text"
-        >
-            Encontra as 5 falhas de segurança.
-        </div>
 
+        <!-- =====================================================
+             BOTTOM
+        ===================================================== -->
 
         <div class="next-area">
 
-            <div>
-                <span id="statusText">
-                    🔍 Procura bem...
-                </span>
+            <div
+                id="status"
+                class="status"
+            >
+                🔎 Encontra os problemas que conseguires.
             </div>
 
 
+            <!--
+                IMPORTANTE:
+                O botão NÃO está disabled.
+                O jogador pode concluir a qualquer momento.
+            -->
+
             <button
                 id="finishButton"
-                disabled
                 onclick="finishChallenge()"
             >
                 🔓 Concluir Desafio 02
@@ -826,9 +904,9 @@ button:disabled {
 
 
 
-<!-- =========================================================
+<!-- ============================================================
      END SCREEN
-========================================================= -->
+============================================================ -->
 
 <div
     id="endScreen"
@@ -836,6 +914,7 @@ button:disabled {
 >
 
     <div class="end-screen">
+
 
         <h2>
             🏆 DESAFIO 02 CONCLUÍDO
@@ -859,31 +938,24 @@ button:disabled {
         <div class="next-box">
 
             <div class="unlock">
-                🔓 NOVO DESAFIO DESBLOQUEADO
+                🔓 PRÓXIMO DESAFIO DESBLOQUEADO
             </div>
 
 
             <h3>
-                DESAFIO 03 — CYBER SORTER
+                DESAFIO 03
             </h3>
 
 
             <p>
-                Agora vamos testar se consegues distinguir
-                conceitos de cibersegurança no meio da confusão.
-            </p>
-
-
-            <p>
-                Vais ter de <strong>arrastar e largar</strong>
-                os conceitos no sítio certo.
+                Agora vamos trocar a observação por conhecimento.
             </p>
 
 
             <button
                 onclick="goToChallenge03()"
             >
-                🧠 Aceitar Desafio 03 →
+                🧠 Avançar para o Desafio 03 →
             </button>
 
         </div>
@@ -891,6 +963,7 @@ button:disabled {
     </div>
 
 </div>
+
 
 
 <div class="footer">
@@ -908,201 +981,215 @@ button:disabled {
    ESTADO
 ============================================================ */
 
+let score = 0;
+
 let foundFaults = 0;
 
-let score = 0;
+let foundBonuses = 0;
+
+let finished = false;
+
+
+/*
+   Existem 5 problemas reais.
+*/
 
 const totalFaults = 5;
 
-const maxScore = 100;
 
 
 /* ============================================================
    HOTSPOTS
 ============================================================ */
 
-document
-    .querySelectorAll(".hotspot")
-    .forEach(
-        hotspot => {
-
-            hotspot.addEventListener(
-                "click",
-                function() {
-
-                    handleHotspot(this);
-
-                }
-            );
-
-        }
-    );
+const hotspots =
+    document.querySelectorAll(".hotspot");
 
 
 
 /* ============================================================
-   HOTSPOT LOGIC
+   CLIQUE NOS HOTSPOTS
 ============================================================ */
 
-function handleHotspot(hotspot) {
+hotspots.forEach(
+    hotspot => {
 
-    if (
-        hotspot.classList.contains("found") ||
-        hotspot.classList.contains("bonus-found") ||
-        hotspot.dataset.clicked === "true"
-    ) {
 
-        return;
+        hotspot.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+
+                /*
+                   Se já foi encontrado,
+                   não pontuar novamente.
+                */
+
+                if (
+                    this.classList.contains("found") ||
+                    this.classList.contains("bonus-found")
+                ) {
+                    return;
+                }
+
+
+                const type =
+                    this.dataset.type;
+
+
+                const points =
+                    Number(
+                        this.dataset.points
+                    );
+
+
+                const message =
+                    this.dataset.message;
+
+
+
+                /* ============================================
+                   PROBLEMA REAL
+                ============================================ */
+
+                if (
+                    type === "fault"
+                ) {
+
+                    foundFaults++;
+
+
+                    score += points;
+
+
+                    this.classList.add(
+                        "found"
+                    );
+
+
+                    showFeedback(
+                        "good",
+                        `
+                        🟢 <strong>Boa!</strong><br><br>
+
+                        ${message}
+
+                        <br><br>
+
+                        <strong>+${points} pontos</strong>
+                        `
+                    );
+
+                }
+
+
+
+                /* ============================================
+                   BÓNUS
+                ============================================ */
+
+                else if (
+                    type === "bonus"
+                ) {
+
+                    foundBonuses++;
+
+
+                    score += points;
+
+
+                    this.classList.add(
+                        "bonus-found"
+                    );
+
+
+                    showFeedback(
+                        "info",
+                        `
+                        🔵 <strong>BÓNUS!</strong><br><br>
+
+                        ${message}
+
+                        <br><br>
+
+                        <strong>+${points} pontos</strong>
+                        `
+                    );
+
+                }
+
+
+
+                /* ============================================
+                   FALSO POSITIVO
+                ============================================ */
+
+                else if (
+                    type === "false"
+                ) {
+
+                    score += points;
+
+
+                    if (
+                        score < 0
+                    ) {
+                        score = 0;
+                    }
+
+
+                    showFeedback(
+                        "bad",
+                        `
+                        🔴 <strong>Falso positivo!</strong><br><br>
+
+                        ${message}
+
+                        <br><br>
+
+                        <strong>${points} pontos</strong>
+                        `
+                    );
+
+                }
+
+
+                updateInterface();
+
+            }
+        );
 
     }
+);
 
 
-    hotspot.dataset.clicked = "true";
 
+/* ============================================================
+   FEEDBACK
+============================================================ */
 
-    const type =
-        hotspot.dataset.type;
-
+function showFeedback(
+    type,
+    message
+) {
 
     const feedback =
         document.getElementById("feedback");
 
 
-    /* ========================================================
-       FALHA REAL
-    ======================================================== */
-
-    if (
-        type === "fault"
-    ) {
-
-        const points =
-            parseInt(
-                hotspot.dataset.points || "0"
-            );
+    feedback.className =
+        `feedback ${type}`;
 
 
-        foundFaults++;
+    feedback.innerHTML =
+        message;
 
 
-        score += points;
-
-
-        hotspot.classList.add(
-            "found"
-        );
-
-
-        feedback.className =
-            "feedback good";
-
-
-        const explanations = {
-
-            "15": `
-                🚨 <strong>Falha de segurança encontrada!</strong><br><br>
-
-                Este elemento contém informação que não deveria
-                estar exposta numa secretária.
-            `,
-
-            "20": `
-                🚨 <strong>Falha de segurança encontrada!</strong><br><br>
-
-                Uma chave deixada na fechadura permite acesso físico
-                sem que seja necessário ultrapassar qualquer controlo
-                digital.
-            `
-
-        };
-
-
-        feedback.innerHTML = `
-            ${explanations[points] || `
-                🚨 <strong>Falha encontrada!</strong>
-            `}
-
-            <br><br>
-
-            <strong>+${points} pontos</strong>
-        `;
-
-    }
-
-
-    /* ========================================================
-       BONUS
-    ======================================================== */
-
-    else if (
-        type === "bonus"
-    ) {
-
-        const points =
-            parseInt(
-                hotspot.dataset.points || "0"
-            );
-
-
-        score += points;
-
-
-        hotspot.classList.add(
-            "bonus-found"
-        );
-
-
-        feedback.className =
-            "feedback info";
-
-
-        feedback.innerHTML = `
-            ${hotspot.dataset.feedback}
-
-            <br><br>
-
-            <strong>+${points} pontos de bónus</strong>
-        `;
-
-    }
-
-
-    /* ========================================================
-       FALSO POSITIVO
-    ======================================================== */
-
-    else {
-
-        score -= 3;
-
-
-        if (
-            score < 0
-        ) {
-
-            score = 0;
-
-        }
-
-
-        feedback.className =
-            "feedback bad";
-
-
-        feedback.innerHTML = `
-            <strong>❌ Falso positivo</strong><br><br>
-
-            ${hotspot.dataset.feedback}
-
-            <br><br>
-
-            <strong>-3 pontos</strong>
-        `;
-
-    }
-
-
-    updateInterface();
+    feedback.classList.remove(
+        "hidden"
+    );
 
 }
 
@@ -1133,40 +1220,22 @@ function updateInterface() {
 
 
     const status =
-        document.getElementById("statusText");
-
-
-    const progressText =
-        document.getElementById("progressText");
+        document.getElementById("status");
 
 
     if (
-        foundFaults < totalFaults
+        foundFaults === totalFaults
     ) {
 
         status.textContent =
-            "🔍 Continua a procurar...";
-
-
-        progressText.textContent =
-            `Ainda faltam ${totalFaults - foundFaults} falha(s).`;
+            "🎯 Encontraste todos os problemas!";
 
     }
 
     else {
 
         status.textContent =
-            "🎯 Encontraste todas as falhas!";
-
-
-        progressText.textContent =
-            "Excelente. Podes concluir o desafio.";
-
-
-        document
-            .getElementById("finishButton")
-            .disabled =
-            false;
+            `🔎 Encontraste ${foundFaults} de ${totalFaults} problemas.`;
 
     }
 
@@ -1175,28 +1244,37 @@ function updateInterface() {
 
 
 /* ============================================================
-   FINISH
+   TERMINAR DESAFIO
 ============================================================ */
 
 function finishChallenge() {
 
+    /*
+       Evitar terminar duas vezes.
+    */
+
     if (
-        foundFaults < totalFaults
+        finished
     ) {
-
         return;
-
     }
+
+
+    finished = true;
 
 
     document
         .getElementById("gameScreen")
-        .classList.add("hidden");
+        .classList.add(
+            "hidden"
+        );
 
 
     document
         .getElementById("endScreen")
-        .classList.remove("hidden");
+        .classList.remove(
+            "hidden"
+        );
 
 
     document
@@ -1208,55 +1286,106 @@ function finishChallenge() {
     let message;
 
 
+
+    /* ========================================================
+       TUDO ENCONTRADO
+    ======================================================== */
+
     if (
+        foundFaults === totalFaults &&
         score >= 100
     ) {
 
         message = `
-            🔥 <strong>Secretária limpa, radar afinado!</strong><br><br>
+            🔥 <strong>Clear Desk perfeito!</strong><br><br>
 
-            Encontraste as 5 falhas e ainda identificaste
-            as boas práticas existentes.
+            Encontraste todos os problemas
+            e ainda descobriste os bónus.
+            <br><br>
+
+            A secretária não tinha segredos para ti.
         `;
 
     }
 
+
+
+    /* ========================================================
+       TUDO ENCONTRADO
+    ======================================================== */
+
     else if (
-        score >= 90
+        foundFaults === totalFaults
     ) {
 
         message = `
-            🛡️ <strong>Muito bom trabalho!</strong><br><br>
+            🧠 <strong>Muito bem!</strong><br><br>
 
-            Encontraste todas as falhas e estiveste atento
-            aos falsos positivos.
+            Encontraste todos os problemas da secretária.
+            <br><br>
+
+            Alguns falsos positivos ou bónus
+            fizeram variar a tua pontuação.
         `;
 
     }
 
+
+
+    /* ========================================================
+       TERMINOU CEDO
+    ======================================================== */
+
     else if (
-        score >= 70
+        foundFaults >= 3
     ) {
 
         message = `
-            👀 <strong>Bom trabalho.</strong><br><br>
+            👀 <strong>Quase lá!</strong><br><br>
 
-            Encontraste os problemas principais.
-            Mas cuidado com os falsos positivos:
-            segurança também é saber distinguir risco de
-            simples desorganização.
+            Encontraste ${foundFaults} dos
+            ${totalFaults} problemas.
+            <br><br>
+
+            Podias ter continuado à procura,
+            mas decidiste avançar.
         `;
 
     }
+
+
+
+    else if (
+        foundFaults > 0
+    ) {
+
+        message = `
+            🕵️ <strong>Missão cumprida.</strong><br><br>
+
+            Encontraste ${foundFaults} dos
+            ${totalFaults} problemas.
+            <br><br>
+
+            Nem sempre temos tempo para procurar tudo.
+            A questão é saber reconhecer os riscos
+            que conseguimos ver.
+        `;
+
+    }
+
+
 
     else {
 
         message = `
-            🔎 <strong>Missão cumprida.</strong><br><br>
+            😬 <strong>Saíste cedo da investigação.</strong><br><br>
 
-            Encontraste as falhas, mas alguns objetos normais
-            enganaram o teu radar.
-            Na vida real, contexto é tudo.
+            Não encontraste nenhum dos problemas
+            principais desta secretária.
+            <br><br>
+
+            No mundo real, alguns detalhes podem
+            fazer uma grande diferença.
         `;
 
     }
@@ -1281,6 +1410,14 @@ function goToChallenge03() {
         "desafio03.html";
 
 }
+
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+============================================================ */
+
+updateInterface();
 
 </script>
 

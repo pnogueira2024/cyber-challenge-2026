@@ -15,7 +15,9 @@
 body {
     margin: 0;
     min-height: 100vh;
+
     font-family: Arial, Helvetica, sans-serif;
+
     color: #f4f7fb;
 
     background:
@@ -29,13 +31,21 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1150px;
+
     margin: auto;
+
     padding: 25px 18px 50px;
 }
 
+
+/* ============================================================
+   HEADER
+============================================================ */
+
 .header {
     text-align: center;
+
     margin-bottom: 22px;
 }
 
@@ -45,69 +55,119 @@ body {
 
 h1 {
     margin: 4px 0;
+
     font-size: 30px;
+
     letter-spacing: 1px;
 }
 
 .subtitle {
     color: #9ba8bb;
+
     margin-top: 8px;
 }
 
-.card {
-    background: rgba(17,24,39,.97);
-    border: 1px solid #263246;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 15px 50px rgba(0,0,0,.35);
-}
+
+/* ============================================================
+   TOP BAR
+============================================================ */
 
 .topbar {
     display: flex;
+
     justify-content: space-between;
+
     gap: 12px;
+
     flex-wrap: wrap;
+
     margin-bottom: 18px;
 }
 
 .stat {
     background: #0c1320;
+
     border: 1px solid #263246;
+
     border-radius: 10px;
+
     padding: 10px 15px;
+
     min-width: 125px;
 }
 
 .stat-label {
     color: #7f8da3;
+
     font-size: 11px;
+
     text-transform: uppercase;
 }
 
 .stat-value {
     font-size: 20px;
+
     font-weight: bold;
+
     margin-top: 3px;
 }
 
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+
 .progress-wrapper {
     height: 8px;
+
     background: #1c2635;
+
     border-radius: 20px;
+
     overflow: hidden;
+
     margin-bottom: 22px;
 }
 
 .progress {
     height: 100%;
+
     width: 0%;
+
     background: #4ade80;
+
     transition: width .3s;
 }
 
+
+/* ============================================================
+   CARD
+============================================================ */
+
+.card {
+    background: rgba(17,24,39,.96);
+
+    border: 1px solid #263246;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35);
+}
+
+
+/* ============================================================
+   INSTRUCTIONS
+============================================================ */
+
 .instructions {
     color: #c7d0dc;
+
     line-height: 1.6;
+
+    margin-bottom: 22px;
 }
 
 .instructions strong {
@@ -116,164 +176,267 @@ h1 {
 
 
 /* ============================================================
-   MATCHING AREA
+   GAME GRID
 ============================================================ */
 
-.matching-area {
+.game-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin-top: 25px;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(260px, .75fr);
+
+    gap: 24px;
+
+    align-items: start;
 }
+
+
+/* ============================================================
+   COLUMNS
+============================================================ */
 
 .column {
     background: #0c1320;
+
     border: 1px solid #263246;
+
     border-radius: 14px;
-    padding: 16px;
+
+    padding: 18px;
 }
 
 .column-title {
+    margin: 0 0 7px 0;
+
     font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
 }
 
-.column-title span {
-    color: #7f8da3;
-    font-size: 12px;
-    font-weight: normal;
+.column-description {
+    color: #8492a6;
+
+    font-size: 13px;
+
+    margin-bottom: 18px;
 }
 
 
 /* ============================================================
-   TEXTOS
+   SITUATIONS
 ============================================================ */
 
-.question {
-    background: #151e2d;
-    border: 1px solid #344258;
+.situations {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.situation {
+    background: #111a29;
+
+    border: 1px solid #2b394d;
+
     border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 14px;
-    line-height: 1.55;
 
-    min-height: 110px;
+    padding: 17px;
 
-    transition: .2s;
+    transition:
+        border-color .15s,
+        background .15s,
+        transform .15s;
 }
 
-.question:hover {
-    border-color: #4b5d77;
+.situation:hover {
+    border-color: #42536d;
 }
 
-.question-number {
-    color: #4ade80;
-    font-size: 12px;
+.situation.correct {
+    border-color: #4ade80;
+
+    background: #102019;
+}
+
+.situation-number {
+    color: #7f8da3;
+
+    font-size: 11px;
+
     font-weight: bold;
+
     text-transform: uppercase;
+
+    letter-spacing: .8px;
+
     margin-bottom: 8px;
 }
 
-.question.matched {
-    border-color: #4ade80;
-}
+.situation-text {
+    line-height: 1.5;
 
+    color: #e5eaf1;
 
-/* ============================================================
-   RESPOSTAS
-============================================================ */
-
-.answer {
-    background: #182233;
-    border: 1px solid #344258;
-    border-radius: 12px;
-
-    padding: 16px;
     margin-bottom: 14px;
-
-    min-height: 82px;
-
-    cursor: grab;
-    user-select: none;
-
-    transition: .2s;
-}
-
-.answer:hover {
-    transform: translateY(-1px);
-    border-color: #60a5fa;
-}
-
-.answer.dragging {
-    opacity: .45;
-}
-
-.answer.selected {
-    border-color: #60a5fa;
-
-    box-shadow:
-        0 0 0 2px rgba(96,165,250,.18);
-}
-
-.answer.used {
-    opacity: .35;
-    cursor: default;
-}
-
-.answer.correct {
-    border-color: #4ade80;
-    background: #102519;
-}
-
-.answer.wrong {
-    border-color: #ef4444;
-    background: #2a1418;
 }
 
 
 /* ============================================================
-   DROP ZONE
+   DROPZONE
 ============================================================ */
 
 .dropzone {
-    margin-top: 12px;
+    min-height: 48px;
 
-    min-height: 45px;
+    width: 100%;
 
-    border: 2px dashed #536176;
-    border-radius: 9px;
+    border: 2px dashed #46566e;
+
+    border-radius: 10px;
+
+    background: #0a101b;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    padding: 8px;
+    padding: 9px;
 
-    color: #7f8da3;
-    font-size: 13px;
+    color: #718096;
 
-    transition: .2s;
+    font-size: 14px;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    transition:
+        border-color .15s,
+        background .15s,
+        transform .15s;
 }
 
 .dropzone.drag-over {
     border-color: #60a5fa;
-    background: #101d31;
-    color: #60a5fa;
+
+    background: #14243a;
+
+    transform: scale(1.02);
 }
 
 .dropzone.correct {
     border-style: solid;
+
     border-color: #4ade80;
-    background: #102519;
+
+    background: #10271c;
+
     color: #86efac;
+
+    cursor: default;
 }
 
 .dropzone.wrong {
-    border-style: solid;
     border-color: #ef4444;
-    background: #2a1418;
-    color: #fca5a5;
+
+    background: #321417;
+
+    animation: shake .25s;
+}
+
+@keyframes shake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+/* ============================================================
+   ANSWERS
+============================================================ */
+
+.answer-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.answer {
+    background: #141d2c;
+
+    border: 1px solid #344257;
+
+    border-radius: 11px;
+
+    padding: 16px;
+
+    cursor: grab;
+
+    user-select: none;
+
+    font-weight: bold;
+
+    color: #f4f7fb;
+
+    transition:
+        transform .15s,
+        border-color .15s,
+        background .15s,
+        opacity .15s;
+}
+
+.answer:hover {
+    transform: translateY(-1px);
+
+    border-color: #60a5fa;
+}
+
+.answer:active {
+    cursor: grabbing;
+}
+
+.answer.selected {
+    border-color: #4ade80;
+
+    background: #172c25;
+
+    transform: scale(1.02);
+}
+
+.answer.used {
+    opacity: .35;
+
+    cursor: default;
+
+    border-color: #4ade80;
+
+    background: #102019;
+}
+
+.answer.used:hover {
+    transform: none;
 }
 
 
@@ -283,14 +446,16 @@ h1 {
 
 .feedback {
     margin-top: 20px;
-    padding: 16px;
+
+    padding: 15px;
 
     border-radius: 10px;
 
     background: #101827;
+
     border: 1px solid #2c394d;
 
-    line-height: 1.55;
+    line-height: 1.5;
 }
 
 .feedback.good {
@@ -301,16 +466,24 @@ h1 {
     border-color: #ef4444;
 }
 
-.feedback.info {
-    border-color: #60a5fa;
+.hidden {
+    display: none !important;
 }
 
-.next-area {
+
+/* ============================================================
+   BOTTOM
+============================================================ */
+
+.bottom-area {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
 
     gap: 15px;
+
     flex-wrap: wrap;
 
     margin-top: 20px;
@@ -322,16 +495,19 @@ h1 {
 
 button {
     border: 0;
+
     border-radius: 10px;
 
     padding: 14px 20px;
 
     font-size: 16px;
+
     font-weight: bold;
 
     cursor: pointer;
 
     background: #4ade80;
+
     color: #06110a;
 
     transition: .2s;
@@ -339,13 +515,18 @@ button {
 
 button:hover {
     transform: translateY(-1px);
+
     filter: brightness(1.08);
 }
 
 button:disabled {
     opacity: .35;
+
     cursor: not-allowed;
+
     transform: none;
+
+    filter: none;
 }
 
 
@@ -359,7 +540,9 @@ button:disabled {
 
 .big-score {
     font-size: 64px;
+
     font-weight: bold;
+
     color: #4ade80;
 
     margin: 20px 0;
@@ -367,35 +550,38 @@ button:disabled {
 
 .message {
     color: #c6d0dd;
+
     line-height: 1.6;
 
     font-size: 17px;
 
     max-width: 700px;
+
     margin: 20px auto;
 }
 
-.boss-box {
+.next-box {
     margin-top: 30px;
 
-    padding: 28px;
+    padding: 24px;
 
     border-radius: 15px;
 
     background:
         linear-gradient(
             135deg,
-            rgba(239,68,68,.12),
-            rgba(74,222,128,.08)
+            rgba(74,222,128,.10),
+            rgba(37,99,235,.10)
         );
 
-    border: 1px solid #5b3940;
+    border: 1px solid #35516c;
 }
 
-.boss-label {
-    color: #f87171;
+.next-box .unlock {
+    color: #4ade80;
 
     font-size: 13px;
+
     font-weight: bold;
 
     text-transform: uppercase;
@@ -403,28 +589,10 @@ button:disabled {
     letter-spacing: 1px;
 }
 
-.boss-box h3 {
-    font-size: 28px;
+.next-box h3 {
+    font-size: 23px;
+
     margin: 10px 0;
-}
-
-.boss-box p {
-    color: #c7d0dc;
-}
-
-.boss-button {
-    margin-top: 15px;
-
-    background: #ef4444;
-    color: white;
-
-    font-size: 17px;
-
-    padding: 15px 25px;
-}
-
-.boss-button:hover {
-    filter: brightness(1.12);
 }
 
 
@@ -432,7 +600,7 @@ button:disabled {
    MOBILE
 ============================================================ */
 
-@media (max-width: 760px) {
+@media (max-width: 800px) {
 
     .container {
         padding: 15px 10px 35px;
@@ -450,16 +618,17 @@ button:disabled {
         font-size: 34px;
     }
 
-    .matching-area {
+    .game-grid {
         grid-template-columns: 1fr;
     }
 
-    .next-area {
+    .bottom-area {
         flex-direction: column;
+
         align-items: stretch;
     }
 
-    .next-area button {
+    .bottom-area button {
         width: 100%;
     }
 
@@ -478,9 +647,9 @@ button:disabled {
 <div class="container">
 
 
-<!-- =========================================================
+<!-- ============================================================
      HEADER
-========================================================= -->
+============================================================ -->
 
 <div class="header">
 
@@ -493,18 +662,23 @@ button:disabled {
     </h1>
 
     <div class="subtitle">
-        Liga os pontos. Encontra o padrão.
+        Conhecimento também é uma ferramenta de segurança.
     </div>
 
 </div>
 
 
 
-<!-- =========================================================
-     GAME
-========================================================= -->
+<!-- ============================================================
+     GAME SCREEN
+============================================================ -->
 
 <div id="gameScreen">
+
+
+    <!-- ========================================================
+         TOP BAR
+    ========================================================= -->
 
     <div class="topbar">
 
@@ -529,7 +703,7 @@ button:disabled {
             </div>
 
             <div
-                id="foundCount"
+                id="correctCount"
                 class="stat-value"
             >
                 0 / 4
@@ -556,6 +730,11 @@ button:disabled {
     </div>
 
 
+
+    <!-- ========================================================
+         PROGRESS
+    ========================================================= -->
+
     <div class="progress-wrapper">
 
         <div
@@ -566,6 +745,10 @@ button:disabled {
     </div>
 
 
+
+    <!-- ========================================================
+         MAIN CARD
+    ========================================================= -->
 
     <div class="card">
 
@@ -578,161 +761,191 @@ button:disabled {
         <div class="instructions">
 
             <p>
-                Quatro situações.
-                Quatro respostas.
-            </p>
-
-            <p>
-                O objetivo é descobrir
-                <strong>qual resposta corresponde a cada situação</strong>.
+                Quatro situações. Quatro respostas.
             </p>
 
             <p>
                 <strong>
-                    Arrasta uma resposta para o texto correspondente.
+                    Liga cada situação à resposta que
+                    consideras correta.
                 </strong>
             </p>
 
             <p>
-                No telemóvel:
-                <strong>
-                    toca numa resposta e depois toca no texto.
-                </strong>
+                Podes experimentar qualquer combinação.
             </p>
 
             <p>
-                ⚠️ Podes fazer ligações erradas.
-                Mas cada erro <strong>custa pontos</strong>.
+                🟢 Resposta correta:
+                <strong>+25 pontos</strong>
+            </p>
+
+            <p>
+                🔴 Resposta errada:
+                <strong>-5 pontos</strong>.
+                Podes tentar novamente.
+            </p>
+
+            <p>
+                📱 No telemóvel: toca numa resposta e
+                depois toca na situação correspondente.
             </p>
 
         </div>
 
 
 
-        <!-- =================================================
-             DUAS COLUNAS
-        ================================================= -->
+        <!-- =====================================================
+             TWO COLUMNS
+        ===================================================== -->
 
-        <div class="matching-area">
+        <div class="game-grid">
 
 
             <!-- =================================================
-                 COLUNA ESQUERDA
+                 LEFT — SITUATIONS
             ================================================= -->
 
             <div class="column">
 
-                <div class="column-title">
-                    📄 Situações
-                    <br>
-                    <span>
-                        Onde encaixa cada resposta?
-                    </span>
+                <h3 class="column-title">
+                    📝 Situações
+                </h3>
+
+                <div class="column-description">
+                    Liga cada situação à resposta certa.
                 </div>
 
 
+                <div class="situations">
 
-                <!-- SITUAÇÃO 1 -->
 
-                <div
-                    class="question"
-                    data-answer="q1"
-                >
-
-                    <div class="question-number">
-                        Situação 01
-                    </div>
-
-                    Recebes um email aparentemente enviado
-                    pelo departamento de IT a pedir que
-                    confirmes imediatamente a tua password
-                    através de um link.
+                    <!-- SITUATION 1 -->
 
                     <div
-                        class="dropzone"
-                        data-question="q1"
+                        class="situation"
+                        data-answer="phishing"
                     >
-                        Arrasta a resposta para aqui
+
+                        <div class="situation-number">
+                            Situação 01
+                        </div>
+
+                        <div class="situation-text">
+
+                            Recebes um email aparentemente
+                            enviado pelo departamento de IT.
+                            O email diz que precisas de
+                            confirmar imediatamente a tua
+                            password através de um link.
+
+                        </div>
+
+
+                        <div
+                            class="dropzone"
+                            data-answer="phishing"
+                        >
+                            🔗 Liga aqui uma resposta
+                        </div>
+
                     </div>
 
-                </div>
 
 
-
-                <!-- SITUAÇÃO 2 -->
-
-                <div
-                    class="question"
-                    data-answer="q2"
-                >
-
-                    <div class="question-number">
-                        Situação 02
-                    </div>
-
-                    Encontras uma pen USB no parque de
-                    estacionamento da empresa. Não sabes
-                    quem é o proprietário.
+                    <!-- SITUATION 2 -->
 
                     <div
-                        class="dropzone"
-                        data-question="q2"
+                        class="situation"
+                        data-answer="usb"
                     >
-                        Arrasta a resposta para aqui
+
+                        <div class="situation-number">
+                            Situação 02
+                        </div>
+
+                        <div class="situation-text">
+
+                            Encontras uma pen USB no parque
+                            de estacionamento da empresa.
+                            Não sabes quem é o proprietário
+                            nem o que contém.
+
+                        </div>
+
+
+                        <div
+                            class="dropzone"
+                            data-answer="usb"
+                        >
+                            🔗 Liga aqui uma resposta
+                        </div>
+
                     </div>
 
-                </div>
 
 
-
-                <!-- SITUAÇÃO 3 -->
-
-                <div
-                    class="question"
-                    data-answer="q3"
-                >
-
-                    <div class="question-number">
-                        Situação 03
-                    </div>
-
-                    Um colega pede-te a tua password porque
-                    precisa de aceder rapidamente a uma
-                    aplicação enquanto a conta dele está
-                    bloqueada.
+                    <!-- SITUATION 3 -->
 
                     <div
-                        class="dropzone"
-                        data-question="q3"
+                        class="situation"
+                        data-answer="credentials"
                     >
-                        Arrasta a resposta para aqui
+
+                        <div class="situation-number">
+                            Situação 03
+                        </div>
+
+                        <div class="situation-text">
+
+                            Um colega pede-te a tua password
+                            porque precisa de aceder rapidamente
+                            a uma aplicação.
+
+                        </div>
+
+
+                        <div
+                            class="dropzone"
+                            data-answer="credentials"
+                        >
+                            🔗 Liga aqui uma resposta
+                        </div>
+
                     </div>
 
-                </div>
 
 
-
-                <!-- SITUAÇÃO 4 -->
-
-                <div
-                    class="question"
-                    data-answer="q4"
-                >
-
-                    <div class="question-number">
-                        Situação 04
-                    </div>
-
-                    Vais sair da secretária durante alguns
-                    minutos e deixas documentos de trabalho
-                    visíveis e o computador desbloqueado.
+                    <!-- SITUATION 4 -->
 
                     <div
-                        class="dropzone"
-                        data-question="q4"
+                        class="situation"
+                        data-answer="cleardesk"
                     >
-                        Arrasta a resposta para aqui
+
+                        <div class="situation-number">
+                            Situação 04
+                        </div>
+
+                        <div class="situation-text">
+
+                            Vais sair do posto de trabalho,
+                            deixando documentos visíveis
+                            na secretária e o computador
+                            desbloqueado.
+
+                        </div>
+
+
+                        <div
+                            class="dropzone"
+                            data-answer="cleardesk"
+                        >
+                            🔗 Liga aqui uma resposta
+                        </div>
+
                     </div>
+
 
                 </div>
 
@@ -741,115 +954,83 @@ button:disabled {
 
 
             <!-- =================================================
-                 COLUNA DIREITA
+                 RIGHT — ANSWERS
             ================================================= -->
 
             <div class="column">
 
-                <div class="column-title">
-                    🧠 Respostas
-                    <br>
-                    <span>
-                        Arrasta para a situação correta
-                    </span>
+                <h3 class="column-title">
+                    🧩 Respostas
+                </h3>
+
+                <div class="column-description">
+                    As respostas aparecem numa ordem
+                    diferente em cada partida.
                 </div>
 
 
-
-                <!-- RESPOSTA 1 -->
-
                 <div
-                    class="answer"
-                    draggable="true"
-                    data-answer="q1"
+                    id="answerList"
+                    class="answer-list"
                 >
 
-                    🎣 <strong>Phishing</strong>
 
-                    <br>
+                    <!-- ANSWER 1 -->
 
-                    <small>
-                        Tentativa de enganar o utilizador
-                        para obter informação ou levá-lo
-                        a executar uma ação.
-                    </small>
-
-                </div>
-
+                    <div
+                        class="answer"
+                        draggable="true"
+                        data-answer="phishing"
+                    >
+                        🎣 Phishing
+                    </div>
 
 
-                <!-- RESPOSTA 2 -->
+                    <!-- ANSWER 2 -->
 
-                <div
-                    class="answer"
-                    draggable="true"
-                    data-answer="q2"
-                >
-
-                    💾 <strong>Dispositivo desconhecido</strong>
-
-                    <br>
-
-                    <small>
-                        Uma pen ou outro dispositivo encontrado
-                        não deve ser ligado aos equipamentos
-                        da empresa sem validação.
-                    </small>
-
-                </div>
+                    <div
+                        class="answer"
+                        draggable="true"
+                        data-answer="usb"
+                    >
+                        💾 Dispositivo desconhecido
+                    </div>
 
 
+                    <!-- ANSWER 3 -->
 
-                <!-- RESPOSTA 3 -->
-
-                <div
-                    class="answer"
-                    draggable="true"
-                    data-answer="q3"
-                >
-
-                    🔐 <strong>Credenciais pessoais</strong>
-
-                    <br>
-
-                    <small>
-                        As credenciais são individuais e
-                        não devem ser partilhadas com terceiros.
-                    </small>
-
-                </div>
+                    <div
+                        class="answer"
+                        draggable="true"
+                        data-answer="credentials"
+                    >
+                        🔐 Credenciais pessoais
+                    </div>
 
 
+                    <!-- ANSWER 4 -->
 
-                <!-- RESPOSTA 4 -->
+                    <div
+                        class="answer"
+                        draggable="true"
+                        data-answer="cleardesk"
+                    >
+                        🗂️ Clear Desk / Clear Screen
+                    </div>
 
-                <div
-                    class="answer"
-                    draggable="true"
-                    data-answer="q4"
-                >
-
-                    🖥️ <strong>Clear Desk / Clear Screen</strong>
-
-                    <br>
-
-                    <small>
-                        Documentos devem ser protegidos e os
-                        equipamentos bloqueados quando nos
-                        afastamos da secretária.
-                    </small>
 
                 </div>
 
             </div>
 
+
         </div>
 
 
 
-        <!-- =================================================
+        <!-- =====================================================
              FEEDBACK
-        ================================================= -->
+        ===================================================== -->
 
         <div
             id="feedback"
@@ -858,35 +1039,41 @@ button:disabled {
 
 
 
-        <div class="next-area">
+        <!-- =====================================================
+             BOTTOM
+        ===================================================== -->
+
+        <div class="bottom-area">
 
             <div
                 id="status"
                 class="status"
             >
-                🎯 Tens 4 ligações para descobrir.
+                🔗 Liga as 4 situações corretamente.
             </div>
 
 
             <button
                 id="finishButton"
-                disabled
                 onclick="finishChallenge()"
+                disabled
             >
-                🔓 Concluir Desafio 04
+                🏆 Concluir Desafio 04
             </button>
 
         </div>
 
+
     </div>
+
 
 </div>
 
 
 
-<!-- =========================================================
+<!-- ============================================================
      END SCREEN
-========================================================= -->
+============================================================ -->
 
 <div
     id="endScreen"
@@ -915,35 +1102,28 @@ button:disabled {
         ></div>
 
 
+        <div class="next-box">
 
-        <div class="boss-box">
-
-            <div class="boss-label">
-                ⚠️ ÚLTIMO NÍVEL
+            <div class="unlock">
+                🔓 ÚLTIMO DESAFIO
             </div>
 
 
             <h3>
-                BOSS LEVEL
+                👑 BOSS FINAL
             </h3>
 
 
             <p>
-                Chegaste ao fim dos quatro desafios.
-            </p>
-
-
-            <p>
-                Agora já não há pistas.
-                Só tu, o problema e o relógio.
+                Chegaste ao fim da cadeia.
+                Agora falta o desafio final.
             </p>
 
 
             <button
-                class="boss-button"
                 onclick="goToBoss()"
             >
-                ☠️ ENTRAR NO BOSS LEVEL →
+                👑 Avançar para o Boss Final →
             </button>
 
         </div>
@@ -977,12 +1157,14 @@ let selectedAnswer = null;
 
 let draggedAnswer = null;
 
+let finished = false;
+
+
 const totalAnswers = 4;
 
 const pointsPerCorrect = 25;
 
 const penaltyWrong = 5;
-
 
 
 /* ============================================================
@@ -995,15 +1177,69 @@ const answers =
 const dropzones =
     document.querySelectorAll(".dropzone");
 
+const answerList =
+    document.getElementById("answerList");
 
 
 /* ============================================================
-   DRAG & DROP
+   BARALHAR RESPOSTAS
+============================================================ */
+
+function shuffleAnswers() {
+
+    const answerArray =
+        Array.from(
+            answerList.querySelectorAll(".answer")
+        );
+
+
+    /*
+       Fisher-Yates shuffle
+    */
+
+    for (
+        let i = answerArray.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+
+        [
+            answerArray[i],
+            answerArray[j]
+        ] =
+        [
+            answerArray[j],
+            answerArray[i]
+        ];
+
+    }
+
+
+    answerArray.forEach(
+        answer => {
+
+            answerList.appendChild(
+                answer
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   DRAG — START
 ============================================================ */
 
 answers.forEach(
     answer => {
-
 
         answer.addEventListener(
             "dragstart",
@@ -1012,17 +1248,14 @@ answers.forEach(
                 if (
                     this.classList.contains("used")
                 ) {
+
                     event.preventDefault();
+
                     return;
                 }
 
 
                 draggedAnswer = this;
-
-
-                this.classList.add(
-                    "dragging"
-                );
 
 
                 event.dataTransfer.effectAllowed =
@@ -1034,6 +1267,11 @@ answers.forEach(
                     this.dataset.answer
                 );
 
+
+                this.classList.add(
+                    "selected"
+                );
+
             }
         );
 
@@ -1043,7 +1281,7 @@ answers.forEach(
             function() {
 
                 this.classList.remove(
-                    "dragging"
+                    "selected"
                 );
 
 
@@ -1053,11 +1291,9 @@ answers.forEach(
         );
 
 
-
-        /*
-           Suporte para telemóvel:
-           selecionar resposta com toque.
-        */
+        /* ====================================================
+           MOBILE / CLICK
+        ==================================================== */
 
         answer.addEventListener(
             "click",
@@ -1070,6 +1306,28 @@ answers.forEach(
                 }
 
 
+                /*
+                   Clicar novamente remove seleção.
+                */
+
+                if (
+                    selectedAnswer === this
+                ) {
+
+                    this.classList.remove(
+                        "selected"
+                    );
+
+                    selectedAnswer = null;
+
+                    return;
+                }
+
+
+                /*
+                   Limpar seleção anterior.
+                */
+
                 answers.forEach(
                     item => {
 
@@ -1081,31 +1339,18 @@ answers.forEach(
                 );
 
 
-                selectedAnswer =
-                    this;
-
-
                 this.classList.add(
                     "selected"
                 );
 
 
-                showFeedback(
-                    "info",
-                    `
-                    🧠 <strong>Resposta selecionada.</strong><br><br>
-
-                    Agora toca no texto onde achas
-                    que esta resposta pertence.
-                    `
-                );
+                selectedAnswer = this;
 
             }
         );
 
     }
 );
-
 
 
 /* ============================================================
@@ -1120,14 +1365,14 @@ dropzones.forEach(
             "dragover",
             function(event) {
 
-                event.preventDefault();
-
-
                 if (
                     this.classList.contains("correct")
                 ) {
                     return;
                 }
+
+
+                event.preventDefault();
 
 
                 this.classList.add(
@@ -1169,30 +1414,12 @@ dropzones.forEach(
                 }
 
 
-                let answer =
-                    draggedAnswer;
+                if (
+                    draggedAnswer
+                ) {
 
-
-                if (!answer) {
-
-                    const answerName =
-                        event.dataTransfer.getData(
-                            "text/plain"
-                        );
-
-
-                    answer =
-                        document.querySelector(
-                            `.answer[data-answer="${answerName}"]`
-                        );
-
-                }
-
-
-                if (answer) {
-
-                    tryAnswer(
-                        answer,
+                    placeAnswer(
+                        draggedAnswer,
                         this
                     );
 
@@ -1202,22 +1429,13 @@ dropzones.forEach(
         );
 
 
-
-        /*
-           Clique no dropzone:
-           usa a resposta selecionada.
-        */
+        /* ====================================================
+           MOBILE / CLICK
+        ==================================================== */
 
         zone.addEventListener(
             "click",
             function() {
-
-                if (
-                    !selectedAnswer
-                ) {
-                    return;
-                }
-
 
                 if (
                     this.classList.contains("correct")
@@ -1226,10 +1444,16 @@ dropzones.forEach(
                 }
 
 
-                tryAnswer(
-                    selectedAnswer,
-                    this
-                );
+                if (
+                    selectedAnswer
+                ) {
+
+                    placeAnswer(
+                        selectedAnswer,
+                        this
+                    );
+
+                }
 
             }
         );
@@ -1238,41 +1462,53 @@ dropzones.forEach(
 );
 
 
-
 /* ============================================================
-   TENTATIVA
+   COLOCAR RESPOSTA
 ============================================================ */
 
-function tryAnswer(
+function placeAnswer(
     answer,
     zone
 ) {
 
-    const answerValue =
+    if (
+        !answer ||
+        zone.classList.contains("correct") ||
+        answer.classList.contains("used")
+    ) {
+        return;
+    }
+
+
+    const selectedValue =
         answer.dataset.answer;
 
 
-    const questionValue =
-        zone.dataset.question;
+    const expectedValue =
+        zone.dataset.answer;
 
 
-    /*
+    /* ========================================================
        CORRETO
-    */
+    ======================================================== */
 
     if (
-        answerValue === questionValue
+        selectedValue === expectedValue
     ) {
+
+        score += pointsPerCorrect;
 
         correctAnswers++;
 
 
-        score += pointsPerCorrect;
+        answer.classList.remove(
+            "selected"
+        );
 
 
-        zone.textContent =
-            "✓ " +
-            answer.textContent.trim();
+        answer.classList.add(
+            "used"
+        );
 
 
         zone.classList.remove(
@@ -1285,26 +1521,27 @@ function tryAnswer(
         );
 
 
-        answer.classList.add(
-            "used"
-        );
+        zone.textContent =
+            answer.textContent;
 
 
-        answer.classList.remove(
-            "selected"
-        );
+        /*
+           Bloqueia também visualmente a situação.
+        */
+
+        const situation =
+            zone.closest(".situation");
 
 
-        answer.setAttribute(
-            "draggable",
-            "false"
-        );
+        if (
+            situation
+        ) {
 
-
-        zone.closest(".question")
-            .classList.add(
-                "matched"
+            situation.classList.add(
+                "correct"
             );
+
+        }
 
 
         selectedAnswer = null;
@@ -1313,76 +1550,70 @@ function tryAnswer(
         showFeedback(
             "good",
             `
-            🟢 <strong>Ligação correta!</strong><br><br>
-
-            Encontraste a correspondência certa.
-
-            <br><br>
+            🟢 <strong>Correto!</strong><br><br>
 
             <strong>+${pointsPerCorrect} pontos</strong>
             `
         );
 
+
+        updateInterface();
+
+
+        return;
     }
 
 
-    /*
+    /* ========================================================
        ERRADO
-    */
+    ======================================================== */
 
-    else {
-
-        score -= penaltyWrong;
+    score -= penaltyWrong;
 
 
-        if (
-            score < 0
-        ) {
-            score = 0;
-        }
+    if (
+        score < 0
+    ) {
 
-
-        zone.classList.add(
-            "wrong"
-        );
-
-
-        showFeedback(
-            "bad",
-            `
-            🔴 <strong>Ligação errada.</strong><br><br>
-
-            Essa resposta não corresponde a esta situação.
-
-            <br><br>
-
-            Podes tentar novamente.
-
-            <br><br>
-
-            <strong>-${penaltyWrong} pontos</strong>
-            `
-        );
-
-
-        setTimeout(
-            () => {
-
-                zone.classList.remove(
-                    "wrong"
-                );
-
-            },
-            800
-        );
+        score = 0;
 
     }
+
+
+    zone.classList.add(
+        "wrong"
+    );
+
+
+    showFeedback(
+        "bad",
+        `
+        🔴 <strong>Ligação incorreta.</strong><br><br>
+
+        Essa resposta pertence a outra situação.
+
+        <br><br>
+
+        <strong>-${penaltyWrong} pontos</strong>
+        `
+    );
+
+
+    setTimeout(
+        () => {
+
+            zone.classList.remove(
+                "wrong"
+            );
+
+        },
+        500
+    );
 
 
     updateInterface();
 
 }
-
 
 
 /* ============================================================
@@ -1395,7 +1626,9 @@ function showFeedback(
 ) {
 
     const feedback =
-        document.getElementById("feedback");
+        document.getElementById(
+            "feedback"
+        );
 
 
     feedback.className =
@@ -1413,18 +1646,11 @@ function showFeedback(
 }
 
 
-
 /* ============================================================
    INTERFACE
 ============================================================ */
 
 function updateInterface() {
-
-    document
-        .getElementById("foundCount")
-        .textContent =
-        `${correctAnswers} / ${totalAnswers}`;
-
 
     document
         .getElementById("score")
@@ -1433,62 +1659,77 @@ function updateInterface() {
 
 
     document
+        .getElementById("correctCount")
+        .textContent =
+        `${correctAnswers} / ${totalAnswers}`;
+
+
+    document
         .getElementById("progress")
         .style.width =
         `${(correctAnswers / totalAnswers) * 100}%`;
 
 
-    const status =
-        document.getElementById("status");
-
-
     const finishButton =
-        document.getElementById("finishButton");
+        document.getElementById(
+            "finishButton"
+        );
+
+
+    const status =
+        document.getElementById(
+            "status"
+        );
 
 
     if (
-        correctAnswers < totalAnswers
+        correctAnswers === totalAnswers
     ) {
 
-        const remaining =
-            totalAnswers - correctAnswers;
+        finishButton.disabled =
+            false;
 
 
         status.textContent =
-            `🎯 Ainda faltam ${remaining} ligação(ões).`;
-
-
-        finishButton.disabled =
-            true;
+            "🎯 Todas as ligações estão corretas!";
 
     }
 
     else {
 
-        status.textContent =
-            "🎯 Todas as ligações foram encontradas!";
-
-
         finishButton.disabled =
-            false;
+            true;
+
+
+        status.textContent =
+            `🔗 ${correctAnswers} de ${totalAnswers} ligações corretas.`;
 
     }
 
 }
 
 
-
 /* ============================================================
-   FINAL
+   TERMINAR
 ============================================================ */
 
 function finishChallenge() {
 
     if (
-        correctAnswers < totalAnswers
+        finished
     ) {
         return;
     }
+
+
+    if (
+        correctAnswers !== totalAnswers
+    ) {
+        return;
+    }
+
+
+    finished = true;
 
 
     document
@@ -1511,74 +1752,25 @@ function finishChallenge() {
         `${score} / 100`;
 
 
-    let message;
-
-
-    if (
-        score >= 100
-    ) {
-
-        message = `
-            🔥 <strong>Perfeito.</strong><br><br>
-
-            Quatro situações.
-            Quatro ligações.
-            Zero erros.
-            <br><br>
-            Estás pronto para o último nível.
-        `;
-
-    }
-
-    else if (
-        score >= 90
-    ) {
-
-        message = `
-            🧠 <strong>Excelente trabalho!</strong><br><br>
-
-            Identificaste rapidamente as situações
-            e praticamente não deste pontos ao inimigo.
-        `;
-
-    }
-
-    else if (
-        score >= 70
-    ) {
-
-        message = `
-            👍 <strong>Bom trabalho!</strong><br><br>
-
-            Chegaste ao fim, mas algumas ligações
-            erradas fizeram estragos na pontuação.
-        `;
-
-    }
-
-    else {
-
-        message = `
-            😈 <strong>Sobreviveste.</strong><br><br>
-
-            Mas o Boss não vai facilitar.
-            Talvez seja melhor manter os olhos bem abertos.
-        `;
-
-    }
-
-
     document
         .getElementById("finalMessage")
         .innerHTML =
-        message;
+        `
+        🔗 <strong>Excelente!</strong><br><br>
+
+        Conseguistes identificar corretamente
+        as quatro situações de segurança.
+
+        <br><br>
+
+        Mas ainda falta um último teste...
+        `;
 
 }
 
 
-
 /* ============================================================
-   BOSS LEVEL
+   BOSS FINAL
 ============================================================ */
 
 function goToBoss() {
@@ -1589,10 +1781,11 @@ function goToBoss() {
 }
 
 
-
 /* ============================================================
    INICIALIZAÇÃO
 ============================================================ */
+
+shuffleAnswers();
 
 updateInterface();
 

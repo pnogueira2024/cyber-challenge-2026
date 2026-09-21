@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
@@ -191,11 +192,6 @@ button:hover {
     margin-top: 0;
 }
 
-/*
-   IMPORTANTE:
-   Os elementos clicáveis NÃO têm destaque inicial.
-*/
-
 .clickable {
     cursor: pointer;
     border-radius: 4px;
@@ -317,6 +313,20 @@ button:hover {
     margin-top: 25px;
 }
 
+.save-status {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #9ba8bb;
+}
+
+.save-status.success {
+    color: #4ade80;
+}
+
+.save-status.error {
+    color: #f87171;
+}
+
 @media (max-width: 600px) {
 
     .container {
@@ -364,215 +374,145 @@ button:hover {
 }
 
 </style>
-</head>
 
+</head>
 
 <body>
 
 <div class="container">
 
-
-<!-- =========================================================
-     HEADER
-========================================================= -->
-
 <div class="header">
 
-    <div class="logo">🕵️‍♂️</div>
+```
+<div class="logo">🕵️‍♂️</div>
 
-    <h1>
-        CYBER CHALLENGE 2026
-    </h1>
+<h1>
+    CYBER CHALLENGE 2026
+</h1>
 
-    <div class="subtitle">
-        Consegues apanhar o phish antes que ele te apanhe?
-    </div>
+<div class="subtitle">
+    Consegues apanhar o phish antes que ele te apanhe?
+</div>
+```
 
 </div>
-
-
-
-<!-- =========================================================
-     START SCREEN
-========================================================= -->
 
 <div id="startScreen" class="card">
 
-    <h2>
-        🎯 Desafio 01 — O Caça-Phish
-    </h2>
+```
+<h2>
+    🎯 Desafio 01 — O Caça-Phish
+</h2>
 
-    <p>
-        A tua missão é analisar <strong>10 emails</strong>
-        e identificar sinais de phishing, fraude ou engenharia social.
-    </p>
+<p>
+    A tua missão é analisar <strong>10 emails</strong>
+    e identificar sinais de phishing, fraude ou engenharia social.
+</p>
 
-    <div class="rules">
+<div class="rules">
 
-        <strong>Como jogar:</strong>
+    <strong>Como jogar:</strong>
 
-        <ul>
+    <ul>
 
-            <li>
-                Analisa cada email com atenção.
-            </li>
+        <li>
+            Analisa cada email com atenção.
+        </li>
 
-            <li>
-                Clica nos elementos que consideras suspeitos.
-            </li>
+        <li>
+            Clica nos elementos que consideras suspeitos.
+        </li>
 
-            <li>
-                Nem tudo o que parece estranho é necessariamente perigoso.
-            </li>
+        <li>
+            Nem tudo o que parece estranho é necessariamente perigoso.
+        </li>
 
-            <li>
-                Em alguns emails existem <strong>falsos positivos</strong>.
-            </li>
+        <li>
+            Em alguns emails existem <strong>falsos positivos</strong>.
+        </li>
 
-            <li>
-                Se achares que o email é legítimo,
-                usa <strong>“Não encontrei nada suspeito”</strong>.
-            </li>
+        <li>
+            Se achares que o email é legítimo,
+            usa <strong>“Não encontrei nada suspeito”</strong>.
+        </li>
 
-            <li>
-                Tens apenas <strong>uma tentativa</strong>.
-            </li>
+        <li>
+            Tens apenas <strong>uma tentativa</strong>.
+        </li>
 
-        </ul>
-
-    </div>
-
-
-    <label for="codename">
-        <strong>Escolhe o teu Cyber Codename</strong>
-    </label>
-
-    <input
-        id="codename"
-        type="text"
-        maxlength="20"
-        placeholder="Ex.: CyberNinja"
-        autocomplete="off"
-    >
-
-
-    <button onclick="startGame()">
-        🚀 Começar o desafio
-    </button>
+    </ul>
 
 </div>
 
 
+<label for="codename">
+    <strong>Escolhe o teu Cyber Codename</strong>
+</label>
 
-<!-- =========================================================
-     GAME SCREEN
-========================================================= -->
+<input
+    id="codename"
+    type="text"
+    maxlength="20"
+    placeholder="Ex.: CyberNinja"
+    autocomplete="off"
+>
+
+
+<button onclick="startGame()">
+    🚀 Começar o desafio
+</button>
+```
+
+</div>
 
 <div id="gameScreen" class="hidden">
 
-    <div class="topbar">
+```
+<div class="topbar">
 
-        <div class="stat">
+    <div class="stat">
 
-            <div class="stat-label">
-                Email
-            </div>
-
-            <div
-                id="challengeNumber"
-                class="stat-value"
-            >
-                1 / 10
-            </div>
-
+        <div class="stat-label">
+            Email
         </div>
 
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Pontuação
-            </div>
-
-            <div
-                id="score"
-                class="stat-value"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="stat-label">
-                Tempo
-            </div>
-
-            <div
-                id="timer"
-                class="stat-value"
-            >
-                00:00
-            </div>
-
+        <div
+            id="challengeNumber"
+            class="stat-value"
+        >
+            1 / 10
         </div>
 
     </div>
 
 
-    <div class="progress-wrapper">
+    <div class="stat">
+
+        <div class="stat-label">
+            Pontuação
+        </div>
 
         <div
-            id="progress"
-            class="progress"
-        ></div>
+            id="score"
+            class="stat-value"
+        >
+            0
+        </div>
 
     </div>
 
 
-    <div class="card">
+    <div class="stat">
 
-        <h2 id="challengeTitle">
-            Email 01
-        </h2>
-
-
-        <div class="instruction">
-            🔎 Analisa o email. Podes clicar nos elementos que consideras suspeitos
-            ou declarar que não encontraste nenhum sinal suspeito.
+        <div class="stat-label">
+            Tempo
         </div>
 
-
-        <div id="emailContainer"></div>
-
-
         <div
-            id="feedback"
-            class="feedback hidden"
-        ></div>
-
-
-        <div class="next-area">
-
-            <button
-                id="safeButton"
-                class="safe-button"
-                onclick="answerSafe()"
-            >
-                🛡️ Não encontrei nada suspeito
-            </button>
-
-
-            <button
-                id="nextButton"
-                class="hidden"
-                onclick="nextQuestion()"
-            >
-                Próximo email →
-            </button>
-
+            id="timer"
+            class="stat-value"
+        >
+            00:00
         </div>
 
     </div>
@@ -580,75 +520,135 @@ button:hover {
 </div>
 
 
+<div class="progress-wrapper">
 
-<!-- =========================================================
-     END SCREEN
-========================================================= -->
+    <div
+        id="progress"
+        class="progress"
+    ></div>
+
+</div>
+
+
+<div class="card">
+
+    <h2 id="challengeTitle">
+        Email 01
+    </h2>
+
+
+    <div class="instruction">
+        🔎 Analisa o email. Podes clicar nos elementos que consideras suspeitos
+        ou declarar que não encontraste nenhum sinal suspeito.
+    </div>
+
+
+    <div id="emailContainer"></div>
+
+
+    <div
+        id="feedback"
+        class="feedback hidden"
+    ></div>
+
+
+    <div class="next-area">
+
+        <button
+            id="safeButton"
+            class="safe-button"
+            onclick="answerSafe()"
+        >
+            🛡️ Não encontrei nada suspeito
+        </button>
+
+
+        <button
+            id="nextButton"
+            class="hidden"
+            onclick="nextQuestion()"
+        >
+            Próximo email →
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 <div id="endScreen" class="card hidden">
 
-    <div class="final-score">
+```
+<div class="final-score">
 
-        <h2>
-            🏆 DESAFIO 01 CONCLUÍDO
-        </h2>
+    <h2>
+        🏆 DESAFIO 01 CONCLUÍDO
+    </h2>
+
+    <p>
+        Cyber Codename:
+        <strong id="finalCodename"></strong>
+    </p>
+
+
+    <div
+        id="finalScore"
+        class="big"
+    >
+        0 / 100
+    </div>
+
+
+    <p id="finalTime"></p>
+
+    <div
+        id="saveStatus"
+        class="save-status"
+    >
+        A guardar o resultado...
+    </div>
+
+
+    <div
+        id="finalMessage"
+        class="final-message"
+    ></div>
+
+
+    <div class="next-challenge-box">
+
+        <div class="unlock">
+            🔓 NOVO DESAFIO DESBLOQUEADO
+        </div>
+
+        <h3>
+            DESAFIO 02 — CLEAR DESK
+        </h3>
 
         <p>
-            Cyber Codename:
-            <strong id="finalCodename"></strong>
+            Agora vamos sair da caixa de correio.
         </p>
 
+        <p>
+            Há <strong>5 falhas de segurança</strong>
+            escondidas numa secretária.
+            E existem também algumas boas práticas.
+        </p>
 
-        <div
-            id="finalScore"
-            class="big"
+        <button
+            onclick="goToChallenge02()"
         >
-            0 / 100
-        </div>
-
-
-        <p id="finalTime"></p>
-
-
-        <div
-            id="finalMessage"
-            class="final-message"
-        ></div>
-
-
-        <div class="next-challenge-box">
-
-            <div class="unlock">
-                🔓 NOVO DESAFIO DESBLOQUEADO
-            </div>
-
-            <h3>
-                DESAFIO 02 — CLEAR DESK
-            </h3>
-
-            <p>
-                Agora vamos sair da caixa de correio.
-            </p>
-
-            <p>
-                Há <strong>5 falhas de segurança</strong>
-                escondidas numa secretária.
-                E existem também algumas boas práticas.
-            </p>
-
-            <button
-                onclick="goToChallenge02()"
-            >
-                🔍 Aceitar Desafio 02 →
-            </button>
-
-        </div>
+            🔍 Aceitar Desafio 02 →
+        </button>
 
     </div>
 
 </div>
+```
 
-
+</div>
 
 <div class="footer">
     Cyber Challenge 2026 · Sport TV
@@ -656,21 +656,97 @@ button:hover {
 
 </div>
 
-
-
 <script>
+
+/* ============================================================
+   CONFIGURAÇÃO DO BACKEND
+============================================================ */
+
+/*
+   COLOCA AQUI O URL REAL DO TEU CLOUDFLARE WORKER.
+
+   Exemplo:
+   const CYBER_WORKER_URL =
+       "https://cyberchalange2026.paulonnogueira.workers.dev/";
+*/
+
+const CYBER_WORKER_URL =
+    "https://TEU-WORKER.workers.dev";
+
+
+/* ============================================================
+   TOKEN DO JOGO
+============================================================ */
+
+/*
+   O token identifica a participação do jogador.
+
+   Se o jogo for aberto com:
+   https://.../index.html?token=ABC123
+
+   será utilizado ABC123.
+
+   Se não existir token no URL, é criado um token local
+   automaticamente para permitir testes.
+*/
+
+function getGameToken() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const urlToken =
+        params.get("token");
+
+    if (urlToken) {
+
+        localStorage.setItem(
+            "cyberChallenge_token",
+            urlToken
+        );
+
+        return urlToken;
+    }
+
+
+    let storedToken =
+        localStorage.getItem(
+            "cyberChallenge_token"
+        );
+
+
+    if (!storedToken) {
+
+        storedToken =
+            "TEST-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 8);
+
+        localStorage.setItem(
+            "cyberChallenge_token",
+            storedToken
+        );
+    }
+
+
+    return storedToken;
+}
+
+
+const gameToken =
+    getGameToken();
 
 
 /* ============================================================
    PERGUNTAS
-   Cada email vale 10 pontos.
 ============================================================ */
 
 const questions = [
-
-/* ============================================================
-   01
-============================================================ */
 
 {
     title: "📩 Email 01 — A conta Microsoft 365",
@@ -772,12 +848,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   02
-============================================================ */
-
 {
     title: "📄 Email 02 — Documento partilhado",
 
@@ -868,12 +938,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   03
-============================================================ */
-
 {
     title: "💰 Email 03 — Fatura pendente",
 
@@ -962,12 +1026,6 @@ const questions = [
         </div>
     `
 },
-
-
-
-/* ============================================================
-   04
-============================================================ */
 
 {
     title: "🎁 Email 04 — Pedido do chefe",
@@ -1063,12 +1121,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   05
-============================================================ */
-
 {
     title: "🔐 Email 05 — Password expirada",
 
@@ -1153,12 +1205,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   06 — LEGÍTIMO
-============================================================ */
-
 {
     title: "💬 Email 06 — Convite Teams",
 
@@ -1238,12 +1284,6 @@ const questions = [
         </div>
     `
 },
-
-
-
-/* ============================================================
-   07
-============================================================ */
 
 {
     title: "📦 Email 07 — Encomenda",
@@ -1337,12 +1377,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   08
-============================================================ */
-
 {
     title: "🚨 Email 08 — Alerta de segurança",
 
@@ -1433,12 +1467,6 @@ const questions = [
     `
 },
 
-
-
-/* ============================================================
-   09 — LEGÍTIMO
-============================================================ */
-
 {
     title: "☁️ Email 09 — OneDrive",
 
@@ -1516,12 +1544,6 @@ const questions = [
         </div>
     `
 },
-
-
-
-/* ============================================================
-   10 — BOSS FINAL
-============================================================ */
 
 {
     title: "👑 BOSS FINAL — O verdadeiro teste",
@@ -1647,7 +1669,6 @@ const questions = [
 ];
 
 
-
 /* ============================================================
    VARIÁVEIS DO JOGO
 ============================================================ */
@@ -1663,7 +1684,6 @@ let startTime = null;
 let timerInterval = null;
 
 let answeredCurrentQuestion = false;
-
 
 
 /* ============================================================
@@ -1735,7 +1755,6 @@ function startGame() {
 }
 
 
-
 /* ============================================================
    TIMER
 ============================================================ */
@@ -1770,7 +1789,6 @@ function updateTimer() {
         ":" +
         String(seconds).padStart(2, "0");
 }
-
 
 
 /* ============================================================
@@ -1829,10 +1847,6 @@ function loadQuestion() {
         "";
 
 
-    /*
-       O botão está SEMPRE disponível.
-    */
-
     const safeButton =
         document.getElementById("safeButton");
 
@@ -1855,10 +1869,6 @@ function loadQuestion() {
     );
 
 
-    /*
-       Ativar os elementos clicáveis.
-    */
-
     document
         .querySelectorAll(".clickable")
         .forEach(
@@ -1876,7 +1886,6 @@ function loadQuestion() {
             }
         );
 }
-
 
 
 /* ============================================================
@@ -1916,10 +1925,6 @@ function checkAnswer(element) {
         document.getElementById("feedback");
 
 
-    /*
-       SINAL REAL
-    */
-
     if (suspect) {
 
         score += points;
@@ -1945,11 +1950,6 @@ function checkAnswer(element) {
         `;
 
     }
-
-
-    /*
-       FALSO POSITIVO
-    */
 
     else {
 
@@ -1993,11 +1993,6 @@ function checkAnswer(element) {
     );
 
 
-    /*
-       Depois de clicar num elemento,
-       continuamos a permitir "não encontrei mais nada".
-    */
-
     const safeButton =
         document.getElementById("safeButton");
 
@@ -2006,16 +2001,10 @@ function checkAnswer(element) {
         "🛡️ Não encontrei mais nada suspeito";
 
 
-    /*
-       O jogador pode avançar depois
-       de tomar uma decisão.
-    */
-
     document
         .getElementById("nextButton")
         .classList.remove("hidden");
 }
-
 
 
 /* ============================================================
@@ -2032,18 +2021,9 @@ function answerSafe() {
         document.getElementById("feedback");
 
 
-    /*
-       EMAIL LEGÍTIMO
-    */
-
     if (
         question.safe === true
     ) {
-
-        /*
-           Se já foi dada uma resposta,
-           não atribuir novamente os pontos.
-        */
 
         if (
             answeredCurrentQuestion
@@ -2084,11 +2064,6 @@ function answerSafe() {
         `;
 
     }
-
-
-    /*
-       EMAIL SUSPEITO
-    */
 
     else {
 
@@ -2145,7 +2120,6 @@ function answerSafe() {
 }
 
 
-
 /* ============================================================
    NEXT QUESTION
 ============================================================ */
@@ -2169,6 +2143,122 @@ function nextQuestion() {
     loadQuestion();
 }
 
+
+/* ============================================================
+   GUARDAR RESULTADO NA D1
+============================================================ */
+
+async function saveChallenge01Result(
+    finalScore,
+    finalTime
+) {
+
+    const saveStatus =
+        document.getElementById("saveStatus");
+
+
+    saveStatus.textContent =
+        "💾 A guardar o resultado...";
+
+
+    saveStatus.className =
+        "save-status";
+
+
+    const payload = {
+
+        token: gameToken,
+
+        d1_score: finalScore,
+
+        d1_time: finalTime,
+
+        d2_score: 0,
+
+        d2_time: 0,
+
+        d3_score: 0,
+
+        d3_time: 0,
+
+        d4_score: 0,
+
+        d4_time: 0,
+
+        boss_score: 0,
+
+        boss_time: 0,
+
+        total_score: finalScore,
+
+        total_time: finalTime,
+
+        completed_date:
+            new Date().toISOString()
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                CYBER_WORKER_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            payload
+                        )
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.error ||
+                "Erro ao guardar o resultado."
+            );
+        }
+
+
+        saveStatus.textContent =
+            "✅ Resultado guardado com sucesso.";
+
+
+        saveStatus.className =
+            "save-status success";
+
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao guardar resultado:",
+            error
+        );
+
+
+        saveStatus.textContent =
+            "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
+
+
+        saveStatus.className =
+            "save-status error";
+    }
+}
 
 
 /* ============================================================
@@ -2199,14 +2289,19 @@ function endGame() {
 
 
     /*
-       NOVO:
-       Guardar a pontuação final do Desafio 01
-       para o Boss Final.
+       Mantemos também o resultado no localStorage
+       para compatibilidade com os restantes desafios.
     */
 
     localStorage.setItem(
         "cyberChallenge_d1",
         score
+    );
+
+
+    localStorage.setItem(
+        "cyberChallenge_d1_time",
+        elapsed
     );
 
 
@@ -2310,8 +2405,17 @@ function endGame() {
         .getElementById("progress")
         .style.width =
         "100%";
-}
 
+
+    /*
+       Enviar resultado para o Worker/D1.
+    */
+
+    saveChallenge01Result(
+        score,
+        elapsed
+    );
+}
 
 
 /* ============================================================
@@ -2323,7 +2427,6 @@ function goToChallenge02() {
     window.location.href =
         "desafio02.html";
 }
-
 
 </script>
 

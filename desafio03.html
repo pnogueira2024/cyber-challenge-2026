@@ -653,6 +653,11 @@
 
     <div class="instructions">
 
+        <div style="margin-bottom:14px;">
+            <strong>Cyber Codename:</strong>
+            <span id="codenameDisplay">Cyber Ninja</span>
+        </div>
+
         Tens vários conceitos relacionados com cibersegurança.
 
         <br><br>
@@ -708,6 +713,10 @@
 
             <div>
                 <span id="found">0</span> / 4
+            </div>
+
+            <div>
+                ⏱️ <span id="timer">0:00</span>
             </div>
 
             <div class="progress">
@@ -1018,11 +1027,43 @@
    VARIÁVEIS
    ========================================================= */
 
+const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+const params = new URLSearchParams(window.location.search);
+
+const tokenFromUrl = params.get("token");
+const codenameFromUrl = params.get("codename");
+
+const token =
+    tokenFromUrl ||
+    localStorage.getItem("cyberChallenge_token");
+
+const codename =
+    codenameFromUrl ||
+    localStorage.getItem("cyberChallenge_codename") ||
+    "Cyber Ninja";
+
+if (tokenFromUrl) {
+    localStorage.setItem("cyberChallenge_token", tokenFromUrl);
+}
+
+if (codenameFromUrl) {
+    localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+}
+
+document.getElementById("codenameDisplay").textContent = codename;
+
 let score = 0;
 
 let found = 0;
 
 let selectedConcept = null;
+
+let challengeStarted = false;
+
+let startTime = null;
+let timerInterval = null;
+let elapsedSeconds = 0;
 
 const totalQuestions = 4;
 
@@ -1033,6 +1074,16 @@ const totalQuestions = 4;
 
 function startChallenge() {
 
+    if (!token) {
+        alert(
+            "Este link de acesso não tem um token válido. " +
+            "Volta ao email de inscrição e utiliza o teu link pessoal."
+        );
+        return;
+    }
+
+    challengeStarted = true;
+
     document
         .getElementById("startScreen")
         .classList.add("hidden");
@@ -1041,9 +1092,52 @@ function startChallenge() {
         .getElementById("gameScreen")
         .classList.remove("hidden");
 
+    startTimer();
     shuffleConcepts();
-
     updateUI();
+}
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+function startTimer() {
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
+    startTime = Date.now() - (elapsedSeconds * 1000);
+
+    timerInterval = setInterval(() => {
+
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+        updateTimerUI();
+
+    }, 1000);
+
+    updateTimerUI();
+}
+
+function stopTimer() {
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateTimerUI() {
+
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+
+    document.getElementById("timer").textContent =
+        minutes + ":" + String(seconds).padStart(2, "0");
 }
 
 
@@ -1502,86 +1596,160 @@ function processDrop(
    TERMINAR
    ========================================================= */
 
+async function saveResult() {
+
+    if (!token) {
+        throw new Error("Token não encontrado.");
+    }
+
+    const payload = {
+
+        token: token,
+
+        d1_score:
+            Number(localStorage.getItem("cyberChallenge_d1") || 0),
+
+        d1_time:
+            Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
+
+        d2_score:
+            Number(localStorage.getItem("cyberChallenge_d2") || 0),
+
+        d2_time:
+            Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
+
+        d3_score: score,
+        d3_time: elapsedSeconds,
+
+        d4_score:
+            Number(localStorage.getItem("cyberChallenge_d4") || 0),
+
+        d4_time:
+            Number(localStorage.getItem("cyberChallenge_d4_time") || 0),
+
+        boss_score:
+            Number(localStorage.getItem("cyberChallenge_boss") || 0),
+
+        boss_time:
+            Number(localStorage.getItem("cyberChallenge_boss_time") || 0),
+
+        completed_date: new Date().toISOString()
+    };
+
+    const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+        throw new Error(
+            result.error || "Não foi possível guardar o resultado."
+        );
+    }
+
+    return result;
+}
+
+
 function finishChallenge() {
 
-    if (
-        found < totalQuestions
-    ) {
+    if (!challengeStarted || found < totalQuestions) {
         return;
     }
 
-
-    /*
-     * GUARDA A PONTUAÇÃO DO DESAFIO 03
-     *
-     * O Boss Final vai buscar este valor
-     * através de localStorage.
-     */
+    challengeStarted = false;
+    stopTimer();
 
     localStorage.setItem(
         "cyberChallenge_d3",
         score
     );
 
+    localStorage.setItem(
+        "cyberChallenge_d3_time",
+        elapsedSeconds
+    );
 
-    document
-        .getElementById("gameScreen")
-        .classList.add("hidden");
+    const statusText =
+        document.getElementById("statusText");
 
+    statusText.textContent =
+        "A guardar o resultado...";
 
-    document
-        .getElementById("endScreen")
-        .classList.remove("hidden");
+    saveResult()
+        .then(() => {
 
+            statusText.textContent =
+                "Resultado guardado com sucesso.";
 
-    document
-        .getElementById("finalScore")
-        .textContent =
-            score;
+            document.getElementById("gameScreen")
+                .classList.add("hidden");
 
+            document.getElementById("endScreen")
+                .classList.remove("hidden");
 
-    const title =
-        document.getElementById("endTitle");
+            document.getElementById("finalScore")
+                .textContent = score;
 
+            const title =
+                document.getElementById("endTitle");
 
-    const message =
-        document.getElementById("endMessage");
+            const message =
+                document.getElementById("endMessage");
 
+            if (score >= 100) {
 
-    if (score >= 100) {
+                title.textContent =
+                    "🏆 Cyber Sorter perfeito!";
 
-        title.textContent =
-            "🏆 Cyber Sorter perfeito!";
+                message.textContent =
+                    "Acertaste todas as associações sem perder pontos. " +
+                    "Excelente domínio dos conceitos de cibersegurança.";
 
+            } else if (score >= 75) {
 
-        message.textContent =
-            "Acertaste todas as associações sem perder pontos. " +
-            "Excelente domínio dos conceitos de cibersegurança.";
+                title.textContent =
+                    "🎯 Muito bem!";
 
-    }
-    else if (score >= 75) {
+                message.textContent =
+                    "Conseguiste ligar corretamente os quatro conceitos. " +
+                    "Algumas tentativas menos certas custaram-te alguns pontos.";
 
-        title.textContent =
-            "🎯 Muito bem!";
+            } else {
 
+                title.textContent =
+                    "🧠 Desafio concluído.";
 
-        message.textContent =
-            "Conseguiste ligar corretamente os quatro conceitos. " +
-            "Algumas tentativas menos certas custaram-te alguns pontos.";
+                message.textContent =
+                    "As associações certas ficaram feitas, " +
+                    "mas alguns erros pelo caminho reduziram a pontuação.";
+            }
+        })
+        .catch(error => {
 
-    }
-    else {
+            console.error(error);
 
-        title.textContent =
-            "🧠 Desafio concluído.";
+            statusText.textContent =
+                "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
 
+            challengeStarted = true;
 
-        message.textContent =
-            "As associações certas ficaram feitas, " +
-            "mas alguns erros pelo caminho reduziram a pontuação.";
+            startTime =
+                Date.now() - (elapsedSeconds * 1000);
 
-    }
+            startTimer();
 
+            alert(
+                "⚠️ Não foi possível guardar o resultado.\\n\\n" +
+                "O resultado ficou guardado localmente. " +
+                "Tenta novamente."
+            );
+        });
 }
 
 

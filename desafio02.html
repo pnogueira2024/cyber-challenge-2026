@@ -337,6 +337,11 @@
         Desafio 02 — Encontra os problemas de segurança numa secretária.
     </p>
 
+    <p class="subtitle" style="margin-bottom:18px;">
+        🛡️ Cyber Codename:
+        <strong id="codenameDisplay">Cyber Ninja</strong>
+    </p>
+
     <div class="instructions">
         Analisa a imagem e encontra tudo o que possa representar um risco
         de segurança.<br><br>
@@ -369,6 +374,11 @@
             <div>
                 Pontos:
                 <span id="score" class="score">0</span>
+            </div>
+
+            <div>
+                Tempo:
+                <span id="timer" class="score">00:00</span>
             </div>
 
             <div>
@@ -630,148 +640,175 @@
 
 <script>
 
+    const WORKER_URL =
+        "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const tokenFromUrl = params.get("token");
+    const codenameFromUrl = params.get("codename");
+
+    const token =
+        tokenFromUrl ||
+        localStorage.getItem("cyberChallenge_token");
+
+    const codename =
+        codenameFromUrl ||
+        localStorage.getItem("cyberChallenge_codename") ||
+        "Cyber Ninja";
+
+    if (tokenFromUrl) {
+        localStorage.setItem("cyberChallenge_token", tokenFromUrl);
+    }
+
+    if (codenameFromUrl) {
+        localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+    }
+
     let score = 0;
     let foundFaults = 0;
     let challengeStarted = false;
 
+    let startTime = null;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+
     const maxFaults = 5;
 
+    document.getElementById("codenameDisplay").textContent = codename;
+
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return String(minutes).padStart(2, "0") + ":" +
+               String(seconds).padStart(2, "0");
+    }
+
+    function startTimer() {
+        startTime = Date.now();
+
+        timerInterval = setInterval(() => {
+            elapsedSeconds =
+                Math.floor((Date.now() - startTime) / 1000);
+
+            document.getElementById("timer").textContent =
+                formatTime(elapsedSeconds);
+        }, 250);
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        if (startTime) {
+            elapsedSeconds =
+                Math.floor((Date.now() - startTime) / 1000);
+        }
+
+        document.getElementById("timer").textContent =
+            formatTime(elapsedSeconds);
+    }
 
     function startChallenge() {
 
+        if (!token) {
+            alert(
+                "Este link de acesso não tem um token válido. " +
+                "Volta ao email de inscrição e utiliza o teu link pessoal."
+            );
+            return;
+        }
+
         challengeStarted = true;
 
-        document
-            .getElementById("startScreen")
-            .classList.add("hidden");
+        document.getElementById("startScreen").classList.add("hidden");
+        document.getElementById("gameScreen").classList.remove("hidden");
 
-        document
-            .getElementById("gameScreen")
-            .classList.remove("hidden");
-
+        startTimer();
         updateUI();
     }
 
-
     function updateUI() {
-
         document.getElementById("score").textContent = score;
-
         document.getElementById("found").textContent = foundFaults;
 
         const percentage =
             Math.min((foundFaults / maxFaults) * 100, 100);
 
-        document
-            .getElementById("progressBar")
-            .style.width = percentage + "%";
+        document.getElementById("progressBar").style.width =
+            percentage + "%";
     }
 
-
     function showFeedback(message, type) {
-
-        const feedback =
-            document.getElementById("feedback");
+        const feedback = document.getElementById("feedback");
 
         feedback.textContent = message;
-
         feedback.className = "feedback " + type;
 
         clearTimeout(window.feedbackTimeout);
 
         window.feedbackTimeout = setTimeout(() => {
-
             feedback.textContent = "";
             feedback.className = "feedback";
-
         }, 2200);
     }
 
-
     function handleHotspot(event) {
 
-        if (!challengeStarted) {
-            return;
-        }
+        if (!challengeStarted) return;
 
         const hotspot = event.currentTarget;
 
-        if (hotspot.classList.contains("found")) {
-            return;
-        }
-
-
-        /*
-         * FALHA DE SEGURANÇA
-         */
+        if (hotspot.classList.contains("found")) return;
 
         if (hotspot.classList.contains("fault")) {
 
-            const points =
-                parseInt(
-                    hotspot.dataset.points || "0",
-                    10
-                );
+            const points = parseInt(
+                hotspot.dataset.points || "0",
+                10
+            );
 
             hotspot.classList.add("found");
-
             score += points;
-
             foundFaults++;
 
             showFeedback(
                 "🎯 Boa! Encontraste uma falha. +" +
-                points +
-                " pontos.",
+                points + " pontos.",
                 "good"
             );
 
             updateUI();
-
             return;
         }
 
-
-        /*
-         * BÓNUS
-         */
-
         if (hotspot.classList.contains("bonus")) {
 
-            const points =
-                parseInt(
-                    hotspot.dataset.points || "0",
-                    10
-                );
+            const points = parseInt(
+                hotspot.dataset.points || "0",
+                10
+            );
 
             hotspot.classList.add("found");
-
             score += points;
 
             showFeedback(
                 "⭐ Bónus encontrado! +" +
-                points +
-                " pontos.",
+                points + " pontos.",
                 "good"
             );
 
             updateUI();
-
             return;
         }
-
-
-        /*
-         * FALSO POSITIVO
-         */
 
         if (hotspot.classList.contains("false-positive")) {
 
             score -= 3;
 
-            if (score < 0) {
-                score = 0;
-            }
+            if (score < 0) score = 0;
 
             hotspot.classList.add("wrong");
 
@@ -785,130 +822,190 @@
             );
 
             updateUI();
-
-            return;
         }
-
     }
 
+    document.querySelectorAll(".hotspot").forEach(hotspot => {
+        hotspot.addEventListener("click", handleHotspot);
+    });
 
-    /*
-     * Liga os eventos aos hotspots
-     */
+    async function saveResult() {
 
-    document
-        .querySelectorAll(".hotspot")
-        .forEach(hotspot => {
+        if (!token) {
+            throw new Error("Token não encontrado.");
+        }
 
-            hotspot.addEventListener(
-                "click",
-                handleHotspot
-            );
+        const payload = {
 
+            token: token,
+
+            d1_score:
+                Number(localStorage.getItem("cyberChallenge_d1") || 0),
+
+            d1_time:
+                Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
+
+            d2_score: score,
+            d2_time: elapsedSeconds,
+
+            d3_score:
+                Number(localStorage.getItem("cyberChallenge_d3") || 0),
+
+            d3_time:
+                Number(localStorage.getItem("cyberChallenge_d3_time") || 0),
+
+            d4_score:
+                Number(localStorage.getItem("cyberChallenge_d4") || 0),
+
+            d4_time:
+                Number(localStorage.getItem("cyberChallenge_d4_time") || 0),
+
+            boss_score:
+                Number(localStorage.getItem("cyberChallenge_boss") || 0),
+
+            boss_time:
+                Number(localStorage.getItem("cyberChallenge_boss_time") || 0),
+
+            completed_date: new Date().toISOString()
+        };
+
+        const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
+        const data = await response.json();
 
-    /*
-     * Terminar desafio a qualquer momento
-     */
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Não foi possível guardar o resultado."
+            );
+        }
 
-    function finishChallenge() {
+        return data;
+    }
 
-        /*
-         * Guarda a pontuação final do Desafio 02
-         * para ser utilizada posteriormente pelo Boss Final.
-         */
+    async function finishChallenge() {
+
+        if (!challengeStarted) return;
+
+        challengeStarted = false;
+        stopTimer();
 
         localStorage.setItem(
             "cyberChallenge_d2",
             score
         );
 
+        localStorage.setItem(
+            "cyberChallenge_d2_time",
+            elapsedSeconds
+        );
 
-        document
-            .getElementById("gameScreen")
-            .classList.add("hidden");
+        const statusText =
+            document.getElementById("statusText");
 
-        document
-            .getElementById("endScreen")
-            .classList.remove("hidden");
+        statusText.textContent =
+            "A guardar o resultado...";
 
+        try {
 
-        document
-            .getElementById("finalScore")
-            .textContent = score;
+            await saveResult();
 
+            statusText.textContent =
+                "Resultado guardado com sucesso.";
 
-        const endTitle =
-            document.getElementById("endTitle");
+            document.getElementById("gameScreen")
+                .classList.add("hidden");
 
-        const endMessage =
-            document.getElementById("endMessage");
+            document.getElementById("endScreen")
+                .classList.remove("hidden");
 
+            document.getElementById("finalScore")
+                .textContent = score;
 
-        if (
-            foundFaults === 5 &&
-            score >= 100
-        ) {
+            const endTitle =
+                document.getElementById("endTitle");
 
-            endTitle.textContent =
-                "🏆 Clear Desk perfeito!";
+            const endMessage =
+                document.getElementById("endMessage");
 
-            endMessage.textContent =
-                "Encontraste todas as falhas, descobriste os bónus " +
-                "e não caíste nos falsos positivos. Excelente trabalho.";
+            if (foundFaults === 5 && score >= 100) {
 
+                endTitle.textContent =
+                    "🏆 Clear Desk perfeito!";
+
+                endMessage.textContent =
+                    "Encontraste todas as falhas, descobriste os bónus " +
+                    "e não caíste nos falsos positivos. Excelente trabalho.";
+
+            } else if (foundFaults === 5) {
+
+                endTitle.textContent =
+                    "🎯 Muito bem!";
+
+                endMessage.textContent =
+                    "Encontraste todas as falhas de segurança. " +
+                    "Agora já sabes que uma secretária aparentemente normal " +
+                    "pode esconder vários riscos.";
+
+            } else if (foundFaults >= 3) {
+
+                endTitle.textContent =
+                    "🔎 Quase lá!";
+
+                endMessage.textContent =
+                    "Encontraste grande parte dos problemas, " +
+                    "mas ainda ficaram algumas falhas por identificar.";
+
+            } else if (foundFaults > 0) {
+
+                endTitle.textContent =
+                    "🛡️ Missão cumprida.";
+
+                endMessage.textContent =
+                    "Encontraste alguns problemas, mas uma boa análise " +
+                    "de segurança exige atenção a todos os detalhes.";
+
+            } else {
+
+                endTitle.textContent =
+                    "👀 Saíste cedo da investigação.";
+
+                endMessage.textContent =
+                    "Não encontraste nenhuma falha antes de terminar. " +
+                    "Talvez valha a pena olhar novamente para a secretária.";
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            statusText.textContent =
+                "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
+
+            challengeStarted = true;
+
+            startTime =
+                Date.now() - (elapsedSeconds * 1000);
+
+            startTimer();
+
+            alert(
+                "⚠️ Não foi possível guardar o resultado.
+
+" +
+                "O resultado ficou guardado localmente. " +
+                "Tenta novamente."
+            );
         }
-        else if (foundFaults === 5) {
-
-            endTitle.textContent =
-                "🎯 Muito bem!";
-
-            endMessage.textContent =
-                "Encontraste todas as falhas de segurança. " +
-                "Agora já sabes que uma secretária aparentemente normal " +
-                "pode esconder vários riscos.";
-
-        }
-        else if (foundFaults >= 3) {
-
-            endTitle.textContent =
-                "🔎 Quase lá!";
-
-            endMessage.textContent =
-                "Encontraste grande parte dos problemas, " +
-                "mas ainda ficaram algumas falhas por identificar.";
-
-        }
-        else if (foundFaults > 0) {
-
-            endTitle.textContent =
-                "🛡️ Missão cumprida.";
-
-            endMessage.textContent =
-                "Encontraste alguns problemas, mas uma boa análise " +
-                "de segurança exige atenção a todos os detalhes.";
-
-        }
-        else {
-
-            endTitle.textContent =
-                "👀 Saíste cedo da investigação.";
-
-            endMessage.textContent =
-                "Não encontraste nenhuma falha antes de terminar. " +
-                "Talvez valha a pena olhar novamente para a secretária.";
-
-        }
-
     }
 
-
     function goToNextChallenge() {
-
-        window.location.href =
-            "desafio03.html";
-
+        window.location.href = "desafio03.html";
     }
 
 </script>

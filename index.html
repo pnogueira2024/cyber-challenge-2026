@@ -444,14 +444,11 @@ button:hover {
 
 
     <div class="rules" style="margin-top:20px;">
-
         <strong>🛡️ Cyber Codename:</strong>
-
-        <span id="playerWelcome">A carregar...</span>
-
+        <span id="displayCodename">A carregar...</span>
     </div>
 
-    <button id="startButton" onclick="startGame()">
+    <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
         🚀 Começar o desafio
     </button>
 
@@ -703,37 +700,68 @@ function getPlayerToken() {
     }
 
 
-    /*
-       Fallback para testes diretos sem token na URL.
-       Em produção, o ideal é entrar através do URL
-       de inscrição com ?token=XXXX.
-    */
+    return "";
+}
 
-    if (window.crypto && crypto.randomUUID) {
 
-        playerToken =
-            "TEST-" +
-            crypto.randomUUID()
-                .replaceAll("-", "")
-                .substring(0, 12)
-                .toUpperCase();
+/* ============================================================
+   CYBER CODENAME
+============================================================ */
 
-    } else {
+function getPlayerCodename() {
 
-        playerToken =
-            "TEST-" +
-            Date.now().toString(36).toUpperCase();
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const urlCodename =
+        urlParams.get("codename");
+
+    if (urlCodename && urlCodename.trim()) {
+
+        codename = urlCodename.trim().substring(0, 50);
+
+        localStorage.setItem(
+            "cyberChallengeCodename",
+            codename
+        );
+
+        return codename;
     }
 
+    const storedCodename =
+        localStorage.getItem("cyberChallengeCodename");
 
-    localStorage.setItem(
-        "cyberChallengeToken",
-        playerToken
-    );
+    if (storedCodename && storedCodename.trim()) {
 
+        codename = storedCodename.trim();
 
-    return playerToken;
+        return codename;
+    }
+
+    return "";
 }
+
+
+function initialisePlayer() {
+
+    const token = getPlayerToken();
+    const playerCodename = getPlayerCodename();
+    const display = document.getElementById("displayCodename");
+    const startButton = document.getElementById("startButton");
+
+    if (display) {
+        display.textContent = playerCodename || "Não identificado";
+    }
+
+    if (startButton && token && playerCodename) {
+        startButton.disabled = false;
+        startButton.style.opacity = "1";
+        startButton.style.cursor = "pointer";
+    }
+}
+
+
+window.addEventListener("DOMContentLoaded", initialisePlayer);
 
 
 /* ============================================================
@@ -1733,82 +1761,6 @@ let score = 0;
 
 let codename = "";
 
-/*
-   O Cyber Codename vem da inscrição no Microsoft Forms
-   e é passado pelo Power Automate no URL:
-   ?token=XXXX&codename=CyberNinja
-*/
-function getPlayerCodename() {
-
-    const urlParams =
-        new URLSearchParams(window.location.search);
-
-    const urlCodename =
-        urlParams.get("codename");
-
-    if (urlCodename && urlCodename.trim()) {
-
-        codename =
-            urlCodename.trim().substring(0, 50);
-
-        localStorage.setItem(
-            "cyberChallengeCodename",
-            codename
-        );
-
-        return codename;
-    }
-
-    const storedCodename =
-        localStorage.getItem("cyberChallengeCodename");
-
-    if (storedCodename && storedCodename.trim()) {
-
-        codename =
-            storedCodename.trim();
-
-        return codename;
-    }
-
-    codename = "";
-
-    return codename;
-}
-
-
-function initialisePlayer() {
-
-    getPlayerToken();
-    getPlayerCodename();
-
-    const welcome =
-        document.getElementById("playerWelcome");
-
-    const startButton =
-        document.getElementById("startButton");
-
-    if (codename) {
-
-        welcome.textContent = codename;
-
-        if (startButton) {
-            startButton.disabled = false;
-        }
-
-    } else {
-
-        welcome.textContent =
-            "Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email.";
-
-        if (startButton) {
-            startButton.disabled = true;
-            startButton.style.opacity = "0.5";
-            startButton.style.cursor = "not-allowed";
-        }
-    }
-}
-
-
 let startTime = null;
 
 let timerInterval = null;
@@ -1823,15 +1775,16 @@ let answeredCurrentQuestion = false;
 
 function startGame() {
 
-    getPlayerToken();
-    getPlayerCodename();
+    const token = getPlayerToken();
+    codename = getPlayerCodename();
 
-    if (!playerToken || !codename) {
+    if (!token) {
+        alert("Link de acesso inválido ou sem token.");
+        return;
+    }
 
-        alert(
-            "Não foi possível identificar a tua inscrição. Abre o link pessoal que recebeste por email."
-        );
-
+    if (!codename) {
+        alert("Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email.");
         return;
     }
 
@@ -2599,16 +2552,6 @@ function goToChallenge02() {
     window.location.href =
         "desafio02.html";
 }
-
-
-/* ============================================================
-   INICIALIZAÇÃO DO JOGADOR
-============================================================ */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    initialisePlayer
-);
 
 
 </script>

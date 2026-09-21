@@ -443,20 +443,15 @@ button:hover {
     </div>
 
 
-    <label for="codename">
-        <strong>Escolhe o teu Cyber Codename</strong>
-    </label>
+    <div class="rules" style="margin-top:20px;">
 
-    <input
-        id="codename"
-        type="text"
-        maxlength="20"
-        placeholder="Ex.: CyberNinja"
-        autocomplete="off"
-    >
+        <strong>🛡️ Cyber Codename:</strong>
 
+        <span id="playerWelcome">A carregar...</span>
 
-    <button onclick="startGame()">
+    </div>
+
+    <button id="startButton" onclick="startGame()">
         🚀 Começar o desafio
     </button>
 
@@ -1738,6 +1733,82 @@ let score = 0;
 
 let codename = "";
 
+/*
+   O Cyber Codename vem da inscrição no Microsoft Forms
+   e é passado pelo Power Automate no URL:
+   ?token=XXXX&codename=CyberNinja
+*/
+function getPlayerCodename() {
+
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const urlCodename =
+        urlParams.get("codename");
+
+    if (urlCodename && urlCodename.trim()) {
+
+        codename =
+            urlCodename.trim().substring(0, 50);
+
+        localStorage.setItem(
+            "cyberChallengeCodename",
+            codename
+        );
+
+        return codename;
+    }
+
+    const storedCodename =
+        localStorage.getItem("cyberChallengeCodename");
+
+    if (storedCodename && storedCodename.trim()) {
+
+        codename =
+            storedCodename.trim();
+
+        return codename;
+    }
+
+    codename = "";
+
+    return codename;
+}
+
+
+function initialisePlayer() {
+
+    getPlayerToken();
+    getPlayerCodename();
+
+    const welcome =
+        document.getElementById("playerWelcome");
+
+    const startButton =
+        document.getElementById("startButton");
+
+    if (codename) {
+
+        welcome.textContent = codename;
+
+        if (startButton) {
+            startButton.disabled = false;
+        }
+
+    } else {
+
+        welcome.textContent =
+            "Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email.";
+
+        if (startButton) {
+            startButton.disabled = true;
+            startButton.style.opacity = "0.5";
+            startButton.style.cursor = "not-allowed";
+        }
+    }
+}
+
+
 let startTime = null;
 
 let timerInterval = null;
@@ -1753,37 +1824,16 @@ let answeredCurrentQuestion = false;
 function startGame() {
 
     getPlayerToken();
+    getPlayerCodename();
 
-    const input =
-        document.getElementById("codename");
-
-    codename =
-        input.value.trim();
-
-
-    if (!codename) {
+    if (!playerToken || !codename) {
 
         alert(
-            "Escolhe primeiro o teu Cyber Codename."
+            "Não foi possível identificar a tua inscrição. Abre o link pessoal que recebeste por email."
         );
-
-        input.focus();
 
         return;
     }
-
-
-    if (codename.length < 2) {
-
-        alert(
-            "O Cyber Codename deve ter pelo menos 2 caracteres."
-        );
-
-        input.focus();
-
-        return;
-    }
-
 
     score = 0;
 
@@ -2549,6 +2599,16 @@ function goToChallenge02() {
     window.location.href =
         "desafio02.html";
 }
+
+
+/* ============================================================
+   INICIALIZAÇÃO DO JOGADOR
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialisePlayer
+);
 
 
 </script>

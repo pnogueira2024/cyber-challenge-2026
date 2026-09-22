@@ -1036,14 +1036,14 @@ if (tokenFromUrl && tokenFromUrl !== storedToken) {
 
 const token = tokenFromUrl || storedToken;
 const codename = codenameFromUrl ||
-    localStorage.getItem("cyberChallenge_codename") ||
+    localStorage.getItem("cyberChallengeCodename") ||
     "Cyber Ninja";
 
 if (tokenFromUrl) {
     localStorage.setItem("cyberChallengeToken", tokenFromUrl);
 }
 if (codenameFromUrl) {
-    localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+    localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
 }
 
 let startTime = null;
@@ -1708,7 +1708,7 @@ async function finishChallenge() {
 
 function goToBoss() {
     const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
-    const codename = (localStorage.getItem("cyberChallenge_codename") || "").trim();
+    const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();
     const params = new URLSearchParams();
     if (token) params.set("token", token);
     if (codename) params.set("codename", codename);

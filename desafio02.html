@@ -654,7 +654,7 @@
 
     const codename =
         codenameFromUrl ||
-        localStorage.getItem("cyberChallenge_codename") ||
+        localStorage.getItem("cyberChallengeCodename") ||
         "Cyber Ninja";
 
     if (tokenFromUrl && tokenFromUrl !== "TESTE001") {
@@ -663,7 +663,7 @@
     }
 
     if (codenameFromUrl) {
-        localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+        localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
     }
 
     function getPlayerToken() {
@@ -1002,7 +1002,7 @@
 
     function goToNextChallenge() {
         const currentToken = getPlayerToken();
-        const currentCodename = localStorage.getItem("cyberChallenge_codename") || "";
+        const currentCodename = localStorage.getItem("cyberChallengeCodename") || "";
         const params = new URLSearchParams();
         if (currentToken) params.set("token", currentToken);
         if (currentCodename) params.set("codename", currentCodename);

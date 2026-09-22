@@ -1034,13 +1034,13 @@ const params = new URLSearchParams(window.location.search);
 const tokenFromUrl = params.get("token");
 const codenameFromUrl = params.get("codename");
 
-const storedToken =
-    localStorage.getItem("cyberChallenge_token") ||
-    localStorage.getItem("cyberChallengeToken");
+// Chave única de token em toda a aplicação.
+// Ignoramos e removemos a chave antiga, que podia conter TESTE001.
+localStorage.removeItem("cyberChallenge_token");
 
 const token =
     tokenFromUrl ||
-    storedToken;
+    localStorage.getItem("cyberChallengeToken");
 
 const codename =
     codenameFromUrl ||
@@ -1048,13 +1048,10 @@ const codename =
     "Cyber Ninja";
 
 if (tokenFromUrl) {
-    localStorage.setItem("cyberChallenge_token", tokenFromUrl);
     localStorage.setItem("cyberChallengeToken", tokenFromUrl);
 }
 
-// Mantém as duas chaves sincronizadas para compatibilidade com o Desafio 01.
 if (token && token !== "TESTE001") {
-    localStorage.setItem("cyberChallenge_token", token);
     localStorage.setItem("cyberChallengeToken", token);
 }
 

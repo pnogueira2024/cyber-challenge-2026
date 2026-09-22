@@ -643,78 +643,26 @@
     const WORKER_URL =
         "https://cyberchalange2026.paulonnogueira.workers.dev/";
 
+    function getPlayerToken() {
     const params = new URLSearchParams(window.location.search);
+    const urlToken = (params.get("token") || "").trim();
 
-    const tokenFromUrl = params.get("token");
-    const codenameFromUrl = params.get("codename");
-
-// Chave única de token em toda a aplicação.
-localStorage.removeItem("cyberChallenge_token");
-
-    const token =
-        tokenFromUrl ||
-        localStorage.getItem("cyberChallengeToken");
-
-    const codename =
-        codenameFromUrl ||
-        localStorage.getItem("cyberChallenge_codename") ||
-        "Cyber Ninja";
-
-    if (tokenFromUrl) {
-        localStorage.setItem("cyberChallengeToken", tokenFromUrl);
+    if (urlToken && urlToken !== "TESTE001") {
+        localStorage.setItem("cyberChallengeToken", urlToken);
+        return urlToken;
     }
 
-    if (codenameFromUrl) {
-        localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+    const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
+    if (storedToken && storedToken !== "TESTE001") {
+        return storedToken;
     }
 
-    let score = 0;
-    let foundFaults = 0;
-    let challengeStarted = false;
+    return "";
+}
 
-    let startTime = null;
-    let timerInterval = null;
-    let elapsedSeconds = 0;
+let token = getPlayerToken();
 
-    const maxFaults = 5;
-
-    document.getElementById("codenameDisplay").textContent = codename;
-
-    function formatTime(totalSeconds) {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return String(minutes).padStart(2, "0") + ":" +
-               String(seconds).padStart(2, "0");
-    }
-
-    function startTimer() {
-        startTime = Date.now();
-
-        timerInterval = setInterval(() => {
-            elapsedSeconds =
-                Math.floor((Date.now() - startTime) / 1000);
-
-            document.getElementById("timer").textContent =
-                formatTime(elapsedSeconds);
-        }, 250);
-    }
-
-    function stopTimer() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-
-        if (startTime) {
-            elapsedSeconds =
-                Math.floor((Date.now() - startTime) / 1000);
-        }
-
-        document.getElementById("timer").textContent =
-            formatTime(elapsedSeconds);
-    }
-
-    function startChallenge() {
+function startChallenge() {
 
         if (!token || token === "TESTE001") {
             alert(
@@ -833,6 +781,8 @@ localStorage.removeItem("cyberChallenge_token");
     });
 
     async function saveResult() {
+    token = getPlayerToken();
+
 
         if (!token || token === "TESTE001") {
             throw new Error("Token de jogo inválido. Abre o link pessoal recebido no email.");

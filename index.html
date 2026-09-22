@@ -2549,8 +2549,15 @@ async function endGame() {
 
 function goToChallenge02() {
 
+    const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
+    const codename = (localStorage.getItem("cyberChallenge_codename") || "").trim();
+
+    const params = new URLSearchParams();
+    if (token) params.set("token", token);
+    if (codename) params.set("codename", codename);
+
     window.location.href =
-        "desafio02.html";
+        "desafio02.html" + (params.toString() ? "?" + params.toString() : "");
 }
 
 

@@ -744,26 +744,102 @@ function getPlayerCodename() {
 }
 
 
-function initialisePlayer() {
+async function checkTokenAccess() {
 
     const token = getPlayerToken();
     const playerCodename = getPlayerCodename();
     const display = document.getElementById("displayCodename");
     const startButton = document.getElementById("startButton");
+    const accessMessage = document.getElementById("accessMessage");
 
     if (display) {
         display.textContent = playerCodename || "Não identificado";
     }
 
-    if (startButton && token && playerCodename) {
-        startButton.disabled = false;
-        startButton.style.opacity = "1";
-        startButton.style.cursor = "pointer";
+    if (!token || !playerCodename) {
+        if (accessMessage) {
+            accessMessage.textContent =
+                "⚠️ Link de acesso inválido. Usa o link recebido por email.";
+            accessMessage.style.color = "#f87171";
+        }
+        return false;
+    }
+
+    if (accessMessage) {
+        accessMessage.textContent = "🔎 A validar o teu acesso...";
+        accessMessage.style.color = "#f59e0b";
+    }
+
+    try {
+        const response = await fetch(
+            WORKER_URL + "check?token=" + encodeURIComponent(token),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data.allowed !== true) {
+            if (startButton) {
+                startButton.disabled = true;
+                startButton.style.opacity = "0.5";
+                startButton.style.cursor = "not-allowed";
+            }
+
+            if (accessMessage) {
+                accessMessage.innerHTML = `
+                    🔒 <strong>Cyber Challenge já iniciado</strong><br>
+                    Este token já foi utilizado para iniciar o desafio.<br>
+                    Não é possível repetir o Desafio 01.
+                `;
+                accessMessage.style.color = "#f87171";
+            }
+
+            return false;
+        }
+
+        if (accessMessage) {
+            accessMessage.textContent = "✅ Acesso validado. Podes começar.";
+            accessMessage.style.color = "#4ade80";
+        }
+
+        if (startButton) {
+            startButton.disabled = false;
+            startButton.style.opacity = "1";
+            startButton.style.cursor = "pointer";
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Erro ao validar o token:", error);
+
+        if (startButton) {
+            startButton.disabled = true;
+            startButton.style.opacity = "0.5";
+            startButton.style.cursor = "not-allowed";
+        }
+
+        if (accessMessage) {
+            accessMessage.innerHTML = `
+                ⚠️ <strong>Não foi possível validar o acesso.</strong><br>
+                Tenta novamente dentro de alguns segundos.
+            `;
+            accessMessage.style.color = "#f59e0b";
+        }
+
+        return false;
     }
 }
 
 
-window.addEventListener("DOMContentLoaded", initialisePlayer);
+window.addEventListener("DOMContentLoaded", checkTokenAccess);
 
 
 /* ============================================================

@@ -2664,8 +2664,14 @@ function showLocked() {
    ========================================================= */
 
 async function finishGame() {
-    // O botão final tem de fechar o Boss e gravar o resultado na BD.
+    // Primeiro fecha o Boss e confirma a gravação na BD.
+    // Só depois encaminha o participante para a página definida pela organização.
+    const wasFinished = bossFinished;
     await finishBoss();
+
+    if (bossFinished) {
+        window.location.href = "https://app.sesametime.com/employee/signings/all";
+    }
 }
 
 // Validação inicial do Boss.

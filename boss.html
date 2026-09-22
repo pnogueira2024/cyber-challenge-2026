@@ -2650,8 +2650,9 @@ function showLocked() {
    FINISH GAME
    ========================================================= */
 
-function finishGame() {
-    showFinalResult();
+async function finishGame() {
+    // O botão final tem de fechar o Boss e gravar o resultado na BD.
+    await finishBoss();
 }
 
 // Validação inicial do Boss.

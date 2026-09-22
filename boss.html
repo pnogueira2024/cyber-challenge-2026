@@ -1248,6 +1248,21 @@ function getPlayerToken() {
     return null;
 }
 
+function getBossCompletedKey(token) {
+    const safeToken = String(token || "").trim();
+    return safeToken ? `cyberChallenge_boss_completed_${safeToken}` : "";
+}
+
+function isBossCompleted(token) {
+    const key = getBossCompletedKey(token);
+    return !!key && localStorage.getItem(key) === "true";
+}
+
+function markBossCompleted(token) {
+    const key = getBossCompletedKey(token);
+    if (key) localStorage.setItem(key, "true");
+}
+
 function validatePlayerToken() {
     const token = getPlayerToken();
 
@@ -1519,9 +1534,7 @@ function startBoss() {
     }
 
     if (
-        localStorage.getItem(
-            "cyberChallenge_boss_completed"
-        ) === "true"
+        isBossCompleted(getPlayerToken())
     ) {
 
         showLocked();
@@ -2414,7 +2427,7 @@ async function finishBoss() {
     // Guarda localmente para consulta/reentrada neste dispositivo.
     localStorage.setItem("cyberChallenge_boss", bossScore);
     localStorage.setItem("cyberChallenge_boss_time", bossTime);
-    localStorage.setItem("cyberChallenge_boss_completed", "true");
+    markBossCompleted(getPlayerToken());
 
     // O Boss é o último passo: fecha/atualiza a linha do jogador na D1.
     try {
@@ -2680,7 +2693,7 @@ async function finishGame() {
         return;
     }
 
-    if (localStorage.getItem("cyberChallenge_boss_completed") === "true") {
+    if (isBossCompleted(token)) {
         showLocked();
     }
 })();

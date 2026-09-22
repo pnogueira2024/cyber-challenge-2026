@@ -1049,11 +1049,11 @@ const token = getPlayerToken();
 
 const codename =
     codenameFromUrl ||
-    localStorage.getItem("cyberChallenge_codename") ||
+    localStorage.getItem("cyberChallengeCodename") ||
     "Cyber Ninja";
 
 if (codenameFromUrl) {
-    localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+    localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
 }
 
 document.getElementById("codenameDisplay").textContent = codename;

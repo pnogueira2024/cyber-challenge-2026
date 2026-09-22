@@ -443,12 +443,20 @@ button:hover {
     </div>
 
 
-    <div class="rules" style="margin-top:20px;">
-        <strong>🛡️ Cyber Codename:</strong>
-        <span id="displayCodename">A carregar...</span>
-    </div>
+    <label for="codename">
+        <strong>Escolhe o teu Cyber Codename</strong>
+    </label>
 
-    <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
+    <input
+        id="codename"
+        type="text"
+        maxlength="20"
+        placeholder="Ex.: CyberNinja"
+        autocomplete="off"
+    >
+
+
+    <button onclick="startGame()">
         🚀 Começar o desafio
     </button>
 
@@ -700,68 +708,37 @@ function getPlayerToken() {
     }
 
 
-    return "";
+    /*
+       Fallback para testes diretos sem token na URL.
+       Em produção, o ideal é entrar através do URL
+       de inscrição com ?token=XXXX.
+    */
+
+    if (window.crypto && crypto.randomUUID) {
+
+        playerToken =
+            "TEST-" +
+            crypto.randomUUID()
+                .replaceAll("-", "")
+                .substring(0, 12)
+                .toUpperCase();
+
+    } else {
+
+        playerToken =
+            "TEST-" +
+            Date.now().toString(36).toUpperCase();
+    }
+
+
+    localStorage.setItem(
+        "cyberChallengeToken",
+        playerToken
+    );
+
+
+    return playerToken;
 }
-
-
-/* ============================================================
-   CYBER CODENAME
-============================================================ */
-
-function getPlayerCodename() {
-
-    const urlParams =
-        new URLSearchParams(window.location.search);
-
-    const urlCodename =
-        urlParams.get("codename");
-
-    if (urlCodename && urlCodename.trim()) {
-
-        codename = urlCodename.trim().substring(0, 50);
-
-        localStorage.setItem(
-            "cyberChallengeCodename",
-            codename
-        );
-
-        return codename;
-    }
-
-    const storedCodename =
-        localStorage.getItem("cyberChallengeCodename");
-
-    if (storedCodename && storedCodename.trim()) {
-
-        codename = storedCodename.trim();
-
-        return codename;
-    }
-
-    return "";
-}
-
-
-function initialisePlayer() {
-
-    const token = getPlayerToken();
-    const playerCodename = getPlayerCodename();
-    const display = document.getElementById("displayCodename");
-    const startButton = document.getElementById("startButton");
-
-    if (display) {
-        display.textContent = playerCodename || "Não identificado";
-    }
-
-    if (startButton && token && playerCodename) {
-        startButton.disabled = false;
-        startButton.style.opacity = "1";
-        startButton.style.cursor = "pointer";
-    }
-}
-
-
-window.addEventListener("DOMContentLoaded", initialisePlayer);
 
 
 /* ============================================================
@@ -1775,18 +1752,38 @@ let answeredCurrentQuestion = false;
 
 function startGame() {
 
-    const token = getPlayerToken();
-    codename = getPlayerCodename();
+    getPlayerToken();
 
-    if (!token) {
-        alert("Link de acesso inválido ou sem token.");
-        return;
-    }
+    const input =
+        document.getElementById("codename");
+
+    codename =
+        input.value.trim();
+
 
     if (!codename) {
-        alert("Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email.");
+
+        alert(
+            "Escolhe primeiro o teu Cyber Codename."
+        );
+
+        input.focus();
+
         return;
     }
+
+
+    if (codename.length < 2) {
+
+        alert(
+            "O Cyber Codename deve ter pelo menos 2 caracteres."
+        );
+
+        input.focus();
+
+        return;
+    }
+
 
     score = 0;
 
@@ -2327,6 +2324,11 @@ async function saveChallenge01Result(elapsed) {
 
         if (!response.ok) {
 
+            if (response.status === 409) {
+
+                return "ALREADY_STARTED";
+            }
+
             throw new Error(
                 `HTTP ${response.status}`
             );
@@ -2375,7 +2377,9 @@ async function saveChallenge01Result(elapsed) {
 
 async function endGame() {
 
-    clearInterval(timerInterval);
+    clearInterval(
+        timerInterval
+    );
 
     // Guardar localmente para os desafios seguintes.
     localStorage.setItem(
@@ -2395,45 +2399,61 @@ async function endGame() {
         getPlayerToken()
     );
 
+
     const elapsed =
         Math.floor(
             (Date.now() - startTime) / 1000
         );
+
 
     const minutes =
         Math.floor(
             elapsed / 60
         );
 
+
     const seconds =
         elapsed % 60;
 
+
     document
         .getElementById("gameScreen")
-        .classList.add("hidden");
+        .classList.add(
+            "hidden"
+        );
+
 
     document
         .getElementById("endScreen")
-        .classList.remove("hidden");
+        .classList.remove(
+            "hidden"
+        );
+
 
     document
         .getElementById("finalCodename")
         .textContent =
         codename;
 
+
     document
         .getElementById("finalScore")
         .textContent =
         `${score} / 100`;
+
 
     document
         .getElementById("finalTime")
         .textContent =
         `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
+
     let message;
 
-    if (score >= 90) {
+
+    if (
+        score >= 90
+    ) {
 
         message = `
             🔥 <strong>Excelente!</strong><br><br>
@@ -2445,7 +2465,9 @@ async function endGame() {
 
     }
 
-    else if (score >= 70) {
+    else if (
+        score >= 70
+    ) {
 
         message = `
             🛡️ <strong>Bom trabalho!</strong><br><br>
@@ -2457,7 +2479,9 @@ async function endGame() {
 
     }
 
-    else if (score >= 50) {
+    else if (
+        score >= 50
+    ) {
 
         message = `
             👀 <strong>Há margem para melhorar.</strong><br><br>
@@ -2481,10 +2505,12 @@ async function endGame() {
 
     }
 
+
     document
         .getElementById("finalMessage")
         .innerHTML =
         message;
+
 
     document
         .getElementById("progress")
@@ -2507,26 +2533,11 @@ async function endGame() {
     }
 
 
-    /*
-       Guardar resultado na D1.
-    */
     const saveResult =
         await saveChallenge01Result(elapsed);
 
 
-    /*
-       Se o Worker devolver 409:
-       - o token já iniciou este desafio
-       - NÃO permitir avançar
-       - esconder o botão para o Desafio 02
-    */
-    if (
-        saveResult &&
-        (
-            saveResult.already_started ||
-            saveResult.already_completed
-        )
-    ) {
+    if (saveResult === "ALREADY_STARTED") {
 
         if (challenge02Button) {
             challenge02Button.style.display = "none";
@@ -2538,18 +2549,13 @@ async function endGame() {
                 🔒 <strong>Cyber Challenge já iniciado</strong><br><br>
 
                 Este token já foi utilizado para iniciar o desafio.
-                Não é possível repetir o Desafio 01 nem avançar
-                novamente a partir deste acesso.
+                Não é possível repetir o Desafio 01.
             `;
 
         return;
     }
 
 
-    /*
-       Se o resultado foi guardado normalmente,
-       desbloquear o botão para o Desafio 02.
-    */
     if (challenge02Button) {
         challenge02Button.disabled = false;
         challenge02Button.style.opacity = "1";
@@ -2565,15 +2571,8 @@ async function endGame() {
 
 function goToChallenge02() {
 
-    const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
-    const codename = (localStorage.getItem("cyberChallenge_codename") || "").trim();
-
-    const params = new URLSearchParams();
-    if (token) params.set("token", token);
-    if (codename) params.set("codename", codename);
-
     window.location.href =
-        "desafio02.html" + (params.toString() ? "?" + params.toString() : "");
+        "desafio02.html";
 }
 
 

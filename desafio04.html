@@ -1707,10 +1707,12 @@ async function finishChallenge() {
    ========================================================= */
 
 function goToBoss() {
-
-    window.location.href =
-        "boss.html";
-
+    const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
+    const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();
+    const params = new URLSearchParams();
+    if (token) params.set("token", token);
+    if (codename) params.set("codename", codename);
+    window.location.href = "boss.html?" + params.toString();
 }
 
 </script>

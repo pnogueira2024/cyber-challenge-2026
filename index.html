@@ -448,7 +448,9 @@ button:hover {
         <span id="displayCodename">A carregar...</span>
     </div>
 
-    <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
+    <div id="accessMessage" style="margin:15px 0; font-weight:bold;"></div>
+
+        <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
         🚀 Começar o desafio
     </button>
 
@@ -2358,16 +2360,6 @@ async function saveChallenge01Result(elapsed) {
             error
         );
 
-        if (error.message === "HTTP 409") {
-
-            status.textContent =
-                "🔒 Este Cyber Challenge já foi iniciado e não pode ser repetido.";
-
-            status.style.color = "#f87171";
-
-            return "ALREADY_STARTED";
-        }
-
         status.textContent =
             "⚠️ Não foi possível guardar o resultado. Podes continuar para o Desafio 02.";
 
@@ -2543,26 +2535,11 @@ async function endGame() {
 
     const saveResult = await saveChallenge01Result(elapsed);
 
-
-    if (saveResult === "ALREADY_STARTED") {
-
-        if (challenge02Button) {
-            challenge02Button.style.display = "none";
-        }
-
-        document
-            .getElementById("finalMessage")
-            .innerHTML = `
-                🔒 <strong>Cyber Challenge já iniciado</strong><br><br>
-                Este token já foi utilizado para iniciar o desafio.<br>
-                Não é possível repetir o Desafio 01.
-            `;
-
-        return;
-    }
-
-
-    if (challenge02Button) {
+    if (saveResult !== true && challenge02Button) {
+        challenge02Button.disabled = true;
+        challenge02Button.style.opacity = "0.5";
+        challenge02Button.style.cursor = "not-allowed";
+    } else if (challenge02Button) {
         challenge02Button.disabled = false;
         challenge02Button.style.opacity = "1";
         challenge02Button.style.cursor = "pointer";

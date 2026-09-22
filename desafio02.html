@@ -643,26 +643,88 @@
     const WORKER_URL =
         "https://cyberchalange2026.paulonnogueira.workers.dev/";
 
-    function getPlayerToken() {
     const params = new URLSearchParams(window.location.search);
-    const urlToken = (params.get("token") || "").trim();
 
-    if (urlToken && urlToken !== "TESTE001") {
-        localStorage.setItem("cyberChallengeToken", urlToken);
-        return urlToken;
+    const tokenFromUrl = (params.get("token") || "").trim();
+    const codenameFromUrl = params.get("codename");
+
+    // Token único em toda a aplicação. O token vindo no URL tem prioridade.
+    let token = tokenFromUrl ||
+        (localStorage.getItem("cyberChallengeToken") || "").trim();
+
+    const codename =
+        codenameFromUrl ||
+        localStorage.getItem("cyberChallenge_codename") ||
+        "Cyber Ninja";
+
+    if (tokenFromUrl && tokenFromUrl !== "TESTE001") {
+        localStorage.setItem("cyberChallengeToken", tokenFromUrl);
+        token = tokenFromUrl;
     }
 
-    const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
-    if (storedToken && storedToken !== "TESTE001") {
-        return storedToken;
+    if (codenameFromUrl) {
+        localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
     }
 
-    return "";
-}
+    function getPlayerToken() {
+        const urlToken = (new URLSearchParams(window.location.search).get("token") || "").trim();
+        if (urlToken && urlToken !== "TESTE001") {
+            localStorage.setItem("cyberChallengeToken", urlToken);
+            return urlToken;
+        }
+        const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
+        return storedToken !== "TESTE001" ? storedToken : "";
+    }
 
-let token = getPlayerToken();
+    let score = 0;
+    let foundFaults = 0;
+    let challengeStarted = false;
 
-function startChallenge() {
+    let startTime = null;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+
+    const maxFaults = 5;
+
+    document.getElementById("codenameDisplay").textContent = codename;
+
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return String(minutes).padStart(2, "0") + ":" +
+               String(seconds).padStart(2, "0");
+    }
+
+    function startTimer() {
+        startTime = Date.now();
+
+        timerInterval = setInterval(() => {
+            elapsedSeconds =
+                Math.floor((Date.now() - startTime) / 1000);
+
+            document.getElementById("timer").textContent =
+                formatTime(elapsedSeconds);
+        }, 250);
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        if (startTime) {
+            elapsedSeconds =
+                Math.floor((Date.now() - startTime) / 1000);
+        }
+
+        document.getElementById("timer").textContent =
+            formatTime(elapsedSeconds);
+    }
+
+    function startChallenge() {
+
+        token = getPlayerToken();
 
         if (!token || token === "TESTE001") {
             alert(
@@ -781,8 +843,8 @@ function startChallenge() {
     });
 
     async function saveResult() {
-    token = getPlayerToken();
 
+        token = getPlayerToken();
 
         if (!token || token === "TESTE001") {
             throw new Error("Token de jogo inválido. Abre o link pessoal recebido no email.");

@@ -1031,29 +1031,26 @@ const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
 
 const params = new URLSearchParams(window.location.search);
 
-const tokenFromUrl = params.get("token");
+const tokenFromUrl = (params.get("token") || "").trim();
 const codenameFromUrl = params.get("codename");
 
-// Chave única de token em toda a aplicação.
-// Ignoramos e removemos a chave antiga, que podia conter TESTE001.
-localStorage.removeItem("cyberChallenge_token");
+function getPlayerToken() {
+    const urlToken = (new URLSearchParams(window.location.search).get("token") || "").trim();
+    if (urlToken && urlToken !== "TESTE001") {
+        localStorage.setItem("cyberChallengeToken", urlToken);
+        return urlToken;
+    }
 
-const token =
-    tokenFromUrl ||
-    localStorage.getItem("cyberChallengeToken");
+    const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
+    return storedToken && storedToken !== "TESTE001" ? storedToken : "";
+}
+
+const token = getPlayerToken();
 
 const codename =
     codenameFromUrl ||
     localStorage.getItem("cyberChallenge_codename") ||
     "Cyber Ninja";
-
-if (tokenFromUrl) {
-    localStorage.setItem("cyberChallengeToken", tokenFromUrl);
-}
-
-if (token && token !== "TESTE001") {
-    localStorage.setItem("cyberChallengeToken", token);
-}
 
 if (codenameFromUrl) {
     localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
@@ -1082,7 +1079,9 @@ const totalQuestions = 4;
 
 function startChallenge() {
 
-    if (!token || token === "TESTE001") {
+    const currentToken = getPlayerToken();
+
+    if (!currentToken || currentToken === "TESTE001") {
         alert(
             "Este link de acesso não tem um token válido. " +
             "Volta ao email de inscrição e utiliza o teu link pessoal."
@@ -1617,14 +1616,16 @@ function processDrop(
 
 async function saveResult() {
 
-    if (!token || token === "TESTE001") {
+    const currentToken = getPlayerToken();
+
+    if (!currentToken || currentToken === "TESTE001") {
         throw new Error("Token de jogo inválido. Abre o link pessoal recebido no email.");
     }
 
     // D3 atualiza a mesma linha criada pelo D1/D2 usando exatamente o mesmo token.
     // D4/Boss ainda não foram jogados, por isso ficam a zero.
     const payload = {
-        token: token,
+        token: currentToken,
         d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
         d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
         d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),

@@ -2375,9 +2375,7 @@ async function saveChallenge01Result(elapsed) {
 
 async function endGame() {
 
-    clearInterval(
-        timerInterval
-    );
+    clearInterval(timerInterval);
 
     // Guardar localmente para os desafios seguintes.
     localStorage.setItem(
@@ -2397,61 +2395,45 @@ async function endGame() {
         getPlayerToken()
     );
 
-
     const elapsed =
         Math.floor(
             (Date.now() - startTime) / 1000
         );
-
 
     const minutes =
         Math.floor(
             elapsed / 60
         );
 
-
     const seconds =
         elapsed % 60;
 
-
     document
         .getElementById("gameScreen")
-        .classList.add(
-            "hidden"
-        );
-
+        .classList.add("hidden");
 
     document
         .getElementById("endScreen")
-        .classList.remove(
-            "hidden"
-        );
-
+        .classList.remove("hidden");
 
     document
         .getElementById("finalCodename")
         .textContent =
         codename;
 
-
     document
         .getElementById("finalScore")
         .textContent =
         `${score} / 100`;
-
 
     document
         .getElementById("finalTime")
         .textContent =
         `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
-
     let message;
 
-
-    if (
-        score >= 90
-    ) {
+    if (score >= 90) {
 
         message = `
             🔥 <strong>Excelente!</strong><br><br>
@@ -2463,9 +2445,7 @@ async function endGame() {
 
     }
 
-    else if (
-        score >= 70
-    ) {
+    else if (score >= 70) {
 
         message = `
             🛡️ <strong>Bom trabalho!</strong><br><br>
@@ -2477,9 +2457,7 @@ async function endGame() {
 
     }
 
-    else if (
-        score >= 50
-    ) {
+    else if (score >= 50) {
 
         message = `
             👀 <strong>Há margem para melhorar.</strong><br><br>
@@ -2503,12 +2481,10 @@ async function endGame() {
 
     }
 
-
     document
         .getElementById("finalMessage")
         .innerHTML =
         message;
-
 
     document
         .getElementById("progress")
@@ -2531,9 +2507,49 @@ async function endGame() {
     }
 
 
-    await saveChallenge01Result(elapsed);
+    /*
+       Guardar resultado na D1.
+    */
+    const saveResult =
+        await saveChallenge01Result(elapsed);
 
 
+    /*
+       Se o Worker devolver 409:
+       - o token já iniciou este desafio
+       - NÃO permitir avançar
+       - esconder o botão para o Desafio 02
+    */
+    if (
+        saveResult &&
+        (
+            saveResult.already_started ||
+            saveResult.already_completed
+        )
+    ) {
+
+        if (challenge02Button) {
+            challenge02Button.style.display = "none";
+        }
+
+        document
+            .getElementById("finalMessage")
+            .innerHTML = `
+                🔒 <strong>Cyber Challenge já iniciado</strong><br><br>
+
+                Este token já foi utilizado para iniciar o desafio.
+                Não é possível repetir o Desafio 01 nem avançar
+                novamente a partir deste acesso.
+            `;
+
+        return;
+    }
+
+
+    /*
+       Se o resultado foi guardado normalmente,
+       desbloquear o botão para o Desafio 02.
+    */
     if (challenge02Button) {
         challenge02Button.disabled = false;
         challenge02Button.style.opacity = "1";

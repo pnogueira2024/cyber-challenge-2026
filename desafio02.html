@@ -1001,7 +1001,12 @@
     }
 
     function goToNextChallenge() {
-        window.location.href = "desafio03.html";
+        const currentToken = getPlayerToken();
+        const currentCodename = localStorage.getItem("cyberChallenge_codename") || "";
+        const params = new URLSearchParams();
+        if (currentToken) params.set("token", currentToken);
+        if (currentCodename) params.set("codename", currentCodename);
+        window.location.href = "desafio03.html?" + params.toString();
     }
 
 </script>

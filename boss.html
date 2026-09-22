@@ -1220,6 +1220,88 @@ let timerInterval = null;
 let orderEvaluated = false;
 
 let draggedItem = null;
+// Identificação do jogador e integração com o Worker
+let playerToken = null;
+let bossStartTime = null;
+const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+function getPlayerToken() {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get("token");
+    const storedToken = localStorage.getItem("cyberChallengeToken");
+    const urlCodename = params.get("codename");
+    if (urlCodename && urlCodename.trim()) {
+        localStorage.setItem("cyberChallengeCodename", urlCodename.trim().substring(0, 50));
+    }
+
+    if (urlToken && urlToken.trim()) {
+        playerToken = urlToken.trim().substring(0, 100);
+        localStorage.setItem("cyberChallengeToken", playerToken);
+        return playerToken;
+    }
+
+    if (storedToken && storedToken.trim()) {
+        playerToken = storedToken.trim();
+        return playerToken;
+    }
+
+    return null;
+}
+
+function validatePlayerToken() {
+    const token = getPlayerToken();
+
+    if (!token || token === "TESTE001") {
+        document.getElementById("startScreen").classList.add("hidden");
+        document.getElementById("gameScreen").classList.add("hidden");
+        document.getElementById("lockedScreen").classList.remove("hidden");
+        document.querySelector("#lockedScreen h1").textContent = "Acesso inválido";
+        document.querySelector("#lockedScreen .end-message").innerHTML =
+            "Este Boss Final precisa de um link pessoal válido.<br><br>" +
+            "Volta ao email de inscrição e utiliza o teu link pessoal.";
+        document.getElementById("lockedScore").textContent = "—";
+        return false;
+    }
+
+    return true;
+}
+
+function getBossElapsedSeconds() {
+    if (!bossStartTime) return 0;
+    return Math.max(0, Math.min(90, Math.round((Date.now() - bossStartTime) / 1000)));
+}
+
+async function saveFinalResult(bossTime) {
+    const token = getPlayerToken();
+    if (!token || token === "TESTE001") throw new Error("Token de jogo inválido.");
+
+    const payload = {
+        token,
+        d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
+        d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
+        d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),
+        d2_time: Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
+        d3_score: Number(localStorage.getItem("cyberChallenge_d3") || 0),
+        d3_time: Number(localStorage.getItem("cyberChallenge_d3_time") || 0),
+        d4_score: Number(localStorage.getItem("cyberChallenge_d4") || 0),
+        d4_time: Number(localStorage.getItem("cyberChallenge_d4_time") || 0),
+        boss_score: Number(bossScore) || 0,
+        boss_time: Number(bossTime) || 0,
+        completed_date: new Date().toISOString()
+    };
+
+    const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+        throw new Error(result.error || "O Worker não aceitou o resultado final.");
+    }
+    return result;
+}
+
 
 
 /* =========================================================
@@ -1432,6 +1514,10 @@ const phases = [
 
 function startBoss() {
 
+    if (!validatePlayerToken()) {
+        return;
+    }
+
     if (
         localStorage.getItem(
             "cyberChallenge_boss_completed"
@@ -1463,6 +1549,7 @@ function startBoss() {
     orderEvaluated = false;
 
     timerValue = 90;
+    bossStartTime = Date.now();
 
 
     updateTimer();
@@ -2309,60 +2396,35 @@ function timeExpired() {
    FINISH BOSS
    ========================================================= */
 
-function finishBoss() {
+async function finishBoss() {
 
     if (bossFinished) {
         return;
     }
 
-
     bossFinished = true;
 
+    clearInterval(timerInterval);
 
-    clearInterval(
-        timerInterval
-    );
+    // Limita o Boss ao intervalo 0–100.
+    bossScore = Math.max(0, Math.min(bossScore, 100));
 
+    const bossTime = getBossElapsedSeconds();
 
-    /*
-     * Limita o Boss ao intervalo 0–100.
-     */
+    // Guarda localmente para consulta/reentrada neste dispositivo.
+    localStorage.setItem("cyberChallenge_boss", bossScore);
+    localStorage.setItem("cyberChallenge_boss_time", bossTime);
+    localStorage.setItem("cyberChallenge_boss_completed", "true");
 
-    bossScore =
-        Math.max(
-            0,
-            Math.min(
-                bossScore,
-                100
-            )
-        );
-
-
-    /*
-     * Guarda a pontuação do Boss.
-     */
-
-    localStorage.setItem(
-        "cyberChallenge_boss",
-        bossScore
-    );
-
-
-    /*
-     * Marca o Boss como concluído.
-     *
-     * Isto impede uma nova tentativa
-     * mesmo que o jogador volte a abrir
-     * boss.html.
-     */
-
-    localStorage.setItem(
-        "cyberChallenge_boss_completed",
-        "true"
-    );
-
-
-    showFinalResult();
+    // O Boss é o último passo: fecha/atualiza a linha do jogador na D1.
+    try {
+        await saveFinalResult(bossTime);
+        showFinalResult();
+    } catch (error) {
+        console.error(error);
+        bossFinished = false;
+        alert("⚠️ O Boss terminou, mas o resultado não foi guardado na BD.\n\n" + error.message);
+    }
 
 }
 
@@ -2589,20 +2651,38 @@ function showLocked() {
    ========================================================= */
 
 function finishGame() {
-
-    /*
-     * O jogo está concluído.
-     *
-     * Não existe botão de replay.
-     */
-
-    document
-        .getElementById("endMessage")
-        .textContent +=
-            "";
-
+    showFinalResult();
 }
 
+// Validação inicial do Boss.
+(function initBoss() {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get("token");
+    const storedToken = localStorage.getItem("cyberChallengeToken");
+
+    if (urlToken && urlToken.trim() && storedToken && urlToken.trim() !== storedToken.trim()) {
+        // Novo token = novo jogador neste dispositivo.
+        [
+            "cyberChallenge_d1", "cyberChallenge_d1_time",
+            "cyberChallenge_d2", "cyberChallenge_d2_time",
+            "cyberChallenge_d3", "cyberChallenge_d3_time",
+            "cyberChallenge_d4", "cyberChallenge_d4_time",
+            "cyberChallenge_boss", "cyberChallenge_boss_time",
+            "cyberChallenge_boss_completed"
+        ].forEach(key => localStorage.removeItem(key));
+    }
+
+    const token = getPlayerToken();
+
+    if (!token || token === "TESTE001") {
+        validatePlayerToken();
+        return;
+    }
+
+    if (localStorage.getItem("cyberChallenge_boss_completed") === "true") {
+        showLocked();
+    }
+})();
 </script>
 
 </body>

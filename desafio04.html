@@ -1708,7 +1708,7 @@ async function finishChallenge() {
 
 function goToBoss() {
     const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
-    const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();
+    const codename = (localStorage.getItem("cyberChallenge_codename") || "").trim();
     const params = new URLSearchParams();
     if (token) params.set("token", token);
     if (codename) params.set("codename", codename);

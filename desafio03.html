@@ -1074,7 +1074,7 @@ const totalQuestions = 4;
 
 function startChallenge() {
 
-    if (!token) {
+    if (!token || token === "TESTE001") {
         alert(
             "Este link de acesso não tem um token válido. " +
             "Volta ao email de inscrição e utiliza o teu link pessoal."
@@ -1129,6 +1129,17 @@ function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+
+    // Garante que o último segundo decorrido é calculado
+    // mesmo que o desafio termine antes do primeiro tick
+    // do setInterval.
+    if (startTime) {
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+    }
+
+    updateTimerUI();
 }
 
 function updateTimerUI() {
@@ -1598,41 +1609,24 @@ function processDrop(
 
 async function saveResult() {
 
-    if (!token) {
-        throw new Error("Token não encontrado.");
+    if (!token || token === "TESTE001") {
+        throw new Error("Token de jogo inválido. Abre o link pessoal recebido no email.");
     }
 
+    // D3 atualiza a mesma linha criada pelo D1/D2 usando exatamente o mesmo token.
+    // D4/Boss ainda não foram jogados, por isso ficam a zero.
     const payload = {
-
         token: token,
-
-        d1_score:
-            Number(localStorage.getItem("cyberChallenge_d1") || 0),
-
-        d1_time:
-            Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
-
-        d2_score:
-            Number(localStorage.getItem("cyberChallenge_d2") || 0),
-
-        d2_time:
-            Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
-
+        d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
+        d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
+        d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),
+        d2_time: Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
         d3_score: score,
         d3_time: elapsedSeconds,
-
-        d4_score:
-            Number(localStorage.getItem("cyberChallenge_d4") || 0),
-
-        d4_time:
-            Number(localStorage.getItem("cyberChallenge_d4_time") || 0),
-
-        boss_score:
-            Number(localStorage.getItem("cyberChallenge_boss") || 0),
-
-        boss_time:
-            Number(localStorage.getItem("cyberChallenge_boss_time") || 0),
-
+        d4_score: 0,
+        d4_time: 0,
+        boss_score: 0,
+        boss_time: 0,
         completed_date: new Date().toISOString()
     };
 

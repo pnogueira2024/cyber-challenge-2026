@@ -648,9 +648,12 @@
     const tokenFromUrl = params.get("token");
     const codenameFromUrl = params.get("codename");
 
+// Chave única de token em toda a aplicação.
+localStorage.removeItem("cyberChallenge_token");
+
     const token =
         tokenFromUrl ||
-        localStorage.getItem("cyberChallenge_token");
+        localStorage.getItem("cyberChallengeToken");
 
     const codename =
         codenameFromUrl ||
@@ -658,7 +661,7 @@
         "Cyber Ninja";
 
     if (tokenFromUrl) {
-        localStorage.setItem("cyberChallenge_token", tokenFromUrl);
+        localStorage.setItem("cyberChallengeToken", tokenFromUrl);
     }
 
     if (codenameFromUrl) {

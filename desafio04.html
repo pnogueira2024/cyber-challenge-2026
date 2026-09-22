@@ -1017,6 +1017,95 @@ let selectedAnswer = null;
 
 const totalQuestions = 4;
 
+const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
+const params = new URLSearchParams(window.location.search);
+const tokenFromUrl = params.get("token");
+const codenameFromUrl = params.get("codename");
+const storedToken = localStorage.getItem("cyberChallengeToken");
+
+if (tokenFromUrl && tokenFromUrl !== storedToken) {
+    localStorage.removeItem("cyberChallenge_d1");
+    localStorage.removeItem("cyberChallenge_d1_time");
+    localStorage.removeItem("cyberChallenge_d2");
+    localStorage.removeItem("cyberChallenge_d2_time");
+    localStorage.removeItem("cyberChallenge_d3");
+    localStorage.removeItem("cyberChallenge_d3_time");
+    localStorage.removeItem("cyberChallenge_d4");
+    localStorage.removeItem("cyberChallenge_d4_time");
+}
+
+const token = tokenFromUrl || storedToken;
+const codename = codenameFromUrl ||
+    localStorage.getItem("cyberChallenge_codename") ||
+    "Cyber Ninja";
+
+if (tokenFromUrl) {
+    localStorage.setItem("cyberChallengeToken", tokenFromUrl);
+}
+if (codenameFromUrl) {
+    localStorage.setItem("cyberChallenge_codename", codenameFromUrl);
+}
+
+let startTime = null;
+let timerInterval = null;
+let elapsedSeconds = 0;
+
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    if (startTime) {
+        elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+    }
+}
+
+async function saveResult() {
+    if (!token || token === "TESTE001") {
+        console.error("Token de produção inválido.");
+        return false;
+    }
+
+    const payload = {
+        token: token,
+        d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
+        d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
+        d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),
+        d2_time: Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
+        d3_score: Number(localStorage.getItem("cyberChallenge_d3") || 0),
+        d3_time: Number(localStorage.getItem("cyberChallenge_d3_time") || 0),
+        d4_score: score,
+        d4_time: elapsedSeconds,
+        boss_score: 0,
+        boss_time: 0,
+        completed_date: new Date().toISOString()
+    };
+
+    try {
+        const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Erro ao guardar resultado:", error);
+        return false;
+    }
+}
+
 
 /* =========================================================
    START
@@ -1035,6 +1124,7 @@ function startChallenge() {
 
 
     shuffleAnswers();
+    startTimer();
 
     updateUI();
 
@@ -1512,7 +1602,7 @@ function processDrop(
    TERMINAR DESAFIO
    ========================================================= */
 
-function finishChallenge() {
+async function finishChallenge() {
 
     if (
         found < totalQuestions
@@ -1520,6 +1610,29 @@ function finishChallenge() {
         return;
     }
 
+    stopTimer();
+
+    if (!token || token === "TESTE001") {
+        alert("Token de jogo inválido. Volta a entrar através do link recebido.");
+        return;
+    }
+
+    localStorage.setItem(
+        "cyberChallenge_d4",
+        score
+    );
+
+    localStorage.setItem(
+        "cyberChallenge_d4_time",
+        elapsedSeconds
+    );
+
+    const saved = await saveResult();
+
+    if (!saved) {
+        alert("Não foi possível guardar o resultado. Verifica a ligação e tenta novamente.");
+        return;
+    }
 
     /*
      * GUARDA A PONTUAÇÃO DO DESAFIO 04
@@ -1527,12 +1640,6 @@ function finishChallenge() {
      * O Boss Final vai buscar este valor
      * através do localStorage.
      */
-
-    localStorage.setItem(
-        "cyberChallenge_d4",
-        score
-    );
-
 
     document
         .getElementById("gameScreen")

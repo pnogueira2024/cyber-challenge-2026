@@ -3,1058 +3,321 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Cyber Challenge 2026 — Desafio 04</title>
-
 <style>
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        background: #05070b;
-        color: #e8edf5;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .topbar {
-        height: 64px;
-        background: #090d14;
-        border-bottom: 1px solid #1d2633;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 0 24px;
-
-        position: sticky;
-        top: 0;
-        z-index: 20;
-    }
-
-    .brand {
-        font-size: 18px;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    .brand span {
-        color: #00e5ff;
-    }
-
-    .challenge {
-        color: #8e9aaa;
-        font-size: 14px;
-    }
-
-    .score-box {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        font-size: 14px;
-    }
-
-    .score {
-        color: #00e5ff;
-        font-weight: bold;
-    }
-
-    .progress {
-        width: 130px;
-        height: 8px;
-
-        background: #1a202a;
-
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .progress-bar {
-        height: 100%;
-        width: 0%;
-
-        background: #00e5ff;
-
-        transition: width 0.3s ease;
-    }
-
-    .container {
-        max-width: 1200px;
-
-        margin: 0 auto;
-
-        padding: 35px 20px 50px;
-    }
-
-    h1 {
-        margin: 0 0 10px;
-
-        font-size: 32px;
-    }
-
-    .subtitle {
-        color: #9ca8b8;
-
-        margin-bottom: 25px;
-
-        line-height: 1.5;
-    }
-
-    .game-panel {
-        background: #0a0f17;
-
-        border: 1px solid #1c2633;
-
-        border-radius: 14px;
-
-        padding: 22px;
-    }
-
-    .instructions {
-        background: #0d141e;
-
-        border-left: 4px solid #00e5ff;
-
-        padding: 14px 16px;
-
-        border-radius: 8px;
-
-        margin-bottom: 25px;
-
-        color: #b8c3d1;
-
-        line-height: 1.5;
-    }
-
-
-    /* =====================================================
-       LAYOUT
-       ===================================================== */
-
-    .matching-layout {
-
-        display: grid;
-
-        grid-template-columns: 1fr 320px;
-
-        gap: 30px;
-
-        align-items: start;
-    }
-
-
-    /* =====================================================
-       SITUAÇÕES
-       ===================================================== */
-
-    .questions-panel {
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 14px;
-    }
-
-    .panel-title {
-
-        font-size: 15px;
-
-        font-weight: bold;
-
-        color: #dfe8f2;
-
-        margin-bottom: 2px;
-
-        text-transform: uppercase;
-
-        letter-spacing: 0.8px;
-    }
-
-    .question {
-
-        background: #080d14;
-
-        border: 1px solid #1c2633;
-
-        border-radius: 12px;
-
-        padding: 18px;
-
-        color: #c7d0dc;
-
-        line-height: 1.6;
-
-        font-size: 16px;
-    }
-
-    .question-number {
-
-        display: inline-flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        width: 28px;
-
-        height: 28px;
-
-        margin-right: 8px;
-
-        border-radius: 50%;
-
-        background: #121b27;
-
-        border: 1px solid #2b394a;
-
-        color: #00e5ff;
-
-        font-size: 13px;
-
-        font-weight: bold;
-
-        vertical-align: middle;
-    }
-
-
-    /* =====================================================
-       DROPZONE
-       ===================================================== */
-
-    .dropzone {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        min-height: 45px;
-
-        margin-top: 14px;
-
-        padding: 8px 12px;
-
-        border: 2px dashed #3a4859;
-
-        border-radius: 8px;
-
-        color: #758397;
-
-        background: #0b1119;
-
-        text-align: center;
-
-        transition: all 0.2s ease;
-    }
-
-    .dropzone.dragover {
-
-        border-color: #00e5ff;
-
-        background: #0d222a;
-
-        color: #00e5ff;
-    }
-
-    .dropzone.correct {
-
-        border-style: solid;
-
-        border-color: #7cff6b;
-
-        background: rgba(124, 255, 107, 0.08);
-
-        color: #7cff6b;
-
-        font-weight: bold;
-
-        cursor: default;
-    }
-
-    .dropzone.wrong {
-
-        border-color: #ff6b6b;
-
-        background: rgba(255, 107, 107, 0.08);
-
-        animation: shake 0.25s;
-    }
-
-    @keyframes shake {
-
-        0% {
-            transform: translateX(0);
-        }
-
-        25% {
-            transform: translateX(-4px);
-        }
-
-        50% {
-            transform: translateX(4px);
-        }
-
-        75% {
-            transform: translateX(-4px);
-        }
-
-        100% {
-            transform: translateX(0);
-        }
-    }
-
-
-    /* =====================================================
-       RESPOSTAS
-       ===================================================== */
-
-    .answers-panel {
-
-        background: #080d14;
-
-        border: 1px solid #1c2633;
-
-        border-radius: 12px;
-
-        padding: 18px;
-
-        position: sticky;
-
-        top: 85px;
-    }
-
-    .answer-list {
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 10px;
-    }
-
-    .answer {
-
-        background: #121a25;
-
-        border: 1px solid #2a3748;
-
-        border-radius: 9px;
-
-        padding: 14px;
-
-        cursor: grab;
-
-        user-select: none;
-
-        font-weight: bold;
-
-        transition: all 0.2s ease;
-    }
-
-    .answer:hover {
-
-        border-color: #00e5ff;
-
-        transform: translateX(-3px);
-    }
-
-    .answer:active {
-
-        cursor: grabbing;
-    }
-
-    .answer.selected {
-
-        border-color: #00e5ff;
-
-        background: #10232b;
-
-        box-shadow: 0 0 0 1px #00e5ff inset;
-    }
-
-    .answer.used {
-
-        opacity: 0.35;
-
-        cursor: default;
-
-        border-color: #26313e;
-    }
-
-
-    /* =====================================================
-       FEEDBACK
-       ===================================================== */
-
-    .feedback {
-
-        min-height: 28px;
-
-        margin-top: 18px;
-
-        font-weight: bold;
-    }
-
-    .feedback.good {
-
-        color: #7cff6b;
-    }
-
-    .feedback.bad {
-
-        color: #ff6b6b;
-    }
-
-
-    /* =====================================================
-       BOTTOM
-       ===================================================== */
-
-    .bottom-panel {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-
-        gap: 20px;
-
-        margin-top: 25px;
-
-        flex-wrap: wrap;
-    }
-
-    .status {
-
-        color: #9ca8b8;
-
-        font-size: 14px;
-    }
-
-    button {
-
-        border: 0;
-
-        border-radius: 8px;
-
-        padding: 13px 22px;
-
-        font-size: 15px;
-
-        font-weight: bold;
-
-        cursor: pointer;
-
-        background: #00e5ff;
-
-        color: #031017;
-
-        transition: 0.2s;
-    }
-
-    button:hover {
-
-        transform: translateY(-1px);
-
-        filter: brightness(1.08);
-    }
-
-    button:disabled {
-
-        opacity: 0.35;
-
-        cursor: not-allowed;
-
-        transform: none;
-
-        filter: none;
-    }
-
-
-    /* =====================================================
-       START / END
-       ===================================================== */
-
-    .start-screen,
-    .end-screen {
-
-        max-width: 700px;
-
-        margin: 80px auto;
-
-        text-align: center;
-
-        background: #0a0f17;
-
-        border: 1px solid #1c2633;
-
-        border-radius: 16px;
-
-        padding: 40px 30px;
-    }
-
-    .start-screen h1,
-    .end-screen h1 {
-
-        margin-bottom: 15px;
-    }
-
-    .big-score {
-
-        font-size: 56px;
-
-        font-weight: bold;
-
-        color: #00e5ff;
-
-        margin: 20px 0;
-    }
-
-    .end-message {
-
-        color: #aab5c3;
-
-        margin-bottom: 30px;
-
-        line-height: 1.5;
-    }
-
-    .hidden {
-
-        display: none;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-       ===================================================== */
-
-    @media (max-width: 850px) {
-
-        .matching-layout {
-
-            grid-template-columns: 1fr;
-        }
-
-        .answers-panel {
-
-            position: static;
-        }
-
-        .answer-list {
-
-            display: grid;
-
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-
-    @media (max-width: 600px) {
-
-        .topbar {
-
-            padding: 0 14px;
-        }
-
-        .brand {
-
-            font-size: 15px;
-        }
-
-        .challenge {
-
-            display: none;
-        }
-
-        .score-box {
-
-            gap: 10px;
-        }
-
-        .progress {
-
-            width: 70px;
-        }
-
-        .container {
-
-            padding: 25px 12px 40px;
-        }
-
-        h1 {
-
-            font-size: 25px;
-        }
-
-        .game-panel {
-
-            padding: 14px;
-        }
-
-        .answer-list {
-
-            grid-template-columns: 1fr;
-        }
-
-        .question {
-
-            font-size: 15px;
-        }
-
-        .bottom-panel {
-
-            align-items: stretch;
-        }
-
-        .bottom-panel button {
-
-            width: 100%;
-        }
-
-        .start-screen,
-        .end-screen {
-
-            margin: 40px 12px;
-
-            padding: 30px 20px;
-        }
-
-        .big-score {
-
-            font-size: 46px;
-        }
-    }
-
+*{box-sizing:border-box}
+body{margin:0;background:#05070b;color:#e8edf5;font-family:Arial,Helvetica,sans-serif}
+.topbar{height:64px;background:#090d14;border-bottom:1px solid #1d2633;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}
+.brand{font-size:18px;font-weight:bold;letter-spacing:1px}.brand span{color:#00e5ff}.challenge{color:#8e9aaa;font-size:14px}
+.score-box{display:flex;align-items:center;gap:18px;font-size:14px}.score{color:#00e5ff;font-weight:bold}
+.progress{width:130px;height:8px;background:#1a202a;border-radius:10px;overflow:hidden}.progress-bar{height:100%;width:0%;background:#00e5ff;transition:width .3s ease}
+.container{max-width:1200px;margin:0 auto;padding:35px 20px 50px}h1{margin:0 0 10px;font-size:32px}.subtitle{color:#9ca8b8;margin-bottom:25px;line-height:1.5}
+.game-panel{background:#0a0f17;border:1px solid #1c2633;border-radius:14px;padding:22px}
+.instructions{background:#0d141e;border-left:4px solid #00e5ff;padding:14px 16px;border-radius:8px;margin-bottom:25px;color:#b8c3d1;line-height:1.5}
+.matching-layout{display:grid;grid-template-columns:1fr 320px;gap:30px;align-items:start}
+.questions-panel{display:flex;flex-direction:column;gap:14px}.panel-title{font-size:15px;font-weight:bold;color:#dfe8f2;margin-bottom:2px;text-transform:uppercase;letter-spacing:.8px}
+.question{background:#080d14;border:1px solid #1c2633;border-radius:12px;padding:18px;color:#c7d0dc;line-height:1.6;font-size:16px}
+.question-number{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-right:8px;border-radius:50%;background:#121b27;border:1px solid #2b394a;color:#00e5ff;font-size:13px;font-weight:bold;vertical-align:middle}
+.dropzone{display:flex;align-items:center;justify-content:center;min-height:45px;margin-top:14px;padding:8px 12px;border:2px dashed #3a4859;border-radius:8px;color:#758397;background:#0b1119;text-align:center;transition:all .2s ease}
+.dropzone.dragover{border-color:#00e5ff;background:#0d222a;color:#00e5ff}.dropzone.correct{border-style:solid;border-color:#7cff6b;background:rgba(124,255,107,.08);color:#7cff6b;font-weight:bold;cursor:default}.dropzone.wrong{border-color:#ff6b6b;background:rgba(255,107,107,.08);animation:shake .25s}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
+.answers-panel{background:#080d14;border:1px solid #1c2633;border-radius:12px;padding:18px;position:sticky;top:85px}
+.answer-list{display:flex;flex-direction:column;gap:10px}.answer{background:#121a25;border:1px solid #2a3748;border-radius:9px;padding:14px;cursor:grab;user-select:none;font-weight:bold;transition:all .2s ease}
+.answer:hover{border-color:#00e5ff;transform:translateX(-3px)}.answer:active{cursor:grabbing}.answer.selected{border-color:#00e5ff;background:#10232b;box-shadow:0 0 0 1px #00e5ff inset}.answer.used{opacity:.35;cursor:default;border-color:#26313e}
+.feedback{min-height:28px;margin-top:18px;font-weight:bold}.feedback.good{color:#7cff6b}.feedback.bad{color:#ff6b6b}
+.bottom-panel{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:25px;flex-wrap:wrap}.status{color:#9ca8b8;font-size:14px}
+button{border:0;border-radius:8px;padding:13px 22px;font-size:15px;font-weight:bold;cursor:pointer;background:#00e5ff;color:#031017;transition:.2s}button:hover{transform:translateY(-1px);filter:brightness(1.08)}button:disabled{opacity:.35;cursor:not-allowed;transform:none;filter:none}
+.start-screen,.end-screen{max-width:700px;margin:80px auto;text-align:center;background:#0a0f17;border:1px solid #1c2633;border-radius:16px;padding:40px 30px}.start-screen h1,.end-screen h1{margin-bottom:15px}.big-score{font-size:56px;font-weight:bold;color:#00e5ff;margin:20px 0}.end-message{color:#aab5c3;margin-bottom:30px;line-height:1.5}.hidden{display:none}
+@media(max-width:850px){.matching-layout{grid-template-columns:1fr}.answers-panel{position:static}.answer-list{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.topbar{padding:0 14px}.brand{font-size:15px}.challenge{display:none}.score-box{gap:10px}.progress{width:70px}.container{padding:25px 12px 40px}h1{font-size:25px}.game-panel{padding:14px}.answer-list{grid-template-columns:1fr}.question{font-size:15px}.bottom-panel{align-items:stretch}.bottom-panel button{width:100%}.start-screen,.end-screen{margin:40px 12px;padding:30px 20px}.big-score{font-size:46px}}
 </style>
 </head>
-
-
 <body>
 
-
-<!-- =====================================================
-     START SCREEN
-     ===================================================== -->
-
 <div id="startScreen" class="start-screen">
-
-    <h1>🔗 Liga os Pontos</h1>
-
-    <p class="subtitle">
-        Desafio 04 — Liga cada situação à resposta de segurança correta.
-    </p>
-
-    <div class="instructions">
-
-        Tens quatro situações do dia a dia.
-
-        <br><br>
-
-        <strong>
-            Liga cada texto à resposta que consideras correta.
-        </strong>
-
-        <br><br>
-
-        Podes fazer ligações erradas:
-        cada erro custa <strong>5 pontos</strong>.
-
-        <br><br>
-
-        No telemóvel, toca numa resposta e depois toca
-        na situação onde queres colocá-la.
-
-    </div>
-
-    <button onclick="startChallenge()">
-        🚀 Começar desafio
-    </button>
-
+<h1>🔗 Liga os Pontos</h1>
+<p class="subtitle">Desafio 04 — Liga cada situação à resposta de segurança correta.</p>
+<div class="instructions">
+Tens quatro situações do dia a dia.
+<br><br><strong>Liga cada texto à resposta que consideras correta.</strong>
+<br><br>Podes fazer ligações erradas: cada erro custa <strong>5 pontos</strong>.
+<br><br>No telemóvel, toca numa resposta e depois toca na situação onde queres colocá-la.
 </div>
-
-
-
-<!-- =====================================================
-     GAME SCREEN
-     ===================================================== -->
+<button onclick="startChallenge()">🚀 Começar desafio</button>
+</div>
 
 <div id="gameScreen" class="hidden">
-
-
-    <div class="topbar">
-
-        <div class="brand">
-            CYBER <span>CHALLENGE</span> 2026
-        </div>
-
-        <div class="challenge">
-            DESAFIO 04 / 04
-        </div>
-
-        <div class="score-box">
-
-            <div>
-                Pontos:
-                <span id="score" class="score">0</span>
-            </div>
-
-            <div>
-                <span id="found">0</span> / 4
-            </div>
-
-            <div class="progress">
-
-                <div
-                    id="progressBar"
-                    class="progress-bar">
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <div class="container">
-
-        <h1>🔗 Liga os Pontos</h1>
-
-        <div class="subtitle">
-
-            Quatro situações.
-            Quatro respostas.
-            Consegues fazer as ligações certas?
-
-        </div>
-
-
-        <div class="game-panel">
-
-
-            <div class="instructions">
-
-                <strong>Como jogar:</strong>
-
-                arrasta qualquer resposta para qualquer situação.
-
-                <br>
-
-                Se estiver correto ganhas
-                <strong>+25 pontos</strong>.
-
-                Se estiver errado perdes
-                <strong>5 pontos</strong>.
-
-                <br>
-
-                Uma resposta só fica bloqueada depois de ser
-                corretamente associada.
-
-            </div>
-
-
-
-            <div class="matching-layout">
-
-
-                <!-- =========================================
-                     SITUAÇÕES
-                     ========================================= -->
-
-                <div class="questions-panel">
-
-                    <div class="panel-title">
-                        🛡️ Situações
-                    </div>
-
-
-                    <!-- SITUAÇÃO 1 -->
-
-                    <div class="question">
-
-                        <span class="question-number">
-                            1
-                        </span>
-
-                        Recebes um email aparentemente enviado
-                        pelo departamento de IT a pedir para
-                        confirmares a tua password através de um link.
-
-                        <div
-                            class="dropzone"
-                            data-answer="Phishing"
-                        >
-                            Arrasta aqui a resposta
-                        </div>
-
-                    </div>
-
-
-                    <!-- SITUAÇÃO 2 -->
-
-                    <div class="question">
-
-                        <span class="question-number">
-                            2
-                        </span>
-
-                        Encontras uma pen USB desconhecida
-                        no parque de estacionamento.
-
-                        <div
-                            class="dropzone"
-                            data-answer="Dispositivo desconhecido"
-                        >
-                            Arrasta aqui a resposta
-                        </div>
-
-                    </div>
-
-
-                    <!-- SITUAÇÃO 3 -->
-
-                    <div class="question">
-
-                        <span class="question-number">
-                            3
-                        </span>
-
-                        Um colega pede-te a tua password
-                        porque precisa de entrar temporariamente
-                        num sistema.
-
-                        <div
-                            class="dropzone"
-                            data-answer="Credenciais pessoais"
-                        >
-                            Arrasta aqui a resposta
-                        </div>
-
-                    </div>
-
-
-                    <!-- SITUAÇÃO 4 -->
-
-                    <div class="question">
-
-                        <span class="question-number">
-                            4
-                        </span>
-
-                        Vais sair da secretária e deixas documentos
-                        visíveis enquanto o computador fica desbloqueado.
-
-                        <div
-                            class="dropzone"
-                            data-answer="Clear Desk / Clear Screen"
-                        >
-                            Arrasta aqui a resposta
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- =========================================
-                     RESPOSTAS
-                     ========================================= -->
-
-                <div class="answers-panel">
-
-                    <div class="panel-title">
-                        🎯 Respostas
-                    </div>
-
-
-                    <div
-                        id="answerList"
-                        class="answer-list"
-                    >
-
-
-                        <div
-                            class="answer"
-                            draggable="true"
-                            data-answer="Phishing"
-                        >
-                            🎣 Phishing
-                        </div>
-
-
-                        <div
-                            class="answer"
-                            draggable="true"
-                            data-answer="Dispositivo desconhecido"
-                        >
-                            💾 Dispositivo desconhecido
-                        </div>
-
-
-                        <div
-                            class="answer"
-                            draggable="true"
-                            data-answer="Credenciais pessoais"
-                        >
-                            🔐 Credenciais pessoais
-                        </div>
-
-
-                        <div
-                            class="answer"
-                            draggable="true"
-                            data-answer="Clear Desk / Clear Screen"
-                        >
-                            🖥️ Clear Desk / Clear Screen
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <div
-                id="feedback"
-                class="feedback">
-            </div>
-
-
-
-            <div class="bottom-panel">
-
-                <div class="status">
-
-                    <span id="statusText">
-                        Liga as quatro situações às respostas.
-                    </span>
-
-                </div>
-
-
-                <button
-                    id="finishButton"
-                    onclick="finishChallenge()"
-                    disabled
-                >
-                    🏁 Terminar desafio
-                </button>
-
-            </div>
-
-
-        </div>
-
-    </div>
-
+<div class="topbar">
+<div class="brand">CYBER <span>CHALLENGE</span> 2026</div>
+<div class="challenge">DESAFIO 04 / 04</div>
+<div class="score-box">
+<div>Pontos: <span id="score" class="score">0</span></div>
+<div><span id="found">0</span> / 4</div>
+<div>⏱️ <span id="timer">0:00</span></div>
+<div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+</div>
 </div>
 
+<div class="container">
+<h1>🔗 Liga os Pontos</h1>
+<div class="subtitle">Quatro situações. Quatro respostas. Consegues fazer as ligações certas?</div>
+<div class="game-panel">
+<div class="instructions"><strong>Como jogar:</strong> arrasta qualquer resposta para qualquer situação.<br>
+Se estiver correto ganhas <strong>+25 pontos</strong>.<br>
+Se estiver errado perdes <strong>5 pontos</strong>.<br>
+Uma resposta só fica bloqueada depois de ser corretamente associada.</div>
 
+<div class="matching-layout">
+<div class="questions-panel">
+<div class="panel-title">🛡️ Situações</div>
 
-<!-- =====================================================
-     END SCREEN
-     ===================================================== -->
+<div class="question"><span class="question-number">1</span> Recebes um email aparentemente enviado pelo departamento de IT a pedir para confirmares a tua password através de um link.
+<div class="dropzone" data-answer="Phishing">Arrasta aqui a resposta</div></div>
+
+<div class="question"><span class="question-number">2</span> Encontras uma pen USB desconhecida no parque de estacionamento.
+<div class="dropzone" data-answer="Dispositivo desconhecido">Arrasta aqui a resposta</div></div>
+
+<div class="question"><span class="question-number">3</span> Um colega pede-te a tua password porque precisa de entrar temporariamente num sistema.
+<div class="dropzone" data-answer="Credenciais pessoais">Arrasta aqui a resposta</div></div>
+
+<div class="question"><span class="question-number">4</span> Vais sair da secretária e deixas documentos visíveis enquanto o computador fica desbloqueado.
+<div class="dropzone" data-answer="Clear Desk / Clear Screen">Arrasta aqui a resposta</div></div>
+</div>
+
+<div class="answers-panel">
+<div class="panel-title">🎯 Respostas</div>
+<div id="answerList" class="answer-list">
+<div class="answer" draggable="true" data-answer="Phishing">🎣 Phishing</div>
+<div class="answer" draggable="true" data-answer="Dispositivo desconhecido">💾 Dispositivo desconhecido</div>
+<div class="answer" draggable="true" data-answer="Credenciais pessoais">🔐 Credenciais pessoais</div>
+<div class="answer" draggable="true" data-answer="Clear Desk / Clear Screen">🖥️ Clear Desk / Clear Screen</div>
+</div>
+</div>
+</div>
+
+<div id="feedback" class="feedback"></div>
+<div class="bottom-panel">
+<div class="status"><span id="statusText">Liga as quatro situações às respostas.</span></div>
+<button id="finishButton" onclick="finishChallenge()" disabled>🏁 Terminar desafio</button>
+</div>
+</div>
+</div>
+</div>
 
 <div id="endScreen" class="end-screen hidden">
-
-    <h1 id="endTitle">
-        Desafio concluído
-    </h1>
-
-
-    <div class="big-score">
-
-        <span id="finalScore">
-            0
-        </span>
-
-        / 100
-
-    </div>
-
-
-    <div
-        id="endMessage"
-        class="end-message">
-    </div>
-
-
-    <button onclick="goToBoss()">
-
-        👑 Enfrentar o Boss Final
-
-    </button>
-
+<h1 id="endTitle">Desafio concluído</h1>
+<div class="big-score"><span id="finalScore">0</span> / 100</div>
+<div id="endMessage" class="end-message"></div>
+<button onclick="goToBoss()">👑 Enfrentar o Boss Final</button>
 </div>
 
-
-
 <script>
-
-
-/* =========================================================
-   VARIÁVEIS
-   ========================================================= */
-
-let score = 0;
-
-let found = 0;
-
-let selectedAnswer = null;
-
-const totalQuestions = 4;
-
 const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
+const D4_STATE_PREFIX = "cyberChallenge_d4_state_";
 const params = new URLSearchParams(window.location.search);
-const tokenFromUrl = params.get("token");
+const tokenFromUrl = (params.get("token") || "").trim();
 const codenameFromUrl = params.get("codename");
-const storedToken = localStorage.getItem("cyberChallengeToken");
 
-if (tokenFromUrl && tokenFromUrl !== storedToken) {
-    localStorage.removeItem("cyberChallenge_d1");
-    localStorage.removeItem("cyberChallenge_d1_time");
-    localStorage.removeItem("cyberChallenge_d2");
-    localStorage.removeItem("cyberChallenge_d2_time");
-    localStorage.removeItem("cyberChallenge_d3");
-    localStorage.removeItem("cyberChallenge_d3_time");
-    localStorage.removeItem("cyberChallenge_d4");
-    localStorage.removeItem("cyberChallenge_d4_time");
+function getPlayerToken() {
+    const urlToken = (new URLSearchParams(window.location.search).get("token") || "").trim();
+
+    if (urlToken && urlToken !== "TESTE001") {
+        localStorage.setItem("cyberChallengeToken", urlToken);
+        return urlToken;
+    }
+
+    const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
+
+    return storedToken && storedToken !== "TESTE001" ? storedToken : "";
 }
 
-const token = tokenFromUrl || storedToken;
-const codename = codenameFromUrl ||
+const token = getPlayerToken();
+
+const codename =
+    codenameFromUrl ||
     localStorage.getItem("cyberChallengeCodename") ||
     "Cyber Ninja";
 
-if (tokenFromUrl) {
-    localStorage.setItem("cyberChallengeToken", tokenFromUrl);
-}
 if (codenameFromUrl) {
     localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
 }
 
+let score = 0;
+let found = 0;
+let selectedAnswer = null;
+const totalQuestions = 4;
 let startTime = null;
 let timerInterval = null;
 let elapsedSeconds = 0;
+let challengeStarted = false;
+
+function getD4StateKey() {
+    const currentToken = getPlayerToken();
+    return currentToken ? D4_STATE_PREFIX + currentToken : "";
+}
+
+function saveD4State() {
+    const stateKey = getD4StateKey();
+
+    if (!stateKey || !challengeStarted) {
+        return;
+    }
+
+    const correctAnswers = {};
+    document.querySelectorAll(".dropzone.correct").forEach(zone => {
+        correctAnswers[zone.dataset.answer] = zone.textContent;
+    });
+
+    const usedAnswers = Array.from(
+        document.querySelectorAll(".answer.used")
+    ).map(answer => answer.dataset.answer);
+
+    const answerOrder = Array.from(
+        document.querySelectorAll(".answer")
+    ).map(answer => answer.dataset.answer);
+
+    localStorage.setItem(stateKey, JSON.stringify({
+        started: true,
+        score,
+        found,
+        elapsedSeconds,
+        correctAnswers,
+        usedAnswers,
+        answerOrder
+    }));
+}
+
+function loadD4State() {
+    const stateKey = getD4StateKey();
+
+    if (!stateKey) {
+        return null;
+    }
+
+    try {
+        const raw = localStorage.getItem(stateKey);
+
+        if (!raw) {
+            return null;
+        }
+
+        const state = JSON.parse(raw);
+
+        if (!state || state.started !== true) {
+            return null;
+        }
+
+        return state;
+    } catch (error) {
+        console.error("Erro ao ler estado local do D4:", error);
+        return null;
+    }
+}
+
+function clearD4State() {
+    const stateKey = getD4StateKey();
+
+    if (stateKey) {
+        localStorage.removeItem(stateKey);
+    }
+}
+
+function restoreAnswerOrder(order) {
+    if (!Array.isArray(order) || !order.length) {
+        return;
+    }
+
+    const list = document.getElementById("answerList");
+
+    order.forEach(answerValue => {
+        const answer = document.querySelector(
+            '.answer[data-answer="' + CSS.escape(answerValue) + '"]'
+        );
+
+        if (answer) {
+            list.appendChild(answer);
+        }
+    });
+}
+
+function restoreD4State(state) {
+    if (!state) {
+        return false;
+    }
+
+    score = Number(state.score) || 0;
+    found = Number(state.found) || 0;
+    elapsedSeconds = Number(state.elapsedSeconds) || 0;
+
+    restoreAnswerOrder(state.answerOrder);
+
+    document.querySelectorAll(".dropzone").forEach(zone => {
+        zone.classList.remove("correct", "wrong", "dragover");
+        zone.textContent = "Arrasta aqui a resposta";
+    });
+
+    document.querySelectorAll(".answer").forEach(answer => {
+        answer.classList.remove("used", "selected");
+    });
+
+    const correctAnswers = state.correctAnswers || {};
+
+    document.querySelectorAll(".dropzone").forEach(zone => {
+        const answerValue = zone.dataset.answer;
+
+        if (Object.prototype.hasOwnProperty.call(correctAnswers, answerValue)) {
+            zone.textContent = correctAnswers[answerValue];
+            zone.classList.add("correct");
+        }
+    });
+
+    const usedAnswers = Array.isArray(state.usedAnswers)
+        ? state.usedAnswers
+        : [];
+
+    usedAnswers.forEach(answerValue => {
+        const answer = document.querySelector(
+            '.answer[data-answer="' + CSS.escape(answerValue) + '"]'
+        );
+
+        if (answer) {
+            answer.classList.add("used");
+        }
+    });
+
+    selectedAnswer = null;
+    challengeStarted = true;
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    updateUI();
+    startTimer();
+
+    document.getElementById("statusText").textContent =
+        found === totalQuestions
+            ? "Todas as situações foram corretamente associadas."
+            : "Desafio retomado. Continua de onde ficaste.";
+
+    return true;
+}
 
 function startTimer() {
-    startTime = Date.now();
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
+    startTime = Date.now() - (elapsedSeconds * 1000);
+
     timerInterval = setInterval(() => {
-        elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+        updateTimerUI();
     }, 1000);
+
+    updateTimerUI();
 }
 
 function stopTimer() {
@@ -1062,25 +325,277 @@ function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+
     if (startTime) {
-        elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+    }
+
+    updateTimerUI();
+}
+
+function updateTimerUI() {
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+
+    document.getElementById("timer").textContent =
+        minutes + ":" + String(seconds).padStart(2, "0");
+}
+
+function startChallenge() {
+    const currentToken = getPlayerToken();
+
+    if (!currentToken || currentToken === "TESTE001") {
+        alert(
+            "Este link de acesso não tem um token válido. " +
+            "Volta ao email de inscrição e utiliza o teu link pessoal."
+        );
+        return;
+    }
+
+    const savedState = loadD4State();
+
+    if (savedState) {
+        restoreD4State(savedState);
+        return;
+    }
+
+    challengeStarted = true;
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    shuffleAnswers();
+    startTimer();
+    saveD4State();
+    updateUI();
+}
+
+function shuffleAnswers() {
+    const list = document.getElementById("answerList");
+
+    const answers = Array.from(
+        list.querySelectorAll(".answer")
+    );
+
+    for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [answers[i], answers[j]] =
+            [answers[j], answers[i]];
+    }
+
+    answers.forEach(answer => {
+        list.appendChild(answer);
+    });
+}
+
+function updateUI() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("found").textContent = found;
+
+    const percentage =
+        (found / totalQuestions) * 100;
+
+    document.getElementById("progressBar").style.width =
+        percentage + "%";
+
+    document.getElementById("finishButton").disabled =
+        found < totalQuestions;
+
+    if (found === totalQuestions) {
+        document.getElementById("statusText").textContent =
+            "Todas as situações foram corretamente associadas.";
     }
 }
 
+function showFeedback(message, type) {
+    const feedback = document.getElementById("feedback");
+
+    feedback.textContent = message;
+    feedback.className = "feedback " + type;
+
+    clearTimeout(window.feedbackTimeout);
+
+    window.feedbackTimeout = setTimeout(() => {
+        feedback.textContent = "";
+        feedback.className = "feedback";
+    }, 2200);
+}
+
+document.querySelectorAll(".answer").forEach(answer => {
+    answer.addEventListener("dragstart", function(event) {
+        if (this.classList.contains("used")) {
+            event.preventDefault();
+            return;
+        }
+
+        event.dataTransfer.setData(
+            "text/plain",
+            this.dataset.answer
+        );
+
+        event.dataTransfer.effectAllowed = "move";
+        selectedAnswer = this;
+    });
+
+    answer.addEventListener("click", function() {
+        if (this.classList.contains("used")) {
+            return;
+        }
+
+        document.querySelectorAll(".answer").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        this.classList.add("selected");
+        selectedAnswer = this;
+
+        showFeedback(
+            "👉 Agora escolhe a situação onde queres colocar esta resposta.",
+            "good"
+        );
+    });
+});
+
+document.querySelectorAll(".dropzone").forEach(zone => {
+    zone.addEventListener("dragover", function(event) {
+        event.preventDefault();
+
+        if (!this.classList.contains("correct")) {
+            this.classList.add("dragover");
+        }
+    });
+
+    zone.addEventListener("dragleave", function() {
+        this.classList.remove("dragover");
+    });
+
+    zone.addEventListener("drop", function(event) {
+        event.preventDefault();
+        this.classList.remove("dragover");
+
+        if (this.classList.contains("correct")) {
+            return;
+        }
+
+        const answerName =
+            event.dataTransfer.getData("text/plain");
+
+        const answer = document.querySelector(
+            '.answer[data-answer="' +
+            CSS.escape(answerName) +
+            '"]'
+        );
+
+        if (answer) {
+            processDrop(answer, this);
+        }
+    });
+
+    zone.addEventListener("click", function() {
+        if (this.classList.contains("correct")) {
+            return;
+        }
+
+        if (!selectedAnswer) {
+            return;
+        }
+
+        processDrop(selectedAnswer, this);
+    });
+});
+
+function processDrop(answer, zone) {
+    if (!answer || !zone) {
+        return;
+    }
+
+    if (answer.classList.contains("used")) {
+        return;
+    }
+
+    if (zone.classList.contains("correct")) {
+        return;
+    }
+
+    const answerValue = answer.dataset.answer;
+    const correctValue = zone.dataset.answer;
+
+    if (answerValue === correctValue) {
+        score += 25;
+        found++;
+
+        zone.textContent = answer.textContent;
+        zone.classList.add("correct");
+
+        answer.classList.add("used");
+        answer.classList.remove("selected");
+
+        selectedAnswer = null;
+
+        showFeedback(
+            "🎯 Correto! +25 pontos.",
+            "good"
+        );
+
+        updateUI();
+        saveD4State();
+
+        return;
+    }
+
+    score -= 5;
+
+    if (score < 0) {
+        score = 0;
+    }
+
+    zone.classList.add("wrong");
+
+    setTimeout(() => {
+        zone.classList.remove("wrong");
+    }, 300);
+
+    showFeedback(
+        "❌ Associação errada. -5 pontos. Podes tentar novamente.",
+        "bad"
+    );
+
+    updateUI();
+    saveD4State();
+}
+
 async function saveResult() {
-    if (!token || token === "TESTE001") {
-        console.error("Token de produção inválido.");
-        return false;
+    const currentToken = getPlayerToken();
+
+    if (!currentToken || currentToken === "TESTE001") {
+        throw new Error(
+            "Token de jogo inválido. Abre o link pessoal recebido no email."
+        );
     }
 
     const payload = {
-        token: token,
-        d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
-        d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
-        d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),
-        d2_time: Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
-        d3_score: Number(localStorage.getItem("cyberChallenge_d3") || 0),
-        d3_time: Number(localStorage.getItem("cyberChallenge_d3_time") || 0),
+        token: currentToken,
+        d1_score: Number(
+            localStorage.getItem("cyberChallenge_d1") || 0
+        ),
+        d1_time: Number(
+            localStorage.getItem("cyberChallenge_d1_time") || 0
+        ),
+        d2_score: Number(
+            localStorage.getItem("cyberChallenge_d2") || 0
+        ),
+        d2_time: Number(
+            localStorage.getItem("cyberChallenge_d2_time") || 0
+        ),
+        d3_score: Number(
+            localStorage.getItem("cyberChallenge_d3") || 0
+        ),
+        d3_time: Number(
+            localStorage.getItem("cyberChallenge_d3_time") || 0
+        ),
         d4_score: score,
         d4_time: elapsedSeconds,
         boss_score: 0,
@@ -1088,532 +603,44 @@ async function saveResult() {
         completed_date: new Date().toISOString()
     };
 
-    try {
-        const response = await fetch(WORKER_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
-
-        return true;
-    } catch (error) {
-        console.error("Erro ao guardar resultado:", error);
-        return false;
-    }
-}
-
-
-/* =========================================================
-   START
-   ========================================================= */
-
-function startChallenge() {
-
-    document
-        .getElementById("startScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
-
-
-    shuffleAnswers();
-    startTimer();
-
-    updateUI();
-
-}
-
-
-/* =========================================================
-   SHUFFLE DAS RESPOSTAS
-   ========================================================= */
-
-function shuffleAnswers() {
-
-    const list =
-        document.getElementById("answerList");
-
-
-    const answers =
-        Array.from(
-            list.querySelectorAll(".answer")
-        );
-
-
-    /*
-     * Fisher-Yates
-     */
-
-    for (
-        let i = answers.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const j =
-            Math.floor(
-                Math.random() * (i + 1)
-            );
-
-
-        [
-            answers[i],
-            answers[j]
-        ] =
-        [
-            answers[j],
-            answers[i]
-        ];
-
-    }
-
-
-    answers.forEach(answer => {
-
-        list.appendChild(answer);
-
+    const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
     });
 
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+        throw new Error(
+            result.error ||
+            "Não foi possível guardar o resultado."
+        );
+    }
+
+    return result;
 }
-
-
-/* =========================================================
-   UPDATE UI
-   ========================================================= */
-
-function updateUI() {
-
-    document
-        .getElementById("score")
-        .textContent = score;
-
-
-    document
-        .getElementById("found")
-        .textContent = found;
-
-
-    const percentage =
-        (found / totalQuestions) * 100;
-
-
-    document
-        .getElementById("progressBar")
-        .style.width =
-            percentage + "%";
-
-
-    document
-        .getElementById("finishButton")
-        .disabled =
-            found < totalQuestions;
-
-
-    if (found === totalQuestions) {
-
-        document
-            .getElementById("statusText")
-            .textContent =
-                "Todas as situações foram corretamente associadas.";
-
-    }
-
-}
-
-
-/* =========================================================
-   FEEDBACK
-   ========================================================= */
-
-function showFeedback(
-    message,
-    type
-) {
-
-    const feedback =
-        document.getElementById("feedback");
-
-
-    feedback.textContent =
-        message;
-
-
-    feedback.className =
-        "feedback " + type;
-
-
-    clearTimeout(
-        window.feedbackTimeout
-    );
-
-
-    window.feedbackTimeout =
-        setTimeout(() => {
-
-            feedback.textContent = "";
-
-            feedback.className =
-                "feedback";
-
-        }, 2200);
-
-}
-
-
-/* =========================================================
-   DRAG & DROP — RESPOSTAS
-   ========================================================= */
-
-document
-    .querySelectorAll(".answer")
-    .forEach(answer => {
-
-
-        answer.addEventListener(
-            "dragstart",
-            function(event) {
-
-                if (
-                    this.classList.contains("used")
-                ) {
-
-                    event.preventDefault();
-
-                    return;
-                }
-
-
-                event.dataTransfer.setData(
-                    "text/plain",
-                    this.dataset.answer
-                );
-
-
-                event.dataTransfer.effectAllowed =
-                    "move";
-
-
-                selectedAnswer =
-                    this;
-
-            }
-        );
-
-
-        /*
-         * MOBILE:
-         * selecionar resposta
-         */
-
-        answer.addEventListener(
-            "click",
-            function() {
-
-                if (
-                    this.classList.contains("used")
-                ) {
-                    return;
-                }
-
-
-                document
-                    .querySelectorAll(".answer")
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "selected"
-                        );
-
-                    });
-
-
-                this.classList.add(
-                    "selected"
-                );
-
-
-                selectedAnswer =
-                    this;
-
-
-                showFeedback(
-                    "👉 Agora escolhe a situação onde queres colocar esta resposta.",
-                    "good"
-                );
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   DROPZONES
-   ========================================================= */
-
-document
-    .querySelectorAll(".dropzone")
-    .forEach(zone => {
-
-
-        zone.addEventListener(
-            "dragover",
-            function(event) {
-
-                event.preventDefault();
-
-
-                if (
-                    !this.classList.contains("correct")
-                ) {
-
-                    this.classList.add(
-                        "dragover"
-                    );
-
-                }
-
-            }
-        );
-
-
-        zone.addEventListener(
-            "dragleave",
-            function() {
-
-                this.classList.remove(
-                    "dragover"
-                );
-
-            }
-        );
-
-
-        zone.addEventListener(
-            "drop",
-            function(event) {
-
-                event.preventDefault();
-
-
-                this.classList.remove(
-                    "dragover"
-                );
-
-
-                if (
-                    this.classList.contains("correct")
-                ) {
-                    return;
-                }
-
-
-                const answerName =
-                    event.dataTransfer.getData(
-                        "text/plain"
-                    );
-
-
-                const answer =
-                    document.querySelector(
-                        '.answer[data-answer="' +
-                        CSS.escape(answerName) +
-                        '"]'
-                    );
-
-
-                if (answer) {
-
-                    processDrop(
-                        answer,
-                        this
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-         * MOBILE:
-         * resposta selecionada + toque na situação
-         */
-
-        zone.addEventListener(
-            "click",
-            function() {
-
-                if (
-                    this.classList.contains("correct")
-                ) {
-                    return;
-                }
-
-
-                if (!selectedAnswer) {
-                    return;
-                }
-
-
-                processDrop(
-                    selectedAnswer,
-                    this
-                );
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   PROCESSAR ASSOCIAÇÃO
-   ========================================================= */
-
-function processDrop(
-    answer,
-    zone
-) {
-
-    if (
-        !answer ||
-        !zone
-    ) {
-        return;
-    }
-
-
-    if (
-        answer.classList.contains("used")
-    ) {
-        return;
-    }
-
-
-    if (
-        zone.classList.contains("correct")
-    ) {
-        return;
-    }
-
-
-    const answerValue =
-        answer.dataset.answer;
-
-
-    const correctValue =
-        zone.dataset.answer;
-
-
-    /*
-     * RESPOSTA CERTA
-     */
-
-    if (
-        answerValue === correctValue
-    ) {
-
-        score += 25;
-
-        found++;
-
-
-        zone.textContent =
-            answer.textContent;
-
-
-        zone.classList.add(
-            "correct"
-        );
-
-
-        answer.classList.add(
-            "used"
-        );
-
-
-        answer.classList.remove(
-            "selected"
-        );
-
-
-        selectedAnswer = null;
-
-
-        showFeedback(
-            "🎯 Correto! +25 pontos.",
-            "good"
-        );
-
-
-        updateUI();
-
-
-        return;
-    }
-
-
-    /*
-     * RESPOSTA ERRADA
-     */
-
-    score -= 5;
-
-
-    if (score < 0) {
-        score = 0;
-    }
-
-
-    zone.classList.add(
-        "wrong"
-    );
-
-
-    setTimeout(() => {
-
-        zone.classList.remove(
-            "wrong"
-        );
-
-    }, 300);
-
-
-    showFeedback(
-        "❌ Associação errada. -5 pontos. Podes tentar novamente.",
-        "bad"
-    );
-
-
-    updateUI();
-
-}
-
-
-/* =========================================================
-   TERMINAR DESAFIO
-   ========================================================= */
 
 async function finishChallenge() {
-
-    if (
-        found < totalQuestions
-    ) {
+    if (!challengeStarted || found < totalQuestions) {
         return;
     }
 
+    challengeStarted = false;
     stopTimer();
 
-    if (!token || token === "TESTE001") {
-        alert("Token de jogo inválido. Volta a entrar através do link recebido.");
+    const currentToken = getPlayerToken();
+
+    if (!currentToken || currentToken === "TESTE001") {
+        challengeStarted = true;
+        startTimer();
+
+        alert(
+            "Token de jogo inválido. " +
+            "Volta a entrar através do link recebido."
+        );
         return;
     }
 
@@ -1627,95 +654,133 @@ async function finishChallenge() {
         elapsedSeconds
     );
 
-    const saved = await saveResult();
+    const statusText =
+        document.getElementById("statusText");
 
-    if (!saved) {
-        alert("Não foi possível guardar o resultado. Verifica a ligação e tenta novamente.");
+    statusText.textContent =
+        "A guardar o resultado...";
+
+    try {
+        await saveResult();
+
+        clearD4State();
+
+        document.getElementById("gameScreen")
+            .classList.add("hidden");
+
+        document.getElementById("endScreen")
+            .classList.remove("hidden");
+
+        document.getElementById("finalScore")
+            .textContent = score;
+
+        const title =
+            document.getElementById("endTitle");
+
+        const message =
+            document.getElementById("endMessage");
+
+        if (score >= 100) {
+            title.textContent =
+                "🏆 Ligações perfeitas!";
+
+            message.textContent =
+                "Fizeste todas as associações corretamente " +
+                "sem perder pontos. Estás preparado para o Boss.";
+        } else if (score >= 75) {
+            title.textContent =
+                "🎯 Muito bem!";
+
+            message.textContent =
+                "Conseguiste fazer as quatro associações. " +
+                "Algumas tentativas erradas custaram-te alguns pontos.";
+        } else {
+            title.textContent =
+                "🧠 Desafio concluído.";
+
+            message.textContent =
+                "As quatro associações ficaram corretas, " +
+                "mas alguns erros pelo caminho reduziram a pontuação.";
+        }
+    } catch (error) {
+        console.error(error);
+
+        statusText.textContent =
+            "⚠️ Não foi possível guardar o resultado. Tenta novamente.";
+
+        challengeStarted = true;
+        saveD4State();
+        startTimer();
+
+        alert(
+            "⚠️ Não foi possível guardar o resultado.\n\n" +
+            "O progresso ficou guardado localmente. " +
+            "Tenta novamente."
+        );
+    }
+}
+
+function goToBoss() {
+    const currentToken = getPlayerToken();
+    const currentCodename =
+        localStorage.getItem("cyberChallengeCodename") || "";
+
+    const qs = new URLSearchParams();
+
+    if (currentToken) {
+        qs.set("token", currentToken);
+    }
+
+    if (currentCodename) {
+        qs.set("codename", currentCodename);
+    }
+
+    window.location.href =
+        "boss.html?" + qs.toString();
+}
+
+function persistD4BeforeLeaving() {
+    if (!challengeStarted) {
         return;
     }
 
-    /*
-     * GUARDA A PONTUAÇÃO DO DESAFIO 04
-     *
-     * O Boss Final vai buscar este valor
-     * através do localStorage.
-     */
-
-    document
-        .getElementById("gameScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("endScreen")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("finalScore")
-        .textContent =
-            score;
-
-
-    const title =
-        document.getElementById("endTitle");
-
-
-    const message =
-        document.getElementById("endMessage");
-
-
-    if (score >= 100) {
-
-        title.textContent =
-            "🏆 Ligações perfeitas!";
-
-
-        message.textContent =
-            "Fizeste todas as associações corretamente " +
-            "sem perder pontos. Estás preparado para o Boss.";
-
-    }
-    else if (score >= 75) {
-
-        title.textContent =
-            "🎯 Muito bem!";
-
-
-        message.textContent =
-            "Conseguiste fazer as quatro associações. " +
-            "Algumas tentativas erradas custaram-te alguns pontos.";
-
-    }
-    else {
-
-        title.textContent =
-            "🧠 Desafio concluído.";
-
-
-        message.textContent =
-            "As quatro associações ficaram corretas, " +
-            "mas alguns erros pelo caminho reduziram a pontuação.";
-
+    if (startTime) {
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
     }
 
+    saveD4State();
 }
 
+window.addEventListener("beforeunload", function(event) {
+    if (!challengeStarted) {
+        return;
+    }
 
-/* =========================================================
-   BOSS FINAL
-   ========================================================= */
+    persistD4BeforeLeaving();
 
-function goToBoss() {
-    const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
-    const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();
-    const params = new URLSearchParams();
-    if (token) params.set("token", token);
-    if (codename) params.set("codename", codename);
-    window.location.href = "boss.html?" + params.toString();
-}
+    event.preventDefault();
+    event.returnValue = "";
+});
 
+window.addEventListener("pagehide", function() {
+    persistD4BeforeLeaving();
+});
+
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "hidden") {
+        persistD4BeforeLeaving();
+    }
+});
+
+window.addEventListener("DOMContentLoaded", function() {
+    const savedState = loadD4State();
+
+    if (savedState) {
+        restoreD4State(savedState);
+    }
+});
 </script>
-
 </body>
 </html>

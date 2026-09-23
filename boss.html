@@ -1018,10 +1018,6 @@ button:disabled {
 
 
 
-            <!-- =========================================
-                 PHASE CONTENT
-                 ========================================= -->
-
             <div id="phaseContent">
             </div>
 
@@ -1219,104 +1215,515 @@ let timerInterval = null;
 
 let orderEvaluated = false;
 
-let draggedItem = null;
-// Identificação do jogador e integração com o Worker
-let playerToken = null;
 let bossStartTime = null;
-const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
 
-function getPlayerToken() {
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get("token");
-    const storedToken = localStorage.getItem("cyberChallengeToken");
-    const urlCodename = params.get("codename");
-    if (urlCodename && urlCodename.trim()) {
-        localStorage.setItem("cyberChallengeCodename", urlCodename.trim().substring(0, 50));
+let draggedItem = null;
+
+
+/* =========================================================
+   CONFIGURAÇÃO WORKER
+   ========================================================= */
+
+const WORKER_URL =
+    "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+
+/* =========================================================
+   IDENTIDADE DO JOGADOR
+   TOKEN + CODENAME
+   ========================================================= */
+
+let playerToken = null;
+
+let playerCodename = null;
+
+
+function getPlayerIdentity() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const urlToken =
+        params.get("token");
+
+
+    const urlCodename =
+        params.get("codename");
+
+
+    const storedToken =
+        localStorage.getItem(
+            "cyberChallengeToken"
+        );
+
+
+    const storedCodename =
+        localStorage.getItem(
+            "cyberChallengeCodename"
+        );
+
+
+    /*
+     * TOKEN
+     */
+
+    if (
+        urlToken &&
+        urlToken.trim()
+    ) {
+
+        playerToken =
+            urlToken
+                .trim()
+                .substring(0, 100);
+
+
+        localStorage.setItem(
+            "cyberChallengeToken",
+            playerToken
+        );
+
+    }
+    else if (
+        storedToken &&
+        storedToken.trim()
+    ) {
+
+        playerToken =
+            storedToken.trim();
+
     }
 
-    if (urlToken && urlToken.trim()) {
-        playerToken = urlToken.trim().substring(0, 100);
-        localStorage.setItem("cyberChallengeToken", playerToken);
-        return playerToken;
+
+    /*
+     * CODENAME
+     */
+
+    if (
+        urlCodename &&
+        urlCodename.trim()
+    ) {
+
+        playerCodename =
+            urlCodename
+                .trim()
+                .substring(0, 50);
+
+
+        localStorage.setItem(
+            "cyberChallengeCodename",
+            playerCodename
+        );
+
+    }
+    else if (
+        storedCodename &&
+        storedCodename.trim()
+    ) {
+
+        playerCodename =
+            storedCodename.trim();
+
     }
 
-    if (storedToken && storedToken.trim()) {
-        playerToken = storedToken.trim();
-        return playerToken;
-    }
 
-    return null;
-}
+    return {
 
-function getBossCompletedKey(token) {
-    const safeToken = String(token || "").trim();
-    return safeToken ? `cyberChallenge_boss_completed_${safeToken}` : "";
-}
+        token:
+            playerToken,
 
-function isBossCompleted(token) {
-    const key = getBossCompletedKey(token);
-    return !!key && localStorage.getItem(key) === "true";
-}
+        codename:
+            playerCodename
 
-function markBossCompleted(token) {
-    const key = getBossCompletedKey(token);
-    if (key) localStorage.setItem(key, "true");
-}
-
-function validatePlayerToken() {
-    const token = getPlayerToken();
-
-    if (!token || token === "TESTE001") {
-        document.getElementById("startScreen").classList.add("hidden");
-        document.getElementById("gameScreen").classList.add("hidden");
-        document.getElementById("lockedScreen").classList.remove("hidden");
-        document.querySelector("#lockedScreen h1").textContent = "Acesso inválido";
-        document.querySelector("#lockedScreen .end-message").innerHTML =
-            "Este Boss Final precisa de um link pessoal válido.<br><br>" +
-            "Volta ao email de inscrição e utiliza o teu link pessoal.";
-        document.getElementById("lockedScore").textContent = "—";
-        return false;
-    }
-
-    return true;
-}
-
-function getBossElapsedSeconds() {
-    if (!bossStartTime) return 0;
-    return Math.max(0, Math.min(90, Math.round((Date.now() - bossStartTime) / 1000)));
-}
-
-async function saveFinalResult(bossTime) {
-    const token = getPlayerToken();
-    if (!token || token === "TESTE001") throw new Error("Token de jogo inválido.");
-
-    const payload = {
-        token,
-        d1_score: Number(localStorage.getItem("cyberChallenge_d1") || 0),
-        d1_time: Number(localStorage.getItem("cyberChallenge_d1_time") || 0),
-        d2_score: Number(localStorage.getItem("cyberChallenge_d2") || 0),
-        d2_time: Number(localStorage.getItem("cyberChallenge_d2_time") || 0),
-        d3_score: Number(localStorage.getItem("cyberChallenge_d3") || 0),
-        d3_time: Number(localStorage.getItem("cyberChallenge_d3_time") || 0),
-        d4_score: Number(localStorage.getItem("cyberChallenge_d4") || 0),
-        d4_time: Number(localStorage.getItem("cyberChallenge_d4_time") || 0),
-        boss_score: Number(bossScore) || 0,
-        boss_time: Number(bossTime) || 0,
-        completed_date: new Date().toISOString()
     };
 
-    const response = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-    const result = await response.json();
-    if (!response.ok || !result.success) {
-        throw new Error(result.error || "O Worker não aceitou o resultado final.");
-    }
-    return result;
 }
 
+
+/* =========================================================
+   TOKEN
+   ========================================================= */
+
+function getPlayerToken() {
+
+    if (
+        !playerToken
+    ) {
+
+        getPlayerIdentity();
+
+    }
+
+    return playerToken;
+
+}
+
+
+/* =========================================================
+   CODENAME
+   ========================================================= */
+
+function getPlayerCodename() {
+
+    if (
+        !playerCodename
+    ) {
+
+        getPlayerIdentity();
+
+    }
+
+    return playerCodename;
+
+}
+
+
+/* =========================================================
+   BOSS LOCAL STORAGE
+   ========================================================= */
+
+function getBossCompletedKey(token) {
+
+    const safeToken =
+        String(
+            token || ""
+        ).trim();
+
+
+    return safeToken
+        ? "cyberChallenge_boss_completed_" +
+          safeToken
+        : "";
+
+}
+
+
+function isBossCompleted(token) {
+
+    const key =
+        getBossCompletedKey(
+            token
+        );
+
+
+    return !!key &&
+        localStorage.getItem(
+            key
+        ) === "true";
+
+}
+
+
+function markBossCompleted(token) {
+
+    const key =
+        getBossCompletedKey(
+            token
+        );
+
+
+    if (key) {
+
+        localStorage.setItem(
+            key,
+            "true"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   VALIDAR JOGADOR
+   ========================================================= */
+
+function validatePlayerToken() {
+
+    getPlayerIdentity();
+
+
+    const token =
+        getPlayerToken();
+
+
+    if (
+        !token ||
+        token === "TESTE001"
+    ) {
+
+        document
+            .getElementById(
+                "startScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "gameScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "lockedScreen"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+
+        document
+            .querySelector(
+                "#lockedScreen h1"
+            )
+            .textContent =
+                "Acesso inválido";
+
+
+        document
+            .querySelector(
+                "#lockedScreen .end-message"
+            )
+            .innerHTML =
+                "Este Boss Final precisa de um link pessoal válido." +
+                "<br><br>" +
+                "Volta ao email de inscrição e utiliza o teu link pessoal.";
+
+
+        document
+            .getElementById(
+                "lockedScore"
+            )
+            .textContent =
+                "—";
+
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   TEMPO
+   ========================================================= */
+
+function getBossElapsedSeconds() {
+
+    if (
+        !bossStartTime
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.max(
+        0,
+        Math.min(
+            90,
+            Math.round(
+                (
+                    Date.now() -
+                    bossStartTime
+                ) / 1000
+            )
+        )
+    );
+
+}
+
+
+/* =========================================================
+   GUARDAR RESULTADO FINAL
+   ========================================================= */
+
+async function saveFinalResult(
+    bossTime
+) {
+
+    const identity =
+        getPlayerIdentity();
+
+
+    const token =
+        identity.token;
+
+
+    const codename =
+        identity.codename;
+
+
+    if (
+        !token ||
+        token === "TESTE001"
+    ) {
+
+        throw new Error(
+            "Token de jogo inválido."
+        );
+
+    }
+
+
+    const payload = {
+
+        token:
+            token,
+
+        /*
+         * O Worker pode ignorar este campo se
+         * o codename já estiver associado ao token.
+         * Enviamo-lo na mesma para manter a identidade
+         * disponível durante todo o fluxo.
+         */
+
+        codename:
+            codename || "",
+
+        d1_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d1"
+                ) || 0
+            ),
+
+        d1_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d1_time"
+                ) || 0
+            ),
+
+        d2_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d2"
+                ) || 0
+            ),
+
+        d2_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d2_time"
+                ) || 0
+            ),
+
+        d3_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d3"
+                ) || 0
+            ),
+
+        d3_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d3_time"
+                ) || 0
+            ),
+
+        d4_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d4"
+                ) || 0
+            ),
+
+        d4_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d4_time"
+                ) || 0
+            ),
+
+        boss_score:
+            Number(
+                bossScore
+            ) || 0,
+
+        boss_time:
+            Number(
+                bossTime
+            ) || 0,
+
+        completed_date:
+            new Date().toISOString()
+
+    };
+
+
+    const response =
+        await fetch(
+            WORKER_URL,
+            {
+                method:
+                    "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+            }
+        );
+
+
+    let result = null;
+
+
+    try {
+
+        result =
+            await response.json();
+
+    }
+    catch {
+
+        result = null;
+
+    }
+
+
+    if (
+        !response.ok ||
+        !result ||
+        !result.success
+    ) {
+
+        throw new Error(
+            (
+                result &&
+                result.error
+            ) ||
+            "O Worker não aceitou o resultado final."
+        );
+
+    }
+
+
+    return result;
+
+}
 
 
 /* =========================================================
@@ -1529,28 +1936,48 @@ const phases = [
 
 function startBoss() {
 
-    if (!validatePlayerToken()) {
+    if (
+        !validatePlayerToken()
+    ) {
+
         return;
+
     }
 
+
+    const token =
+        getPlayerToken();
+
+
     if (
-        isBossCompleted(getPlayerToken())
+        isBossCompleted(
+            token
+        )
     ) {
 
         showLocked();
 
         return;
+
     }
 
 
     document
-        .getElementById("startScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "startScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
+        .getElementById(
+            "gameScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 
     bossScore = 0;
@@ -1561,8 +1988,12 @@ function startBoss() {
 
     orderEvaluated = false;
 
+    bossFinished = false;
+
     timerValue = 90;
-    bossStartTime = Date.now();
+
+    bossStartTime =
+        Date.now();
 
 
     updateTimer();
@@ -1588,8 +2019,12 @@ function startBoss() {
 
 function countdown() {
 
-    if (bossFinished) {
+    if (
+        bossFinished
+    ) {
+
         return;
+
     }
 
 
@@ -1599,7 +2034,9 @@ function countdown() {
     updateTimer();
 
 
-    if (timerValue <= 0) {
+    if (
+        timerValue <= 0
+    ) {
 
         clearInterval(
             timerInterval
@@ -1620,7 +2057,9 @@ function countdown() {
 function updateTimer() {
 
     const timer =
-        document.getElementById("timer");
+        document.getElementById(
+            "timer"
+        );
 
 
     timer.textContent =
@@ -1636,14 +2075,18 @@ function updateTimer() {
     );
 
 
-    if (timerValue <= 15) {
+    if (
+        timerValue <= 15
+    ) {
 
         timer.classList.add(
             "danger"
         );
 
     }
-    else if (timerValue <= 30) {
+    else if (
+        timerValue <= 30
+    ) {
 
         timer.classList.add(
             "warning"
@@ -1661,7 +2104,9 @@ function updateTimer() {
 function updateBossScore() {
 
     document
-        .getElementById("bossScore")
+        .getElementById(
+            "bossScore"
+        )
         .textContent =
             bossScore;
 
@@ -1678,7 +2123,9 @@ function showFeedback(
 ) {
 
     const feedback =
-        document.getElementById("feedback");
+        document.getElementById(
+            "feedback"
+        );
 
 
     feedback.textContent =
@@ -1701,11 +2148,15 @@ function renderPhase() {
 
 
     const phaseLabel =
-        document.getElementById("phaseLabel");
+        document.getElementById(
+            "phaseLabel"
+        );
 
 
     const phaseTitle =
-        document.getElementById("phaseTitle");
+        document.getElementById(
+            "phaseTitle"
+        );
 
 
     const phaseDescription =
@@ -1737,12 +2188,16 @@ function renderPhase() {
     ) {
 
         const phase =
-            phases[currentPhase];
+            phases[
+                currentPhase
+            ];
 
 
         phaseLabel.textContent =
             "FASE " +
-            (currentPhase + 1) +
+            (
+                currentPhase + 1
+            ) +
             " / 5";
 
 
@@ -1756,13 +2211,16 @@ function renderPhase() {
 
         let html = "";
 
+
         html +=
             '<div class="order-instructions">';
+
 
         html +=
             "<strong>" +
             phase.question +
             "</strong>";
+
 
         html +=
             "</div>";
@@ -1773,7 +2231,10 @@ function renderPhase() {
 
 
         phase.options.forEach(
-            (option, index) => {
+            (
+                option,
+                index
+            ) => {
 
                 html +=
                     '<button class="option" ' +
@@ -1781,8 +2242,10 @@ function renderPhase() {
                     index +
                     ')">';
 
+
                 html +=
                     option.text;
+
 
                 html +=
                     "</button>";
@@ -1812,6 +2275,7 @@ function renderPhase() {
 
 
         return;
+
     }
 
 
@@ -1824,10 +2288,16 @@ function renderPhase() {
    ANSWER PHASE
    ========================================================= */
 
-function answerPhase(index) {
+function answerPhase(
+    index
+) {
 
-    if (phaseAnswered) {
+    if (
+        phaseAnswered
+    ) {
+
         return;
+
     }
 
 
@@ -1835,7 +2305,9 @@ function answerPhase(index) {
 
 
     const phase =
-        phases[currentPhase];
+        phases[
+            currentPhase
+        ];
 
 
     const buttons =
@@ -1855,13 +2327,17 @@ function answerPhase(index) {
 
 
     if (
-        phase.options[index].correct
+        phase.options[
+            index
+        ].correct
     ) {
 
         bossScore += 20;
 
 
-        buttons[index]
+        buttons[
+            index
+        ]
             .classList.add(
                 "correct"
             );
@@ -1878,12 +2354,18 @@ function answerPhase(index) {
         bossScore -= 5;
 
 
-        if (bossScore < 0) {
+        if (
+            bossScore < 0
+        ) {
+
             bossScore = 0;
+
         }
 
 
-        buttons[index]
+        buttons[
+            index
+        ]
             .classList.add(
                 "wrong"
             );
@@ -1901,7 +2383,9 @@ function answerPhase(index) {
 
 
     document
-        .getElementById("phaseButton")
+        .getElementById(
+            "phaseButton"
+        )
         .disabled =
             false;
 
@@ -1914,8 +2398,12 @@ function answerPhase(index) {
 
 function nextPhase() {
 
-    if (!phaseAnswered) {
+    if (
+        !phaseAnswered
+    ) {
+
         return;
+
     }
 
 
@@ -1929,6 +2417,7 @@ function nextPhase() {
         renderFinalPhase();
 
         return;
+
     }
 
 
@@ -1947,11 +2436,15 @@ function renderFinalPhase() {
 
 
     const phaseLabel =
-        document.getElementById("phaseLabel");
+        document.getElementById(
+            "phaseLabel"
+        );
 
 
     const phaseTitle =
-        document.getElementById("phaseTitle");
+        document.getElementById(
+            "phaseTitle"
+        );
 
 
     const phaseDescription =
@@ -1990,22 +2483,28 @@ function renderFinalPhase() {
     html +=
         '<div class="order-instructions">';
 
+
     html +=
         "<strong>Última decisão:</strong> " +
         "ordena os seis acontecimentos.";
 
+
     html +=
         "<br><br>";
+
 
     html +=
         "A sequência será avaliada quando carregares " +
         "<strong>Terminar Boss</strong>.";
 
+
     html +=
         "<br>";
 
+
     html +=
         "Não haverá segunda tentativa.";
+
 
     html +=
         "</div>";
@@ -2086,8 +2585,21 @@ function renderFinalPhase() {
     ];
 
 
+    /*
+     * Baralha a sequência inicial.
+     */
+
+    items.sort(
+        () =>
+            Math.random() - 0.5
+    );
+
+
     items.forEach(
-        (item, index) => {
+        (
+            item,
+            index
+        ) => {
 
             html +=
                 '<div class="order-item" ' +
@@ -2099,7 +2611,9 @@ function renderFinalPhase() {
 
             html +=
                 '<div class="order-number">' +
-                (index + 1) +
+                (
+                    index + 1
+                ) +
                 "</div>";
 
 
@@ -2166,83 +2680,87 @@ function setupOrderDrag() {
         .querySelectorAll(
             ".order-item"
         )
-        .forEach(item => {
+        .forEach(
+            item => {
 
 
-            item.addEventListener(
-                "dragstart",
-                function() {
+                item.addEventListener(
+                    "dragstart",
+                    function() {
 
-                    dragged = this;
-
-                    this.style.opacity =
-                        "0.5";
-
-                }
-            );
+                        dragged =
+                            this;
 
 
-            item.addEventListener(
-                "dragend",
-                function() {
+                        this.style.opacity =
+                            "0.5";
 
-                    this.style.opacity =
-                        "1";
-
-                }
-            );
+                    }
+                );
 
 
-            item.addEventListener(
-                "dragover",
-                function(event) {
+                item.addEventListener(
+                    "dragend",
+                    function() {
 
-                    event.preventDefault();
+                        this.style.opacity =
+                            "1";
 
-
-                    if (
-                        dragged &&
-                        dragged !== this
-                    ) {
-
-                        const rect =
-                            this.getBoundingClientRect();
+                    }
+                );
 
 
-                        const middle =
-                            rect.top +
-                            rect.height / 2;
+                item.addEventListener(
+                    "dragover",
+                    function(event) {
+
+                        event.preventDefault();
 
 
                         if (
-                            event.clientY <
-                            middle
+                            dragged &&
+                            dragged !== this
                         ) {
 
-                            list.insertBefore(
-                                dragged,
-                                this
-                            );
+                            const rect =
+                                this.getBoundingClientRect();
+
+
+                            const middle =
+                                rect.top +
+                                rect.height / 2;
+
+
+                            if (
+                                event.clientY <
+                                middle
+                            ) {
+
+                                list.insertBefore(
+                                    dragged,
+                                    this
+                                );
+
+                            }
+                            else {
+
+                                list.insertBefore(
+                                    dragged,
+                                    this.nextSibling
+                                );
+
+                            }
+
+
+                            updateOrderNumbers();
 
                         }
-                        else {
-
-                            list.insertBefore(
-                                dragged,
-                                this.nextSibling
-                            );
-
-                        }
-
-
-                        updateOrderNumbers();
 
                     }
+                );
 
-                }
-            );
-
-        });
+            }
+        );
 
 }
 
@@ -2258,7 +2776,10 @@ function updateOrderNumbers() {
             ".order-item"
         )
         .forEach(
-            (item, index) => {
+            (
+                item,
+                index
+            ) => {
 
                 item
                     .querySelector(
@@ -2279,8 +2800,12 @@ function updateOrderNumbers() {
 
 function finishFinalPhase() {
 
-    if (orderEvaluated) {
+    if (
+        orderEvaluated
+    ) {
+
         return;
+
     }
 
 
@@ -2316,13 +2841,20 @@ function finishFinalPhase() {
 
     const correct =
         sequence.every(
-            (value, index) =>
+            (
+                value,
+                index
+            ) =>
                 value ===
-                correctSequence[index]
+                correctSequence[
+                    index
+                ]
         );
 
 
-    if (correct) {
+    if (
+        correct
+    ) {
 
         bossScore += 20;
 
@@ -2338,8 +2870,12 @@ function finishFinalPhase() {
         bossScore -= 5;
 
 
-        if (bossScore < 0) {
+        if (
+            bossScore < 0
+        ) {
+
             bossScore = 0;
+
         }
 
 
@@ -2355,15 +2891,12 @@ function finishFinalPhase() {
 
 
     document
-        .getElementById("phaseButton")
+        .getElementById(
+            "phaseButton"
+        )
         .disabled =
             true;
 
-
-    /*
-     * Pequena pausa para o jogador ver
-     * o resultado da última decisão.
-     */
 
     setTimeout(
         finishBoss,
@@ -2379,15 +2912,14 @@ function finishFinalPhase() {
 
 function timeExpired() {
 
-    if (bossFinished) {
+    if (
+        bossFinished
+    ) {
+
         return;
+
     }
 
-
-    /*
-     * Se já estamos na fase 5,
-     * avaliamos a sequência uma única vez.
-     */
 
     if (
         currentPhase === 4 &&
@@ -2397,6 +2929,7 @@ function timeExpired() {
         finishFinalPhase();
 
         return;
+
     }
 
 
@@ -2411,32 +2944,113 @@ function timeExpired() {
 
 async function finishBoss() {
 
-    if (bossFinished) {
+    if (
+        bossFinished
+    ) {
+
         return;
+
     }
 
-    bossFinished = true;
 
-    clearInterval(timerInterval);
+    /*
+     * Ainda não marcamos como concluído.
+     * Primeiro tentamos guardar na BD.
+     */
 
-    // Limita o Boss ao intervalo 0–100.
-    bossScore = Math.max(0, Math.min(bossScore, 100));
+    const token =
+        getPlayerToken();
 
-    const bossTime = getBossElapsedSeconds();
 
-    // Guarda localmente para consulta/reentrada neste dispositivo.
-    localStorage.setItem("cyberChallenge_boss", bossScore);
-    localStorage.setItem("cyberChallenge_boss_time", bossTime);
-    markBossCompleted(getPlayerToken());
+    if (
+        !token ||
+        token === "TESTE001"
+    ) {
 
-    // O Boss é o último passo: fecha/atualiza a linha do jogador na D1.
+        alert(
+            "⚠️ Token de jogo inválido."
+        );
+
+        return;
+
+    }
+
+
+    bossScore =
+        Math.max(
+            0,
+            Math.min(
+                bossScore,
+                100
+            )
+        );
+
+
+    const bossTime =
+        getBossElapsedSeconds();
+
+
     try {
-        await saveFinalResult(bossTime);
+
+        /*
+         * Envia resultado para o Worker.
+         */
+
+        await saveFinalResult(
+            bossTime
+        );
+
+
+        /*
+         * Só depois de o Worker confirmar:
+         * - marcamos o Boss como concluído
+         * - guardamos localmente
+         */
+
+        localStorage.setItem(
+            "cyberChallenge_boss",
+            bossScore
+        );
+
+
+        localStorage.setItem(
+            "cyberChallenge_boss_time",
+            bossTime
+        );
+
+
+        markBossCompleted(
+            token
+        );
+
+
+        bossFinished = true;
+
+
+        clearInterval(
+            timerInterval
+        );
+
+
         showFinalResult();
-    } catch (error) {
-        console.error(error);
-        bossFinished = false;
-        alert("⚠️ O Boss terminou, mas o resultado não foi guardado na BD.\n\n" + error.message);
+
+    }
+    catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "⚠️ O Boss terminou, mas o resultado não foi guardado na BD.\n\n" +
+            error.message +
+            "\n\n" +
+            "Não saias da página. Verifica a ligação e tenta novamente."
+        );
+
     }
 
 }
@@ -2496,69 +3110,94 @@ function showFinalResult() {
         boss;
 
 
-    /*
-     * Se o Boss já estiver concluído,
-     * mostrar o resultado final.
-     */
-
     document
-        .getElementById("startScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("lockedScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "startScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("gameScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "lockedScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("endScreen")
-        .classList.remove("hidden");
+        .getElementById(
+            "gameScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("grandTotal")
+        .getElementById(
+            "endScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "grandTotal"
+        )
         .textContent =
             total;
 
 
     document
-        .getElementById("d1Score")
+        .getElementById(
+            "d1Score"
+        )
         .textContent =
             d1;
 
 
     document
-        .getElementById("d2Score")
+        .getElementById(
+            "d2Score"
+        )
         .textContent =
             d2;
 
 
     document
-        .getElementById("d3Score")
+        .getElementById(
+            "d3Score"
+        )
         .textContent =
             d3;
 
 
     document
-        .getElementById("d4Score")
+        .getElementById(
+            "d4Score"
+        )
         .textContent =
             d4;
 
 
     document
-        .getElementById("bossFinalScore")
+        .getElementById(
+            "bossFinalScore"
+        )
         .textContent =
             boss;
 
 
     document
-        .getElementById("breakdownTotal")
+        .getElementById(
+            "breakdownTotal"
+        )
         .textContent =
             total +
             " / 500";
@@ -2632,27 +3271,45 @@ function showLocked() {
 
 
     document
-        .getElementById("startScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "startScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("gameScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "gameScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("endScreen")
-        .classList.add("hidden");
+        .getElementById(
+            "endScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("lockedScreen")
-        .classList.remove("hidden");
+        .getElementById(
+            "lockedScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 
     document
-        .getElementById("lockedScore")
+        .getElementById(
+            "lockedScore"
+        )
         .textContent =
             boss;
 
@@ -2664,45 +3321,92 @@ function showLocked() {
    ========================================================= */
 
 async function finishGame() {
-    // Primeiro fecha o Boss e confirma a gravação na BD.
-    // Só depois encaminha o participante para a página definida pela organização.
-    const wasFinished = bossFinished;
-    await finishBoss();
 
-    if (bossFinished) {
-        window.location.href = "https://app.sesametime.com/employee/signings/all";
+    /*
+     * O Boss já foi gravado no Worker antes
+     * de chegarmos aqui.
+     *
+     * Apenas encaminhamos o participante
+     * para a página definida pela organização.
+     */
+
+    if (
+        !bossFinished
+    ) {
+
+        await finishBoss();
+
     }
+
+
+    if (
+        bossFinished
+    ) {
+
+        window.location.href =
+            "https://app.sesametime.com/employee/signings/all";
+
+    }
+
 }
 
-// Validação inicial do Boss.
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
 (function initBoss() {
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get("token");
-    const storedToken = localStorage.getItem("cyberChallengeToken");
 
-    if (urlToken && urlToken.trim() && storedToken && urlToken.trim() !== storedToken.trim()) {
-        // Novo token = novo jogador neste dispositivo.
-        [
-            "cyberChallenge_d1", "cyberChallenge_d1_time",
-            "cyberChallenge_d2", "cyberChallenge_d2_time",
-            "cyberChallenge_d3", "cyberChallenge_d3_time",
-            "cyberChallenge_d4", "cyberChallenge_d4_time",
-            "cyberChallenge_boss", "cyberChallenge_boss_time",
-            "cyberChallenge_boss_completed"
-        ].forEach(key => localStorage.removeItem(key));
-    }
+    /*
+     * Primeiro recuperamos SEMPRE:
+     *
+     * token
+     * codename
+     *
+     * da URL ou do localStorage.
+     */
 
-    const token = getPlayerToken();
+    getPlayerIdentity();
 
-    if (!token || token === "TESTE001") {
+
+    const token =
+        getPlayerToken();
+
+
+    /*
+     * Sem token válido:
+     * bloqueia o Boss.
+     */
+
+    if (
+        !token ||
+        token === "TESTE001"
+    ) {
+
         validatePlayerToken();
+
         return;
+
     }
 
-    if (isBossCompleted(token)) {
+
+    /*
+     * Se este token já concluiu o Boss
+     * neste dispositivo, não permite repetir.
+     */
+
+    if (
+        isBossCompleted(
+            token
+        )
+    ) {
+
         showLocked();
+
     }
+
 })();
+
 </script>
 
 </body>

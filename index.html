@@ -756,13 +756,21 @@ async function checkTokenAccess() {
         display.textContent = playerCodename || "Não identificado";
     }
 
-    if (!token || !playerCodename) {
+    if (!token) {
         if (accessMessage) {
             accessMessage.textContent =
                 "⚠️ Link de acesso inválido. Usa o link recebido por email.";
             accessMessage.style.color = "#f87171";
         }
         return false;
+    }
+
+    // O codename é apenas identificativo; não deve bloquear o jogo.
+    // Se não vier no URL, recuperamos do browser ou usamos um nome neutro.
+    if (!playerCodename) {
+        codename = "Cyber Ninja";
+        localStorage.setItem("cyberChallengeCodename", codename);
+        if (display) display.textContent = codename;
     }
 
     if (accessMessage) {

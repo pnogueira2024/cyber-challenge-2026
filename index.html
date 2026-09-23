@@ -448,7 +448,9 @@ button:hover {
         <span id="displayCodename">A carregar...</span>
     </div>
 
-    <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
+    <div id="accessMessage" style="margin:15px 0; font-weight:bold;"></div>
+
+        <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
         🚀 Começar o desafio
     </button>
 
@@ -742,26 +744,102 @@ function getPlayerCodename() {
 }
 
 
-function initialisePlayer() {
+async function checkTokenAccess() {
 
     const token = getPlayerToken();
     const playerCodename = getPlayerCodename();
     const display = document.getElementById("displayCodename");
     const startButton = document.getElementById("startButton");
+    const accessMessage = document.getElementById("accessMessage");
 
     if (display) {
         display.textContent = playerCodename || "Não identificado";
     }
 
-    if (startButton && token && playerCodename) {
-        startButton.disabled = false;
-        startButton.style.opacity = "1";
-        startButton.style.cursor = "pointer";
+    if (!token || !playerCodename) {
+        if (accessMessage) {
+            accessMessage.textContent =
+                "⚠️ Link de acesso inválido. Usa o link recebido por email.";
+            accessMessage.style.color = "#f87171";
+        }
+        return false;
+    }
+
+    if (accessMessage) {
+        accessMessage.textContent = "🔎 A validar o teu acesso...";
+        accessMessage.style.color = "#f59e0b";
+    }
+
+    try {
+        const response = await fetch(
+            WORKER_URL + "check?token=" + encodeURIComponent(token),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data.allowed !== true) {
+            if (startButton) {
+                startButton.disabled = true;
+                startButton.style.opacity = "0.5";
+                startButton.style.cursor = "not-allowed";
+            }
+
+            if (accessMessage) {
+                accessMessage.innerHTML = `
+                    🔒 <strong>Cyber Challenge já iniciado</strong><br>
+                    Este token já foi utilizado para iniciar o desafio.<br>
+                    Não é possível repetir o Desafio 01.
+                `;
+                accessMessage.style.color = "#f87171";
+            }
+
+            return false;
+        }
+
+        if (accessMessage) {
+            accessMessage.textContent = "✅ Acesso validado. Podes começar.";
+            accessMessage.style.color = "#4ade80";
+        }
+
+        if (startButton) {
+            startButton.disabled = false;
+            startButton.style.opacity = "1";
+            startButton.style.cursor = "pointer";
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Erro ao validar o token:", error);
+
+        if (startButton) {
+            startButton.disabled = true;
+            startButton.style.opacity = "0.5";
+            startButton.style.cursor = "not-allowed";
+        }
+
+        if (accessMessage) {
+            accessMessage.innerHTML = `
+                ⚠️ <strong>Não foi possível validar o acesso.</strong><br>
+                Tenta novamente dentro de alguns segundos.
+            `;
+            accessMessage.style.color = "#f59e0b";
+        }
+
+        return false;
     }
 }
 
 
-window.addEventListener("DOMContentLoaded", initialisePlayer);
+window.addEventListener("DOMContentLoaded", checkTokenAccess);
 
 
 /* ============================================================
@@ -1773,50 +1851,106 @@ let answeredCurrentQuestion = false;
    START GAME
 ============================================================ */
 
-function startGame() {
+/* ============================================================
+   PERSISTÊNCIA D1 — F5 / REFRESH
+============================================================ */
+let currentClickedIndices = [];
+let currentSafeAnswered = false;
+let gameFinished = false;
 
+function getD1StateKey() {
+    const token = getPlayerToken();
+    return token ? `cyberChallenge_d1_state_${token}` : "";
+}
+
+function saveGameState() {
+    const key = getD1StateKey();
+    if (!key || gameFinished || !startTime) return;
+    const f = document.getElementById("feedback");
+    const sb = document.getElementById("safeButton");
+    const nb = document.getElementById("nextButton");
+    try {
+        localStorage.setItem(key, JSON.stringify({
+            currentQuestion, score, startTime, answeredCurrentQuestion,
+            currentClickedIndices, currentSafeAnswered,
+            feedbackClass: f ? f.className : "feedback hidden",
+            feedbackHTML: f ? f.innerHTML : "",
+            safeButtonText: sb ? sb.textContent : "",
+            safeButtonHidden: sb ? sb.classList.contains("hidden") : false,
+            nextButtonHidden: nb ? nb.classList.contains("hidden") : true
+        }));
+    } catch (e) { console.error("Erro ao guardar estado D1", e); }
+}
+
+function loadGameState() {
+    const key = getD1StateKey();
+    if (!key) return null;
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const state = JSON.parse(raw);
+        return state && Number.isFinite(Number(state.startTime)) ? state : null;
+    } catch (e) { return null; }
+}
+
+function clearGameState() {
+    const key = getD1StateKey();
+    if (key) localStorage.removeItem(key);
+}
+
+function restoreCurrentQuestionState(state) {
+    const clicked = Array.isArray(state.currentClickedIndices) ? state.currentClickedIndices.map(Number) : [];
+    document.querySelectorAll(".clickable").forEach((el, i) => {
+        if (clicked.includes(i)) el.classList.add(el.dataset.suspect === "true" ? "correct" : "wrong");
+    });
+    const f = document.getElementById("feedback");
+    if (f) { f.className = state.feedbackClass || "feedback hidden"; f.innerHTML = state.feedbackHTML || ""; }
+    const sb = document.getElementById("safeButton");
+    if (sb) { sb.textContent = state.safeButtonText || "🛡️ Não encontrei nada suspeito"; sb.classList.toggle("hidden", Boolean(state.safeButtonHidden)); }
+    const nb = document.getElementById("nextButton");
+    if (nb) nb.classList.toggle("hidden", Boolean(state.nextButtonHidden));
+}
+
+function restoreGameState() {
+    const state = loadGameState();
+    if (!state) return false;
+    const q = Number(state.currentQuestion);
+    if (!Number.isInteger(q) || q < 0 || q >= questions.length) { clearGameState(); return false; }
+    currentQuestion = q;
+    score = Number(state.score) || 0;
+    startTime = Number(state.startTime) || Date.now();
+    answeredCurrentQuestion = Boolean(state.answeredCurrentQuestion);
+    currentClickedIndices = Array.isArray(state.currentClickedIndices) ? state.currentClickedIndices.map(Number) : [];
+    currentSafeAnswered = Boolean(state.currentSafeAnswered);
+    gameFinished = false;
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
+    loadQuestion(state);
+    updateTimer();
+    return true;
+}
+
+window.addEventListener("beforeunload", function(e) {
+    if (startTime && !gameFinished) { saveGameState(); e.preventDefault(); e.returnValue = ""; }
+});
+window.addEventListener("pagehide", function() { if (startTime && !gameFinished) saveGameState(); });
+window.addEventListener("visibilitychange", function() { if (document.visibilityState === "hidden" && startTime && !gameFinished) saveGameState(); });
+
+function startGame() {
     const token = getPlayerToken();
     codename = getPlayerCodename();
-
-    if (!token) {
-        alert("Link de acesso inválido ou sem token.");
-        return;
-    }
-
-    if (!codename) {
-        alert("Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email.");
-        return;
-    }
-
-    score = 0;
-
-    currentQuestion = 0;
-
-    answeredCurrentQuestion = false;
-
-
-    document
-        .getElementById("startScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
-
-
-    startTime =
-        Date.now();
-
-
-    timerInterval =
-        setInterval(
-            updateTimer,
-            1000
-        );
-
-
-    loadQuestion();
+    if (!token) { alert("Link de acesso inválido ou sem token."); return; }
+    if (!codename) { alert("Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email."); return; }
+    if (restoreGameState()) return;
+    score = 0; currentQuestion = 0; answeredCurrentQuestion = false;
+    currentClickedIndices = []; currentSafeAnswered = false; gameFinished = false;
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    startTime = Date.now();
+    clearInterval(timerInterval); timerInterval = setInterval(updateTimer, 1000);
+    loadQuestion(); updateTimer(); saveGameState();
 }
 
 
@@ -1862,15 +1996,15 @@ function updateTimer() {
    LOAD QUESTION
 ============================================================ */
 
-function loadQuestion() {
+function loadQuestion(savedState = null) {
 
     const question =
         questions[currentQuestion];
 
 
-    answeredCurrentQuestion =
-        false;
-
+    answeredCurrentQuestion = savedState ? Boolean(savedState.answeredCurrentQuestion) : false;
+    currentClickedIndices = savedState && Array.isArray(savedState.currentClickedIndices) ? savedState.currentClickedIndices.map(Number) : [];
+    currentSafeAnswered = savedState ? Boolean(savedState.currentSafeAnswered) : false;
 
     document
         .getElementById("challengeNumber")
@@ -1956,6 +2090,8 @@ function loadQuestion() {
 
             }
         );
+
+    if (savedState) restoreCurrentQuestionState(savedState);
 }
 
 
@@ -2068,6 +2204,9 @@ function checkAnswer(element) {
         .textContent =
         score;
 
+    const clickedIndex = Array.from(document.querySelectorAll(".clickable")).indexOf(element);
+    if (clickedIndex >= 0 && !currentClickedIndices.includes(clickedIndex)) currentClickedIndices.push(clickedIndex);
+    saveGameState();
 
     feedback.classList.remove(
         "hidden"
@@ -2223,13 +2362,10 @@ function answerSafe() {
         .classList.add(
             "hidden"
         );
+    saveGameState();
 }
 
 
-
-/* ============================================================
-   NEXT QUESTION
-============================================================ */
 
 function nextQuestion() {
 
@@ -2365,15 +2501,12 @@ async function saveChallenge01Result(elapsed) {
 
         return false;
     }
+    saveGameState();
 }
 
 
 
-/* ============================================================
-   END GAME
-============================================================ */
-
-async function endGame() {
+function endGame() {
 
     clearInterval(
         timerInterval
@@ -2531,10 +2664,15 @@ async function endGame() {
     }
 
 
-    await saveChallenge01Result(elapsed);
+    const saveResult = await saveChallenge01Result(elapsed);
 
+    if (saveResult === true) clearGameState();
 
-    if (challenge02Button) {
+    if (saveResult !== true && challenge02Button) {
+        challenge02Button.disabled = true;
+        challenge02Button.style.opacity = "0.5";
+        challenge02Button.style.cursor = "not-allowed";
+    } else if (challenge02Button) {
         challenge02Button.disabled = false;
         challenge02Button.style.opacity = "1";
         challenge02Button.style.cursor = "pointer";

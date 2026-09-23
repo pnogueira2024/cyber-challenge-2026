@@ -1865,6 +1865,7 @@ let answeredCurrentQuestion = false;
 let currentClickedIndices = [];
 let currentSafeAnswered = false;
 let gameFinished = false;
+let leavingPage = false;
 
 function getD1StateKey() {
     const token = getPlayerToken();
@@ -1941,7 +1942,7 @@ function restoreGameState() {
 }
 
 window.addEventListener("beforeunload", function(e) {
-    if (startTime && !gameFinished) { saveGameState(); e.preventDefault(); e.returnValue = ""; }
+    if (startTime && !gameFinished && !leavingPage) { saveGameState(); e.preventDefault(); e.returnValue = ""; }
 });
 window.addEventListener("pagehide", function() { if (startTime && !gameFinished) saveGameState(); });
 window.addEventListener("visibilitychange", function() { if (document.visibilityState === "hidden" && startTime && !gameFinished) saveGameState(); });
@@ -2674,7 +2675,10 @@ async function endGame() {
 
     const saveResult = await saveChallenge01Result(elapsed);
 
-    if (saveResult === true) clearGameState();
+    if (saveResult === true) {
+        clearGameState();
+        gameFinished = true;
+    }
 
     if (saveResult !== true && challenge02Button) {
         challenge02Button.disabled = true;
@@ -2694,6 +2698,9 @@ async function endGame() {
 ============================================================ */
 
 function goToChallenge02() {
+
+    // Navegação intencional: não mostrar o aviso "Sair do site?".
+    leavingPage = true;
 
     const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
     const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();

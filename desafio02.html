@@ -640,46 +640,94 @@
 
 <script>
 
+    /* =========================================================
+       D2 — TOKEN + CODENAME
+       Versão robusta: URL tem sempre prioridade.
+    ========================================================= */
+
     const WORKER_URL =
         "https://cyberchalange2026.paulonnogueira.workers.dev/";
 
-    const params = new URLSearchParams(window.location.search);
+    let token = "";
+    let codename = "Cyber Ninja";
 
-    const tokenFromUrl = (params.get("token") || "").trim();
-    const codenameFromUrl = params.get("codename");
-
-    // Token único em toda a aplicação. O token vindo no URL tem prioridade.
-    let token = tokenFromUrl ||
-        (localStorage.getItem("cyberChallengeToken") || "").trim();
-
-    let codename =
-        codenameFromUrl ||
-        localStorage.getItem("cyberChallengeCodename") ||
-        "Cyber Ninja";
-
-    if (tokenFromUrl && tokenFromUrl !== "TESTE001") {
-        localStorage.setItem("cyberChallengeToken", tokenFromUrl);
-        token = tokenFromUrl;
+    function safeGet(key) {
+        try {
+            return (localStorage.getItem(key) || "").trim();
+        } catch (e) {
+            return "";
+        }
     }
 
-    if (codenameFromUrl) {
-        localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
+    function safeSet(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            console.warn("Não foi possível guardar localStorage:", e);
+        }
     }
 
     function getPlayerToken() {
-        const urlToken =
-            (new URLSearchParams(window.location.search).get("token") || "").trim();
+        const params = new URLSearchParams(window.location.search);
+        const urlToken = (params.get("token") || "").trim();
 
         if (urlToken && urlToken !== "TESTE001") {
-            localStorage.setItem("cyberChallengeToken", urlToken);
-            return urlToken;
+            token = urlToken;
+            safeSet("cyberChallengeToken", token);
+            return token;
         }
 
-        const storedToken =
-            (localStorage.getItem("cyberChallengeToken") || "").trim();
+        const storedToken = safeGet("cyberChallengeToken");
 
-        return storedToken !== "TESTE001" ? storedToken : "";
+        if (storedToken && storedToken !== "TESTE001") {
+            token = storedToken;
+            return token;
+        }
+
+        token = "";
+        return "";
     }
+
+    function getPlayerCodename() {
+        const params = new URLSearchParams(window.location.search);
+        const urlCodename = (params.get("codename") || "").trim();
+
+        if (urlCodename) {
+            codename = urlCodename.substring(0, 50);
+            safeSet("cyberChallengeCodename", codename);
+            return codename;
+        }
+
+        const storedCodename =
+            safeGet("cyberChallengeCodename");
+
+        if (storedCodename) {
+            codename = storedCodename.substring(0, 50);
+            return codename;
+        }
+
+        codename = "Cyber Ninja";
+        return codename;
+    }
+
+    function initialisePlayer() {
+        getPlayerToken();
+        getPlayerCodename();
+
+        const display =
+            document.getElementById("codenameDisplay");
+
+        if (display) {
+            display.textContent = codename;
+        }
+    }
+
+    initialisePlayer();
+
+
+    /* =========================================================
+       VARIÁVEIS DO JOGO
+    ========================================================= */
 
     let score = 0;
     let foundFaults = 0;
@@ -691,93 +739,10 @@
 
     const maxFaults = 5;
 
-    // Estado persistente do Desafio 02, isolado por token.
-    function getStateKey() {
-        const currentToken = getPlayerToken();
-        return currentToken
-            ? "cyberChallenge_d2_state_" + currentToken
-            : "cyberChallenge_d2_state_invalid";
-    }
-
-    function saveGameState() {
-        const currentToken = getPlayerToken();
-
-        if (!currentToken || currentToken === "TESTE001") return;
-
-        const foundHotspots = Array.from(
-            document.querySelectorAll(".hotspot.found")
-        ).map(el => el.dataset.id);
-
-        const state = {
-            score: score,
-            foundFaults: foundFaults,
-            elapsedSeconds: elapsedSeconds,
-            startTime: startTime,
-            foundHotspots: foundHotspots,
-            savedAt: Date.now()
-        };
-
-        localStorage.setItem(getStateKey(), JSON.stringify(state));
-    }
-
-    function loadGameState() {
-        try {
-            const raw = localStorage.getItem(getStateKey());
-
-            if (!raw) return null;
-
-            const state = JSON.parse(raw);
-
-            if (!state || !Array.isArray(state.foundHotspots)) {
-                return null;
-            }
-
-            return state;
-        } catch (error) {
-            console.error("Erro ao recuperar estado do Desafio 02:", error);
-            return null;
-        }
-    }
-
-    function clearGameState() {
-        localStorage.removeItem(getStateKey());
-    }
-
-    function restoreGameState() {
-        const state = loadGameState();
-
-        if (!state) return false;
-
-        score = Number(state.score || 0);
-        foundFaults = Number(state.foundFaults || 0);
-        startTime = Number(state.startTime || Date.now());
-
-        state.foundHotspots.forEach(id => {
-            const hotspot = document.querySelector(
-                `.hotspot[data-id="${CSS.escape(id)}"]`
-            );
-
-            if (hotspot) {
-                hotspot.classList.add("found");
-            }
-        });
-
-        elapsedSeconds = Math.max(
-            Number(state.elapsedSeconds || 0),
-            Math.floor((Date.now() - startTime) / 1000)
-        );
-
-        updateUI();
-
-        return true;
-    }
-
-    document.getElementById("codenameDisplay").textContent = codename;
 
     function formatTime(totalSeconds) {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
-
         return String(minutes).padStart(2, "0") + ":" +
                String(seconds).padStart(2, "0");
     }
@@ -787,20 +752,17 @@
             clearInterval(timerInterval);
         }
 
-        if (!startTime) {
-            startTime = Date.now() - (elapsedSeconds * 1000);
-        }
+        startTime = Date.now() - (elapsedSeconds * 1000);
 
         timerInterval = setInterval(() => {
             elapsedSeconds =
                 Math.floor((Date.now() - startTime) / 1000);
 
-            document.getElementById("timer").textContent =
-                formatTime(elapsedSeconds);
-
-            // Guardamos periodicamente o tempo para minimizar perda de estado.
-            saveGameState();
-        }, 1000);
+            const timer = document.getElementById("timer");
+            if (timer) {
+                timer.textContent = formatTime(elapsedSeconds);
+            }
+        }, 250);
     }
 
     function stopTimer() {
@@ -814,15 +776,16 @@
                 Math.floor((Date.now() - startTime) / 1000);
         }
 
-        document.getElementById("timer").textContent =
-            formatTime(elapsedSeconds);
-
-        saveGameState();
+        const timer = document.getElementById("timer");
+        if (timer) {
+            timer.textContent = formatTime(elapsedSeconds);
+        }
     }
 
     function startChallenge() {
 
         token = getPlayerToken();
+        codename = getPlayerCodename();
 
         if (!token || token === "TESTE001") {
             alert(
@@ -832,49 +795,25 @@
             return;
         }
 
-        const savedState = loadGameState();
+        const display =
+            document.getElementById("codenameDisplay");
 
-        if (savedState) {
-            restoreGameState();
-
-            document.getElementById("startScreen")
-                .classList.add("hidden");
-
-            document.getElementById("gameScreen")
-                .classList.remove("hidden");
-
-            challengeStarted = true;
-
-            startTimer();
-            updateUI();
-
-            showFeedback(
-                "↩️ Desafio retomado. O teu progresso foi recuperado.",
-                "good"
-            );
-
-            return;
+        if (display) {
+            display.textContent = codename;
         }
 
-        score = 0;
-        foundFaults = 0;
-        elapsedSeconds = 0;
-        startTime = Date.now();
         challengeStarted = true;
 
-        document.querySelectorAll(".hotspot.found").forEach(hotspot => {
-            hotspot.classList.remove("found");
-        });
-
-        document.getElementById("startScreen")
+        document
+            .getElementById("startScreen")
             .classList.add("hidden");
 
-        document.getElementById("gameScreen")
+        document
+            .getElementById("gameScreen")
             .classList.remove("hidden");
 
         startTimer();
         updateUI();
-        saveGameState();
     }
 
     function updateUI() {
@@ -886,9 +825,6 @@
 
         document.getElementById("progressBar").style.width =
             percentage + "%";
-
-        document.getElementById("timer").textContent =
-            formatTime(elapsedSeconds);
     }
 
     function showFeedback(message, type) {
@@ -921,7 +857,6 @@
             );
 
             hotspot.classList.add("found");
-
             score += points;
             foundFaults++;
 
@@ -932,8 +867,6 @@
             );
 
             updateUI();
-            saveGameState();
-
             return;
         }
 
@@ -945,7 +878,6 @@
             );
 
             hotspot.classList.add("found");
-
             score += points;
 
             showFeedback(
@@ -955,8 +887,6 @@
             );
 
             updateUI();
-            saveGameState();
-
             return;
         }
 
@@ -978,22 +908,11 @@
             );
 
             updateUI();
-            saveGameState();
         }
     }
 
     document.querySelectorAll(".hotspot").forEach(hotspot => {
         hotspot.addEventListener("click", handleHotspot);
-    });
-
-    // Impede o refresh acidental durante o desafio.
-    window.addEventListener("beforeunload", event => {
-        if (!challengeStarted) return;
-
-        saveGameState();
-
-        event.preventDefault();
-        event.returnValue = "";
     });
 
     async function saveResult() {
@@ -1006,15 +925,10 @@
             );
         }
 
-        // D2 atualiza a linha criada pelo D1 usando exatamente o mesmo token.
         const payload = {
             token: token,
-            d1_score: Number(
-                localStorage.getItem("cyberChallenge_d1") || 0
-            ),
-            d1_time: Number(
-                localStorage.getItem("cyberChallenge_d1_time") || 0
-            ),
+            d1_score: Number(safeGet("cyberChallenge_d1") || 0),
+            d1_time: Number(safeGet("cyberChallenge_d1_time") || 0),
             d2_score: score,
             d2_time: elapsedSeconds,
             d3_score: 0,
@@ -1034,18 +948,11 @@
             body: JSON.stringify(payload)
         });
 
-        let data = null;
+        const data = await response.json();
 
-        try {
-            data = await response.json();
-        } catch (error) {
-            data = null;
-        }
-
-        if (!response.ok || !data || !data.success) {
+        if (!response.ok || !data.success) {
             throw new Error(
-                (data && (data.error || data.message)) ||
-                "Não foi possível guardar o resultado."
+                data.error || "Não foi possível guardar o resultado."
             );
         }
 
@@ -1059,15 +966,8 @@
         challengeStarted = false;
         stopTimer();
 
-        localStorage.setItem(
-            "cyberChallenge_d2",
-            score
-        );
-
-        localStorage.setItem(
-            "cyberChallenge_d2_time",
-            elapsedSeconds
-        );
+        safeSet("cyberChallenge_d2", String(score));
+        safeSet("cyberChallenge_d2_time", String(elapsedSeconds));
 
         const statusText =
             document.getElementById("statusText");
@@ -1078,9 +978,6 @@
         try {
 
             await saveResult();
-
-            // Só apagamos o estado temporário DEPOIS de o Worker confirmar.
-            clearGameState();
 
             statusText.textContent =
                 "Resultado guardado com sucesso.";
@@ -1101,47 +998,28 @@
                 document.getElementById("endMessage");
 
             if (foundFaults === 5 && score >= 100) {
-
-                endTitle.textContent =
-                    "🏆 Clear Desk perfeito!";
-
+                endTitle.textContent = "🏆 Clear Desk perfeito!";
                 endMessage.textContent =
                     "Encontraste todas as falhas, descobriste os bónus " +
                     "e não caíste nos falsos positivos. Excelente trabalho.";
-
             } else if (foundFaults === 5) {
-
-                endTitle.textContent =
-                    "🎯 Muito bem!";
-
+                endTitle.textContent = "🎯 Muito bem!";
                 endMessage.textContent =
                     "Encontraste todas as falhas de segurança. " +
                     "Agora já sabes que uma secretária aparentemente normal " +
                     "pode esconder vários riscos.";
-
             } else if (foundFaults >= 3) {
-
-                endTitle.textContent =
-                    "🔎 Quase lá!";
-
+                endTitle.textContent = "🔎 Quase lá!";
                 endMessage.textContent =
                     "Encontraste grande parte dos problemas, " +
                     "mas ainda ficaram algumas falhas por identificar.";
-
             } else if (foundFaults > 0) {
-
-                endTitle.textContent =
-                    "🛡️ Missão cumprida.";
-
+                endTitle.textContent = "🛡️ Missão cumprida.";
                 endMessage.textContent =
                     "Encontraste alguns problemas, mas uma boa análise " +
                     "de segurança exige atenção a todos os detalhes.";
-
             } else {
-
-                endTitle.textContent =
-                    "👀 Saíste cedo da investigação.";
-
+                endTitle.textContent = "👀 Saíste cedo da investigação.";
                 endMessage.textContent =
                     "Não encontraste nenhuma falha antes de terminar. " +
                     "Talvez valha a pena olhar novamente para a secretária.";
@@ -1154,7 +1032,6 @@
             statusText.textContent =
                 "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
 
-            // Mantemos o estado local para permitir nova tentativa.
             challengeStarted = true;
 
             startTime =
@@ -1163,33 +1040,28 @@
             startTimer();
 
             alert(
-                "⚠️ Não foi possível guardar o resultado.
-
-" +
-                "O teu progresso ficou guardado localmente. " +
-                "Tenta novamente."
+                "⚠️ Não foi possível guardar o resultado.\n\n" +
+                "O resultado ficou guardado localmente. Tenta novamente."
             );
         }
     }
 
     function goToNextChallenge() {
         const currentToken = getPlayerToken();
-        const currentCodename =
-            localStorage.getItem("cyberChallengeCodename") || "";
+        const currentCodename = getPlayerCodename();
 
-        const params = new URLSearchParams();
+        const qs = new URLSearchParams();
 
-        if (currentToken) params.set("token", currentToken);
-        if (currentCodename) params.set("codename", currentCodename);
+        if (currentToken) {
+            qs.set("token", currentToken);
+        }
+
+        if (currentCodename) {
+            qs.set("codename", currentCodename);
+        }
 
         window.location.href =
-            "desafio03.html?" + params.toString();
-    }
-
-    // Se o jogador fez F5 ou voltou ao jogo com um estado incompleto,
-    // retomamos automaticamente o desafio.
-    if (loadGameState()) {
-        startChallenge();
+            "desafio03.html?" + qs.toString();
     }
 
 </script>

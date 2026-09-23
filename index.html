@@ -1845,6 +1845,111 @@ let timerInterval = null;
 
 let answeredCurrentQuestion = false;
 
+/* ============================================================
+   PERSISTÊNCIA DO DESAFIO 01 — protege contra F5
+============================================================ */
+let currentClickedIndices = [];
+let currentSafeAnswered = false;
+let gameFinished = false;
+
+function getGameStateKey() {
+    const token = getPlayerToken();
+    return token ? `cyberChallenge_d1_state_${token}` : "";
+}
+
+function saveGameState() {
+    const key = getGameStateKey();
+    if (!key || gameFinished || !startTime) return;
+
+    const feedback = document.getElementById("feedback");
+    const safeButton = document.getElementById("safeButton");
+    const nextButton = document.getElementById("nextButton");
+
+    localStorage.setItem(key, JSON.stringify({
+        currentQuestion, score, startTime, answeredCurrentQuestion,
+        currentClickedIndices, currentSafeAnswered,
+        feedbackClass: feedback ? feedback.className : "feedback hidden",
+        feedbackHTML: feedback ? feedback.innerHTML : "",
+        safeButtonText: safeButton ? safeButton.textContent : "",
+        safeButtonHidden: safeButton ? safeButton.classList.contains("hidden") : false,
+        nextButtonHidden: nextButton ? nextButton.classList.contains("hidden") : true
+    }));
+}
+
+function loadGameState() {
+    const key = getGameStateKey();
+    if (!key) return null;
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const state = JSON.parse(raw);
+        return state && state.startTime ? state : null;
+    } catch (error) {
+        console.error("Erro ao recuperar o estado do Desafio 01:", error);
+        return null;
+    }
+}
+
+function clearGameState() {
+    const key = getGameStateKey();
+    if (key) localStorage.removeItem(key);
+}
+
+function restoreCurrentQuestionState(state) {
+    document.querySelectorAll(".clickable").forEach((element, index) => {
+        if (currentClickedIndices.includes(index)) {
+            element.classList.add(element.dataset.suspect === "true" ? "correct" : "wrong");
+        }
+    });
+
+    const feedback = document.getElementById("feedback");
+    if (feedback) {
+        feedback.className = state.feedbackClass || "feedback hidden";
+        feedback.innerHTML = state.feedbackHTML || "";
+    }
+
+    const safeButton = document.getElementById("safeButton");
+    if (safeButton) {
+        safeButton.textContent = state.safeButtonText || "🛡️ Não encontrei nada suspeito";
+        safeButton.classList.toggle("hidden", Boolean(state.safeButtonHidden));
+    }
+
+    const nextButton = document.getElementById("nextButton");
+    if (nextButton) {
+        nextButton.classList.toggle("hidden", Boolean(state.nextButtonHidden));
+    }
+}
+
+function restoreGame() {
+    const state = loadGameState();
+    if (!state) return false;
+
+    currentQuestion = Number(state.currentQuestion) || 0;
+    score = Number(state.score) || 0;
+    startTime = Number(state.startTime) || Date.now();
+    answeredCurrentQuestion = Boolean(state.answeredCurrentQuestion);
+    currentClickedIndices = Array.isArray(state.currentClickedIndices) ? state.currentClickedIndices.map(Number) : [];
+    currentSafeAnswered = Boolean(state.currentSafeAnswered);
+    gameFinished = false;
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
+    loadQuestion(state);
+    updateTimer();
+    return true;
+}
+
+window.addEventListener("beforeunload", function(event) {
+    if (startTime && !gameFinished) {
+        saveGameState();
+        event.preventDefault();
+        event.returnValue = "";
+    }
+});
+
+
 
 
 /* ============================================================
@@ -1866,35 +1971,27 @@ function startGame() {
         return;
     }
 
+    if (restoreGame()) {
+        return;
+    }
+
     score = 0;
-
     currentQuestion = 0;
-
     answeredCurrentQuestion = false;
+    currentClickedIndices = [];
+    currentSafeAnswered = false;
+    gameFinished = false;
 
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
 
-    document
-        .getElementById("startScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
-
-
-    startTime =
-        Date.now();
-
-
-    timerInterval =
-        setInterval(
-            updateTimer,
-            1000
-        );
-
+    startTime = Date.now();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
 
     loadQuestion();
+    updateTimer();
+    saveGameState();
 }
 
 
@@ -1940,14 +2037,23 @@ function updateTimer() {
    LOAD QUESTION
 ============================================================ */
 
-function loadQuestion() {
+function loadQuestion(savedState = null) {
 
     const question =
         questions[currentQuestion];
 
 
-    answeredCurrentQuestion =
-        false;
+    answeredCurrentQuestion = savedState
+        ? Boolean(savedState.answeredCurrentQuestion)
+        : false;
+
+    currentClickedIndices = savedState && Array.isArray(savedState.currentClickedIndices)
+        ? savedState.currentClickedIndices.map(Number)
+        : [];
+
+    currentSafeAnswered = savedState
+        ? Boolean(savedState.currentSafeAnswered)
+        : false;
 
 
     document
@@ -2034,6 +2140,11 @@ function loadQuestion() {
 
             }
         );
+
+
+    if (savedState) {
+        restoreCurrentQuestionState(savedState);
+    }
 }
 
 
@@ -2147,6 +2258,12 @@ function checkAnswer(element) {
         score;
 
 
+    const clickedIndex = Array.from(document.querySelectorAll(".clickable")).indexOf(element);
+    if (clickedIndex >= 0 && !currentClickedIndices.includes(clickedIndex)) {
+        currentClickedIndices.push(clickedIndex);
+    }
+
+
     feedback.classList.remove(
         "hidden"
     );
@@ -2173,6 +2290,8 @@ function checkAnswer(element) {
     document
         .getElementById("nextButton")
         .classList.remove("hidden");
+
+    saveGameState();
 }
 
 
@@ -2216,6 +2335,8 @@ function answerSafe() {
         answeredCurrentQuestion =
             true;
 
+        currentSafeAnswered = true;
+
 
         score += 10;
 
@@ -2250,6 +2371,8 @@ function answerSafe() {
     */
 
     else {
+
+        currentSafeAnswered = true;
 
         score -= 5;
 
@@ -2301,6 +2424,8 @@ function answerSafe() {
         .classList.add(
             "hidden"
         );
+
+    saveGameState();
 }
 
 
@@ -2312,6 +2437,9 @@ function answerSafe() {
 function nextQuestion() {
 
     currentQuestion++;
+    currentClickedIndices = [];
+    currentSafeAnswered = false;
+    answeredCurrentQuestion = false;
 
 
     if (
@@ -2326,6 +2454,7 @@ function nextQuestion() {
 
 
     loadQuestion();
+    saveGameState();
 }
 
 
@@ -2452,6 +2581,8 @@ async function saveChallenge01Result(elapsed) {
 ============================================================ */
 
 async function endGame() {
+
+    gameFinished = true;
 
     clearInterval(
         timerInterval
@@ -2610,6 +2741,10 @@ async function endGame() {
 
 
     const saveResult = await saveChallenge01Result(elapsed);
+
+    if (saveResult === true) {
+        clearGameState();
+    }
 
     if (saveResult !== true && challenge02Button) {
         challenge02Button.disabled = true;

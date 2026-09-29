@@ -39,6 +39,10 @@ button:hover{transform:translateY(-1px);filter:brightness(1.08)}button:disabled{
 @media(max-width:850px){.sorter-layout{grid-template-columns:1fr}.concepts-panel{position:static}.concept-list{display:grid;grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.topbar{padding:0 14px}.brand{font-size:15px}.challenge{display:none}.score-box{gap:10px}.progress{width:70px}.container{padding:25px 12px 40px}h1{font-size:25px}.game-panel{padding:14px}.concept-list{grid-template-columns:1fr}.sentence{font-size:15px}.dropzone{min-width:150px;margin-top:6px}.bottom-panel{align-items:stretch}.bottom-panel button{width:100%}.start-screen,.end-screen{margin:40px 12px;padding:30px 20px}.big-score{font-size:46px}}
 </style>
+    <script
+    src="https://alcdn.msftauth.net/browser/2.35.0/js/msal-browser.min.js"
+    defer>
+</script>
 </head>
 <body>
 
@@ -115,37 +119,377 @@ Um conceito só fica bloqueado depois de ser colocado corretamente.</div>
 </div>
 
 <script>
-const WORKER_URL = "https://cyberchalange2026.paulonnogueira.workers.dev/";
-const D3_STATE_PREFIX = "cyberChallenge_d3_state_";
 
-const params = new URLSearchParams(window.location.search);
-const codenameFromUrl = params.get("codename");
+const WORKER_URL =
+    "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+const D3_STATE_PREFIX =
+    "cyberChallenge_d3_state_";
+
+const ENTRA_CLIENT_ID =
+    "51daeb10-f5fb-4b73-8625-9ba75101349d";
+
+const ENTRA_TENANT_ID =
+    "25617c82-4182-4171-8125-b408e318d942";
+
+const ENTRA_REDIRECT_URI =
+    "https://pnogueira2024.github.io/cyber-challenge-2026/";
+
+const loginRequest = {
+    scopes: ["openid", "profile", "email"]
+};
+
+let msalInstance = null;
+let entraAccount = null;
+let entraIdToken = null;
+let entraAuthReady = false;
+
+
+/* =========================================================
+   ENTRA / MSAL
+========================================================= */
+
+async function initialiseEntraAuthentication() {
+
+    if (entraAuthReady) {
+        return true;
+    }
+
+    if (
+        typeof msal === "undefined" ||
+        !msal.PublicClientApplication
+    ) {
+
+        throw new Error(
+            "Biblioteca de autenticação Microsoft não carregada."
+        );
+    }
+
+    const msalConfig = {
+
+        auth: {
+            clientId: ENTRA_CLIENT_ID,
+
+            authority:
+                "https://login.microsoftonline.com/" +
+                ENTRA_TENANT_ID,
+
+            redirectUri:
+                ENTRA_REDIRECT_URI
+        },
+
+        cache: {
+            cacheLocation: "sessionStorage",
+            storeAuthStateInCookie: false
+        }
+    };
+
+    msalInstance =
+        new msal.PublicClientApplication(
+            msalConfig
+        );
+
+
+    const redirectResponse =
+        await msalInstance.handleRedirectPromise();
+
+
+    if (redirectResponse) {
+
+        entraAccount =
+            redirectResponse.account;
+
+        entraIdToken =
+            redirectResponse.idToken;
+    }
+
+
+    if (!entraAccount) {
+
+        const accounts =
+            msalInstance.getAllAccounts();
+
+        if (accounts.length > 0) {
+
+            entraAccount =
+                accounts[0];
+        }
+    }
+
+
+    if (!entraAccount) {
+
+        await msalInstance.loginRedirect(
+            loginRequest
+        );
+
+        return false;
+    }
+
+
+    if (!entraIdToken) {
+
+        try {
+
+            const silentResponse =
+                await msalInstance.acquireTokenSilent({
+                    ...loginRequest,
+                    account: entraAccount
+                });
+
+            entraIdToken =
+                silentResponse.idToken;
+
+        } catch (error) {
+
+            console.warn(
+                "Não foi possível obter ID Token silenciosamente.",
+                error
+            );
+
+            await msalInstance.acquireTokenRedirect(
+                loginRequest
+            );
+
+            return false;
+        }
+    }
+
+
+    const email =
+        (
+            entraAccount.username ||
+            entraAccount.idTokenClaims?.preferred_username ||
+            entraAccount.idTokenClaims?.email ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    if (email) {
+
+        localStorage.setItem(
+            "cyberChallengeEntraEmail",
+            email
+        );
+
+        const shortname =
+            email
+                .split("@")[0]
+                .trim();
+
+        if (shortname) {
+
+            localStorage.setItem(
+                "cyberChallengeCodename",
+                shortname + "_cyber2026"
+            );
+        }
+    }
+
+
+    const name =
+        entraAccount.name ||
+        entraAccount.idTokenClaims?.name ||
+        "";
+
+    if (name) {
+
+        localStorage.setItem(
+            "cyberChallengeEntraName",
+            name
+        );
+    }
+
+
+    const objectId =
+        entraAccount.idTokenClaims?.oid ||
+        entraAccount.localAccountId ||
+        "";
+
+    if (objectId) {
+
+        localStorage.setItem(
+            "cyberChallengeEntraObjectId",
+            objectId
+        );
+    }
+
+
+    entraAuthReady = true;
+
+    return true;
+}
+
+
+/* =========================================================
+   WORKER AUTH
+========================================================= */
+
+async function getWorkerAuthHeaders() {
+
+    if (!entraAuthReady) {
+
+        const ready =
+            await initialiseEntraAuthentication();
+
+        if (!ready) {
+
+            throw new Error(
+                "Autenticação Entra não concluída."
+            );
+        }
+    }
+
+
+    /*
+     * Pedimos um token atualizado antes de gravar.
+     */
+    try {
+
+        const silentResponse =
+            await msalInstance.acquireTokenSilent({
+                ...loginRequest,
+                account: entraAccount
+            });
+
+        if (silentResponse.idToken) {
+
+            entraIdToken =
+                silentResponse.idToken;
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Não foi possível atualizar o ID Token.",
+            error
+        );
+    }
+
+
+    if (!entraIdToken) {
+
+        throw new Error(
+            "Identidade Microsoft Entra não disponível."
+        );
+    }
+
+
+    return {
+
+        "Content-Type":
+            "application/json",
+
+        "Authorization":
+            "Bearer " + entraIdToken
+    };
+}
+
+
+/* =========================================================
+   TOKEN
+========================================================= */
 
 function getPlayerToken() {
-    const urlToken = (new URLSearchParams(window.location.search).get("token") || "").trim();
 
-    if (urlToken && urlToken !== "TESTE001") {
-        localStorage.setItem("cyberChallengeToken", urlToken);
+    const urlToken =
+        (
+            new URLSearchParams(
+                window.location.search
+            ).get("token") || ""
+        ).trim();
+
+
+    if (
+        urlToken &&
+        urlToken !== "TESTE001"
+    ) {
+
+        localStorage.setItem(
+            "cyberChallengeToken",
+            urlToken
+        );
+
         return urlToken;
     }
 
-    const storedToken = (localStorage.getItem("cyberChallengeToken") || "").trim();
 
-    return storedToken && storedToken !== "TESTE001" ? storedToken : "";
+    const storedToken =
+        (
+            localStorage.getItem(
+                "cyberChallengeToken"
+            ) || ""
+        ).trim();
+
+
+    return (
+        storedToken &&
+        storedToken !== "TESTE001"
+    )
+        ? storedToken
+        : "";
 }
 
-const token = getPlayerToken();
 
-const codename =
-    codenameFromUrl ||
-    localStorage.getItem("cyberChallengeCodename") ||
-    "Cyber Ninja";
+/* =========================================================
+   IDENTIDADE / CODENAME
+========================================================= */
 
-if (codenameFromUrl) {
-    localStorage.setItem("cyberChallengeCodename", codenameFromUrl);
+function getPlayerCodename() {
+
+    const email =
+        (
+            localStorage.getItem(
+                "cyberChallengeEntraEmail"
+            ) || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    if (email) {
+
+        const shortname =
+            email.split("@")[0].trim();
+
+        if (shortname) {
+
+            const result =
+                shortname + "_cyber2026";
+
+            localStorage.setItem(
+                "cyberChallengeCodename",
+                result
+            );
+
+            return result;
+        }
+    }
+
+
+    return (
+        localStorage.getItem(
+            "cyberChallengeCodename"
+        ) || ""
+    );
 }
 
-document.getElementById("codenameDisplay").textContent = codename;
+
+const token =
+    getPlayerToken();
+
+
+document.getElementById(
+    "codenameDisplay"
+).textContent =
+    getPlayerCodename() || "A validar...";
+
+
+/* =========================================================
+   VARIÁVEIS DO JOGO
+========================================================= */
 
 let score = 0;
 let found = 0;
@@ -154,624 +498,1381 @@ let challengeStarted = false;
 let startTime = null;
 let timerInterval = null;
 let elapsedSeconds = 0;
+
 const totalQuestions = 4;
 
+
+/* =========================================================
+   ESTADO LOCAL
+========================================================= */
+
 function getD3StateKey() {
-    const currentToken = getPlayerToken();
-    return currentToken ? D3_STATE_PREFIX + currentToken : "";
+
+    const currentToken =
+        getPlayerToken();
+
+    return currentToken
+        ? D3_STATE_PREFIX + currentToken
+        : "";
 }
 
-function saveD3State() {
-    const stateKey = getD3StateKey();
 
-    if (!stateKey || !challengeStarted) {
+function saveD3State() {
+
+    const stateKey =
+        getD3StateKey();
+
+    if (
+        !stateKey ||
+        !challengeStarted
+    ) {
         return;
     }
 
+
     const correctAnswers = {};
-    document.querySelectorAll(".dropzone.correct").forEach(zone => {
-        correctAnswers[zone.dataset.answer] = zone.textContent;
-    });
 
-    const usedConcepts = Array.from(
-        document.querySelectorAll(".concept.used")
-    ).map(concept => concept.dataset.answer);
+    document
+        .querySelectorAll(
+            ".dropzone.correct"
+        )
+        .forEach(zone => {
 
-    const conceptOrder = Array.from(
-        document.querySelectorAll(".concept")
-    ).map(concept => concept.dataset.answer);
+            correctAnswers[
+                zone.dataset.answer
+            ] =
+                zone.textContent;
 
-    localStorage.setItem(stateKey, JSON.stringify({
-        started: true,
-        score,
-        found,
-        elapsedSeconds,
-        correctAnswers,
-        usedConcepts,
-        conceptOrder
-    }));
+        });
+
+
+    const usedConcepts =
+        Array.from(
+            document.querySelectorAll(
+                ".concept.used"
+            )
+        )
+        .map(
+            concept =>
+                concept.dataset.answer
+        );
+
+
+    const conceptOrder =
+        Array.from(
+            document.querySelectorAll(
+                ".concept"
+            )
+        )
+        .map(
+            concept =>
+                concept.dataset.answer
+        );
+
+
+    localStorage.setItem(
+        stateKey,
+        JSON.stringify({
+
+            started: true,
+
+            score,
+
+            found,
+
+            elapsedSeconds,
+
+            correctAnswers,
+
+            usedConcepts,
+
+            conceptOrder
+
+        })
+    );
 }
 
+
 function loadD3State() {
-    const stateKey = getD3StateKey();
+
+    const stateKey =
+        getD3StateKey();
 
     if (!stateKey) {
         return null;
     }
 
+
     try {
-        const raw = localStorage.getItem(stateKey);
+
+        const raw =
+            localStorage.getItem(
+                stateKey
+            );
 
         if (!raw) {
             return null;
         }
 
-        const state = JSON.parse(raw);
 
-        if (!state || state.started !== true) {
+        const state =
+            JSON.parse(raw);
+
+
+        if (
+            !state ||
+            state.started !== true
+        ) {
+
             return null;
         }
 
+
         return state;
+
     } catch (error) {
-        console.error("Erro ao ler estado local do D3:", error);
+
+        console.error(
+            "Erro ao ler estado local do D03:",
+            error
+        );
+
         return null;
     }
 }
 
+
 function clearD3State() {
-    const stateKey = getD3StateKey();
+
+    const stateKey =
+        getD3StateKey();
 
     if (stateKey) {
-        localStorage.removeItem(stateKey);
+
+        localStorage.removeItem(
+            stateKey
+        );
     }
 }
 
+
+/* =========================================================
+   RESTORE
+========================================================= */
+
 function restoreConceptOrder(order) {
-    if (!Array.isArray(order) || !order.length) {
+
+    if (
+        !Array.isArray(order) ||
+        !order.length
+    ) {
         return;
     }
 
-    const list = document.getElementById("conceptList");
 
-    order.forEach(answer => {
-        const concept = document.querySelector(
-            '.concept[data-answer="' + CSS.escape(answer) + '"]'
+    const list =
+        document.getElementById(
+            "conceptList"
         );
 
+
+    order.forEach(answer => {
+
+        const concept =
+            document.querySelector(
+                '.concept[data-answer="' +
+                CSS.escape(answer) +
+                '"]'
+            );
+
+
         if (concept) {
-            list.appendChild(concept);
+
+            list.appendChild(
+                concept
+            );
         }
+
     });
 }
 
+
 function restoreD3State(state) {
+
     if (!state) {
         return false;
     }
 
-    score = Number(state.score) || 0;
-    found = Number(state.found) || 0;
-    elapsedSeconds = Number(state.elapsedSeconds) || 0;
 
-    restoreConceptOrder(state.conceptOrder);
+    score =
+        Number(state.score) || 0;
 
-    document.querySelectorAll(".dropzone").forEach(zone => {
-        zone.classList.remove("correct", "wrong", "dragover");
-        zone.textContent = "arrasta aqui";
-    });
+    found =
+        Number(state.found) || 0;
 
-    document.querySelectorAll(".concept").forEach(concept => {
-        concept.classList.remove("used", "selected");
-    });
+    elapsedSeconds =
+        Number(state.elapsedSeconds) || 0;
 
-    const correctAnswers = state.correctAnswers || {};
 
-    document.querySelectorAll(".dropzone").forEach(zone => {
-        const answer = zone.dataset.answer;
+    restoreConceptOrder(
+        state.conceptOrder
+    );
 
-        if (Object.prototype.hasOwnProperty.call(correctAnswers, answer)) {
-            zone.textContent = correctAnswers[answer];
-            zone.classList.add("correct");
-        }
-    });
 
-    const usedConcepts = Array.isArray(state.usedConcepts)
-        ? state.usedConcepts
-        : [];
+    document
+        .querySelectorAll(".dropzone")
+        .forEach(zone => {
+
+            zone.classList.remove(
+                "correct",
+                "wrong",
+                "dragover"
+            );
+
+            zone.textContent =
+                "arrasta aqui";
+        });
+
+
+    document
+        .querySelectorAll(".concept")
+        .forEach(concept => {
+
+            concept.classList.remove(
+                "used",
+                "selected"
+            );
+        });
+
+
+    const correctAnswers =
+        state.correctAnswers || {};
+
+
+    document
+        .querySelectorAll(".dropzone")
+        .forEach(zone => {
+
+            const answer =
+                zone.dataset.answer;
+
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    correctAnswers,
+                    answer
+                )
+            ) {
+
+                zone.textContent =
+                    correctAnswers[answer];
+
+                zone.classList.add(
+                    "correct"
+                );
+            }
+
+        });
+
+
+    const usedConcepts =
+        Array.isArray(
+            state.usedConcepts
+        )
+            ? state.usedConcepts
+            : [];
+
 
     usedConcepts.forEach(answer => {
-        const concept = document.querySelector(
-            '.concept[data-answer="' + CSS.escape(answer) + '"]'
-        );
+
+        const concept =
+            document.querySelector(
+                '.concept[data-answer="' +
+                CSS.escape(answer) +
+                '"]'
+            );
+
 
         if (concept) {
-            concept.classList.add("used");
+
+            concept.classList.add(
+                "used"
+            );
         }
+
     });
 
+
     selectedConcept = null;
+
     challengeStarted = true;
 
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("gameScreen").classList.remove("hidden");
+
+    document
+        .getElementById("startScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("gameScreen")
+        .classList.remove("hidden");
+
 
     updateUI();
+
     startTimer();
 
-    document.getElementById("statusText").textContent =
+
+    document.getElementById(
+        "statusText"
+    ).textContent =
         found === totalQuestions
             ? "Todos os conceitos foram corretamente associados."
             : "Desafio retomado. Continua de onde ficaste.";
 
+
     return true;
 }
 
-function startChallenge() {
-    const currentToken = getPlayerToken();
 
-    if (!currentToken || currentToken === "TESTE001") {
+/* =========================================================
+   START
+========================================================= */
+
+async function startChallenge() {
+
+    const authenticated =
+        await initialiseEntraAuthentication();
+
+    if (!authenticated) {
+        return;
+    }
+
+
+    const currentToken =
+        getPlayerToken();
+
+
+    if (
+        !currentToken ||
+        currentToken === "TESTE001"
+    ) {
+
         alert(
             "Este link de acesso não tem um token válido. " +
             "Volta ao email de inscrição e utiliza o teu link pessoal."
         );
+
         return;
     }
 
-    const savedState = loadD3State();
+
+    const savedState =
+        loadD3State();
+
 
     if (savedState) {
-        restoreD3State(savedState);
+
+        restoreD3State(
+            savedState
+        );
+
         return;
     }
+
 
     challengeStarted = true;
 
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("gameScreen").classList.remove("hidden");
+
+    document
+        .getElementById("startScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("gameScreen")
+        .classList.remove("hidden");
+
 
     startTimer();
+
     shuffleConcepts();
+
     saveD3State();
+
     updateUI();
 }
 
+
+/* =========================================================
+   TIMER
+========================================================= */
+
 function startTimer() {
+
     if (timerInterval) {
-        clearInterval(timerInterval);
+
+        clearInterval(
+            timerInterval
+        );
     }
 
-    startTime = Date.now() - (elapsedSeconds * 1000);
 
-    timerInterval = setInterval(() => {
-        elapsedSeconds = Math.floor(
-            (Date.now() - startTime) / 1000
-        );
+    startTime =
+        Date.now() -
+        (elapsedSeconds * 1000);
 
-        updateTimerUI();
-    }, 1000);
+
+    timerInterval =
+        setInterval(() => {
+
+            elapsedSeconds =
+                Math.floor(
+                    (
+                        Date.now() -
+                        startTime
+                    ) / 1000
+                );
+
+            updateTimerUI();
+
+        }, 1000);
+
 
     updateTimerUI();
 }
 
+
 function stopTimer() {
+
     if (timerInterval) {
-        clearInterval(timerInterval);
+
+        clearInterval(
+            timerInterval
+        );
+
         timerInterval = null;
     }
 
+
     if (startTime) {
-        elapsedSeconds = Math.floor(
-            (Date.now() - startTime) / 1000
-        );
+
+        elapsedSeconds =
+            Math.floor(
+                (
+                    Date.now() -
+                    startTime
+                ) / 1000
+            );
     }
+
 
     updateTimerUI();
 }
 
-function updateTimerUI() {
-    const minutes = Math.floor(elapsedSeconds / 60);
-    const seconds = elapsedSeconds % 60;
 
-    document.getElementById("timer").textContent =
-        minutes + ":" + String(seconds).padStart(2, "0");
+function updateTimerUI() {
+
+    const minutes =
+        Math.floor(
+            elapsedSeconds / 60
+        );
+
+    const seconds =
+        elapsedSeconds % 60;
+
+
+    document.getElementById(
+        "timer"
+    ).textContent =
+        minutes +
+        ":" +
+        String(seconds).padStart(
+            2,
+            "0"
+        );
 }
+
+
+/* =========================================================
+   SHUFFLE
+========================================================= */
 
 function shuffleConcepts() {
-    const list = document.getElementById("conceptList");
 
-    const concepts = Array.from(
-        list.querySelectorAll(".concept")
-    );
+    const list =
+        document.getElementById(
+            "conceptList"
+        );
 
-    for (let i = concepts.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
 
-        [concepts[i], concepts[j]] =
-            [concepts[j], concepts[i]];
+    const concepts =
+        Array.from(
+            list.querySelectorAll(
+                ".concept"
+            )
+        );
+
+
+    for (
+        let i = concepts.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            concepts[i],
+            concepts[j]
+        ] =
+        [
+            concepts[j],
+            concepts[i]
+        ];
     }
 
-    concepts.forEach(concept => {
-        list.appendChild(concept);
-    });
+
+    concepts.forEach(
+        concept =>
+            list.appendChild(
+                concept
+            )
+    );
 }
 
+
+/* =========================================================
+   UI
+========================================================= */
+
 function updateUI() {
-    document.getElementById("score").textContent = score;
-    document.getElementById("found").textContent = found;
+
+    document.getElementById(
+        "score"
+    ).textContent = score;
+
+
+    document.getElementById(
+        "found"
+    ).textContent = found;
+
 
     const percentage =
-        (found / totalQuestions) * 100;
+        (
+            found /
+            totalQuestions
+        ) * 100;
 
-    document.getElementById("progressBar").style.width =
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
         percentage + "%";
 
-    document.getElementById("finishButton").disabled =
+
+    document.getElementById(
+        "finishButton"
+    ).disabled =
         found < totalQuestions;
 
-    if (found === totalQuestions) {
-        document.getElementById("statusText").textContent =
+
+    if (
+        found === totalQuestions
+    ) {
+
+        document.getElementById(
+            "statusText"
+        ).textContent =
             "Todos os conceitos foram corretamente associados.";
     }
 }
 
-function showFeedback(message, type) {
-    const feedback = document.getElementById("feedback");
 
-    feedback.textContent = message;
-    feedback.className = "feedback " + type;
+/* =========================================================
+   FEEDBACK
+========================================================= */
 
-    clearTimeout(window.feedbackTimeout);
+function showFeedback(
+    message,
+    type
+) {
 
-    window.feedbackTimeout = setTimeout(() => {
-        feedback.textContent = "";
-        feedback.className = "feedback";
-    }, 2200);
+    const feedback =
+        document.getElementById(
+            "feedback"
+        );
+
+
+    feedback.textContent =
+        message;
+
+    feedback.className =
+        "feedback " + type;
+
+
+    clearTimeout(
+        window.feedbackTimeout
+    );
+
+
+    window.feedbackTimeout =
+        setTimeout(() => {
+
+            feedback.textContent = "";
+
+            feedback.className =
+                "feedback";
+
+        }, 2200);
 }
 
-document.querySelectorAll(".concept").forEach(concept => {
-    concept.addEventListener("dragstart", function(event) {
-        if (this.classList.contains("used")) {
-            event.preventDefault();
-            return;
-        }
 
-        event.dataTransfer.setData(
-            "text/plain",
-            this.dataset.answer
+/* =========================================================
+   CONCEITOS
+========================================================= */
+
+document
+    .querySelectorAll(".concept")
+    .forEach(concept => {
+
+
+        concept.addEventListener(
+            "dragstart",
+            function(event) {
+
+                if (
+                    this.classList.contains(
+                        "used"
+                    )
+                ) {
+
+                    event.preventDefault();
+
+                    return;
+                }
+
+
+                event.dataTransfer.setData(
+                    "text/plain",
+                    this.dataset.answer
+                );
+
+
+                event.dataTransfer.effectAllowed =
+                    "move";
+
+
+                selectedConcept =
+                    this;
+            }
         );
 
-        event.dataTransfer.effectAllowed = "move";
-        selectedConcept = this;
-    });
 
-    concept.addEventListener("click", function() {
-        if (this.classList.contains("used")) {
-            return;
-        }
+        concept.addEventListener(
+            "click",
+            function() {
 
-        document.querySelectorAll(".concept").forEach(item => {
-            item.classList.remove("selected");
-        });
+                if (
+                    this.classList.contains(
+                        "used"
+                    )
+                ) {
 
-        this.classList.add("selected");
-        selectedConcept = this;
+                    return;
+                }
 
-        showFeedback(
-            "👉 Agora escolhe o espaço onde queres colocar este conceito.",
-            "good"
-        );
-    });
-});
 
-document.querySelectorAll(".dropzone").forEach(zone => {
-    zone.addEventListener("dragover", function(event) {
-        event.preventDefault();
+                document
+                    .querySelectorAll(
+                        ".concept"
+                    )
+                    .forEach(item => {
 
-        if (!this.classList.contains("correct")) {
-            this.classList.add("dragover");
-        }
-    });
+                        item.classList.remove(
+                            "selected"
+                        );
 
-    zone.addEventListener("dragleave", function() {
-        this.classList.remove("dragover");
-    });
+                    });
 
-    zone.addEventListener("drop", function(event) {
-        event.preventDefault();
-        this.classList.remove("dragover");
 
-        if (this.classList.contains("correct")) {
-            return;
-        }
+                this.classList.add(
+                    "selected"
+                );
 
-        const answer = event.dataTransfer.getData("text/plain");
 
-        const concept = document.querySelector(
-            '.concept[data-answer="' +
-            CSS.escape(answer) +
-            '"]'
+                selectedConcept =
+                    this;
+
+
+                showFeedback(
+                    "👉 Agora escolhe o espaço onde queres colocar este conceito.",
+                    "good"
+                );
+            }
         );
 
-        if (concept) {
-            processDrop(concept, this);
-        }
     });
 
-    zone.addEventListener("click", function() {
-        if (this.classList.contains("correct")) {
-            return;
-        }
 
-        if (!selectedConcept) {
-            return;
-        }
+/* =========================================================
+   DROPZONES
+========================================================= */
 
-        processDrop(selectedConcept, this);
+document
+    .querySelectorAll(".dropzone")
+    .forEach(zone => {
+
+
+        zone.addEventListener(
+            "dragover",
+            function(event) {
+
+                event.preventDefault();
+
+
+                if (
+                    !this.classList.contains(
+                        "correct"
+                    )
+                ) {
+
+                    this.classList.add(
+                        "dragover"
+                    );
+                }
+
+            }
+        );
+
+
+        zone.addEventListener(
+            "dragleave",
+            function() {
+
+                this.classList.remove(
+                    "dragover"
+                );
+            }
+        );
+
+
+        zone.addEventListener(
+            "drop",
+            function(event) {
+
+                event.preventDefault();
+
+                this.classList.remove(
+                    "dragover"
+                );
+
+
+                if (
+                    this.classList.contains(
+                        "correct"
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                const answer =
+                    event.dataTransfer.getData(
+                        "text/plain"
+                    );
+
+
+                const concept =
+                    document.querySelector(
+                        '.concept[data-answer="' +
+                        CSS.escape(answer) +
+                        '"]'
+                    );
+
+
+                if (concept) {
+
+                    processDrop(
+                        concept,
+                        this
+                    );
+                }
+            }
+        );
+
+
+        zone.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    this.classList.contains(
+                        "correct"
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                if (!selectedConcept) {
+                    return;
+                }
+
+
+                processDrop(
+                    selectedConcept,
+                    this
+                );
+            }
+        );
+
     });
-});
 
-function processDrop(concept, zone) {
+
+/* =========================================================
+   PROCESSAR RESPOSTA
+========================================================= */
+
+function processDrop(
+    concept,
+    zone
+) {
+
     if (!concept || !zone) {
         return;
     }
 
-    if (concept.classList.contains("used")) {
+
+    if (
+        concept.classList.contains(
+            "used"
+        )
+    ) {
+
         return;
     }
 
-    if (zone.classList.contains("correct")) {
+
+    if (
+        zone.classList.contains(
+            "correct"
+        )
+    ) {
+
         return;
     }
 
-    const conceptAnswer = concept.dataset.answer;
-    const correctAnswer = zone.dataset.answer;
 
-    if (conceptAnswer === correctAnswer) {
+    const conceptAnswer =
+        concept.dataset.answer;
+
+
+    const correctAnswer =
+        zone.dataset.answer;
+
+
+    if (
+        conceptAnswer === correctAnswer
+    ) {
+
         score += 25;
+
         found++;
 
-        zone.textContent = concept.textContent;
-        zone.classList.add("correct");
 
-        concept.classList.add("used");
-        concept.classList.remove("selected");
+        zone.textContent =
+            concept.textContent;
+
+
+        zone.classList.add(
+            "correct"
+        );
+
+
+        concept.classList.add(
+            "used"
+        );
+
+
+        concept.classList.remove(
+            "selected"
+        );
+
 
         selectedConcept = null;
+
 
         showFeedback(
             "🎯 Correto! +25 pontos.",
             "good"
         );
 
+
         updateUI();
+
         saveD3State();
 
         return;
     }
 
+
     score -= 5;
+
 
     if (score < 0) {
         score = 0;
     }
 
-    zone.classList.add("wrong");
+
+    zone.classList.add(
+        "wrong"
+    );
+
 
     setTimeout(() => {
-        zone.classList.remove("wrong");
+
+        zone.classList.remove(
+            "wrong"
+        );
+
     }, 300);
+
 
     showFeedback(
         "❌ Associação errada. -5 pontos. Podes tentar novamente.",
         "bad"
     );
 
+
     updateUI();
+
     saveD3State();
 }
 
-async function saveResult() {
-    const currentToken = getPlayerToken();
 
-    if (!currentToken || currentToken === "TESTE001") {
+/* =========================================================
+   GRAVAR D03 NO WORKER
+========================================================= */
+
+async function saveResult() {
+
+    const currentToken =
+        getPlayerToken();
+
+
+    if (
+        !currentToken ||
+        currentToken === "TESTE001"
+    ) {
+
         throw new Error(
             "Token de jogo inválido. Abre o link pessoal recebido no email."
         );
     }
 
+
+    const headers =
+        await getWorkerAuthHeaders();
+
+
     const payload = {
-        token: currentToken,
-        d1_score: Number(
-            localStorage.getItem("cyberChallenge_d1") || 0
-        ),
-        d1_time: Number(
-            localStorage.getItem("cyberChallenge_d1_time") || 0
-        ),
-        d2_score: Number(
-            localStorage.getItem("cyberChallenge_d2") || 0
-        ),
-        d2_time: Number(
-            localStorage.getItem("cyberChallenge_d2_time") || 0
-        ),
-        d3_score: score,
-        d3_time: elapsedSeconds,
+
+        token:
+            currentToken,
+
+
+        d1_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d1"
+                ) || 0
+            ),
+
+
+        d1_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d1_time"
+                ) || 0
+            ),
+
+
+        d2_score:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d2"
+                ) || 0
+            ),
+
+
+        d2_time:
+            Number(
+                localStorage.getItem(
+                    "cyberChallenge_d2_time"
+                ) || 0
+            ),
+
+
+        d3_score:
+            score,
+
+
+        d3_time:
+            elapsedSeconds,
+
+
         d4_score: 0,
         d4_time: 0,
+
         boss_score: 0,
         boss_time: 0,
-        completed_date: new Date().toISOString()
+
+
+        completed_date:
+            new Date().toISOString()
     };
 
-    const response = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    });
 
-    const result = await response.json();
+    const response =
+        await fetch(
+            WORKER_URL,
+            {
+                method: "POST",
 
-    if (!response.ok || !result.success) {
+                headers: headers,
+
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+            }
+        );
+
+
+    const result =
+        await response.json();
+
+
+    if (
+        !response.ok ||
+        !result.success
+    ) {
+
         throw new Error(
             result.error ||
             "Não foi possível guardar o resultado."
         );
     }
 
+
     return result;
 }
 
-function finishChallenge() {
-    if (!challengeStarted || found < totalQuestions) {
+
+/* =========================================================
+   TERMINAR D03
+========================================================= */
+
+async function finishChallenge() {
+
+    if (
+        !challengeStarted ||
+        found < totalQuestions
+    ) {
+
         return;
     }
 
+
     challengeStarted = false;
+
     stopTimer();
+
 
     localStorage.setItem(
         "cyberChallenge_d3",
         score
     );
 
+
     localStorage.setItem(
         "cyberChallenge_d3_time",
         elapsedSeconds
     );
 
+
     const statusText =
-        document.getElementById("statusText");
+        document.getElementById(
+            "statusText"
+        );
+
 
     statusText.textContent =
         "A guardar o resultado...";
 
-    saveResult()
-        .then(() => {
-            clearD3State();
 
-            statusText.textContent =
-                "Resultado guardado com sucesso.";
+    try {
 
-            document.getElementById("gameScreen")
-                .classList.add("hidden");
+        await saveResult();
 
-            document.getElementById("endScreen")
-                .classList.remove("hidden");
 
-            document.getElementById("finalScore")
-                .textContent = score;
+        /*
+         * Só apagamos o estado local depois
+         * de o Worker confirmar a gravação.
+         */
+        clearD3State();
 
-            const title =
-                document.getElementById("endTitle");
 
-            const message =
-                document.getElementById("endMessage");
+        statusText.textContent =
+            "Resultado guardado com sucesso.";
 
-            if (score >= 100) {
-                title.textContent =
-                    "🏆 Cyber Sorter perfeito!";
 
-                message.textContent =
-                    "Acertaste todas as associações sem perder pontos. " +
-                    "Excelente domínio dos conceitos de cibersegurança.";
-            } else if (score >= 75) {
-                title.textContent =
-                    "🎯 Muito bem!";
+        document
+            .getElementById("gameScreen")
+            .classList.add("hidden");
 
-                message.textContent =
-                    "Conseguiste ligar corretamente os quatro conceitos. " +
-                    "Algumas tentativas menos certas custaram-te alguns pontos.";
-            } else {
-                title.textContent =
-                    "🧠 Desafio concluído.";
 
-                message.textContent =
-                    "As associações certas ficaram feitas, " +
-                    "mas alguns erros pelo caminho reduziram a pontuação.";
-            }
-        })
-        .catch(error => {
-            console.error(error);
+        document
+            .getElementById("endScreen")
+            .classList.remove("hidden");
 
-            statusText.textContent =
-                "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
 
-            challengeStarted = true;
+        document.getElementById(
+            "finalScore"
+        ).textContent =
+            score;
 
-            saveD3State();
-            startTimer();
 
-            alert(
-                "⚠️ Não foi possível guardar o resultado.\n\n" +
-                "O resultado ficou guardado localmente. " +
-                "Tenta novamente."
+        const title =
+            document.getElementById(
+                "endTitle"
             );
-        });
+
+
+        const message =
+            document.getElementById(
+                "endMessage"
+            );
+
+
+        if (score >= 100) {
+
+            title.textContent =
+                "🏆 Cyber Sorter perfeito!";
+
+            message.textContent =
+                "Acertaste todas as associações sem perder pontos. " +
+                "Excelente domínio dos conceitos de cibersegurança.";
+
+        } else if (score >= 75) {
+
+            title.textContent =
+                "🎯 Muito bem!";
+
+            message.textContent =
+                "Conseguiste ligar corretamente os quatro conceitos. " +
+                "Algumas tentativas menos certas custaram-te alguns pontos.";
+
+        } else {
+
+            title.textContent =
+                "🧠 Desafio concluído.";
+
+            message.textContent =
+                "As associações certas ficaram feitas, " +
+                "mas alguns erros pelo caminho reduziram a pontuação.";
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        statusText.textContent =
+            "⚠️ Não foi possível guardar o resultado. Contacta o IT.";
+
+
+        /*
+         * NÃO avançamos.
+         * Mantemos o estado local para nova tentativa.
+         */
+        challengeStarted = true;
+
+
+        saveD3State();
+
+        startTimer();
+
+
+        alert(
+            "⚠️ Não foi possível guardar o resultado.\n\n" +
+            "O resultado não foi confirmado pelo servidor.\n" +
+            "Continua no desafio e tenta novamente."
+        );
+    }
 }
+
+
+/* =========================================================
+   D03 → D04
+========================================================= */
 
 function goToNextChallenge() {
-    const currentToken = getPlayerToken();
-    const currentCodename =
-        localStorage.getItem("cyberChallengeCodename") || "";
 
-    const qs = new URLSearchParams();
+    const currentToken =
+        getPlayerToken();
 
-    if (currentToken) {
-        qs.set("token", currentToken);
+
+    if (!currentToken) {
+
+        alert(
+            "Não foi possível identificar o participante."
+        );
+
+        return;
     }
+
+
+    const qs =
+        new URLSearchParams();
+
+
+    qs.set(
+        "token",
+        currentToken
+    );
+
+
+    const currentCodename =
+        getPlayerCodename();
+
 
     if (currentCodename) {
-        qs.set("codename", currentCodename);
+
+        qs.set(
+            "codename",
+            currentCodename
+        );
     }
 
+
     window.location.href =
-        "desafio04.html?" + qs.toString();
+        "desafio04.html?" +
+        qs.toString();
 }
 
+
+/* =========================================================
+   PERSISTÊNCIA AO SAIR
+========================================================= */
+
 function persistD3BeforeLeaving() {
+
     if (!challengeStarted) {
         return;
     }
 
+
     if (startTime) {
-        elapsedSeconds = Math.floor(
-            (Date.now() - startTime) / 1000
-        );
+
+        elapsedSeconds =
+            Math.floor(
+                (
+                    Date.now() -
+                    startTime
+                ) / 1000
+            );
     }
+
 
     saveD3State();
 }
 
-window.addEventListener("beforeunload", function(event) {
-    if (!challengeStarted) {
-        return;
+
+window.addEventListener(
+    "beforeunload",
+    function(event) {
+
+        if (!challengeStarted) {
+            return;
+        }
+
+
+        persistD3BeforeLeaving();
+
+
+        event.preventDefault();
+
+        event.returnValue = "";
     }
+);
 
-    persistD3BeforeLeaving();
 
-    event.preventDefault();
-    event.returnValue = "";
-});
+window.addEventListener(
+    "pagehide",
+    function() {
 
-window.addEventListener("pagehide", function() {
-    persistD3BeforeLeaving();
-});
-
-document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === "hidden") {
         persistD3BeforeLeaving();
     }
-});
+);
 
-window.addEventListener("DOMContentLoaded", function() {
-    const savedState = loadD3State();
 
-    if (savedState) {
-        restoreD3State(savedState);
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (
+            document.visibilityState ===
+            "hidden"
+        ) {
+
+            persistD3BeforeLeaving();
+        }
     }
-});
+);
+
+
+/* =========================================================
+   ARRANQUE
+========================================================= */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        try {
+
+            await initialiseEntraAuthentication();
+
+            const savedState =
+                loadD3State();
+
+
+            if (savedState) {
+
+                restoreD3State(
+                    savedState
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "[Cyber Challenge] Erro de autenticação:",
+                error
+            );
+        }
+    }
+);
+
 </script>
+    
 </body>
 </html>

@@ -704,6 +704,7 @@ const loginRequest = {
 
 let msalInstance = null;
 let entraAccount = null;
+let entraIdToken = null;
 
 function preserveAccessParameters() {
     const params =
@@ -917,6 +918,7 @@ async function initialiseEntraAuthentication() {
 
         if (response && response.account) {
             entraAccount = response.account;
+            entraIdToken = response.idToken || null;
             msalInstance.setActiveAccount(
                 entraAccount
             );
@@ -947,6 +949,28 @@ async function initialiseEntraAuthentication() {
             );
 
             return false;
+        }
+
+        /*
+           Se já existia uma sessão MSAL, obtemos silenciosamente
+           um novo ID token para o Worker poder validar a identidade.
+        */
+        if (!entraIdToken) {
+            try {
+                const silentResponse =
+                    await msalInstance.acquireTokenSilent({
+                        ...loginRequest,
+                        account: entraAccount
+                    });
+
+                entraIdToken =
+                    silentResponse.idToken || null;
+            } catch (silentError) {
+                console.warn(
+                    "Não foi possível obter silenciosamente o ID token Entra.",
+                    silentError
+                );
+            }
         }
 
         showAuthenticatedUser();
@@ -1088,7 +1112,22 @@ function getPlayerCodename() {
     return "";
 }
 
-async function checkTokenAccess() {
+async function getWorkerAuthHeaders() {
+
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (entraIdToken) {
+        headers["Authorization"] =
+            "Bearer " + entraIdToken;
+    }
+
+    return headers;
+}
+
+
+function checkTokenAccess() {
 
     const token = getPlayerToken();
     const playerCodename = getPlayerCodename();
@@ -1139,7 +1178,8 @@ async function checkTokenAccess() {
             WORKER_URL + "check?token=" + encodeURIComponent(token),
             {
                 method: "GET",
-                cache: "no-store"
+                cache: "no-store",
+                headers: getWorkerAuthHeaders()
             }
         );
 
@@ -2780,6 +2820,19 @@ async function saveChallenge01Result(elapsed) {
 
         token: token,
 
+        /*
+           Identidade Entra. O Worker valida o ID token enviado
+           no header Authorization antes de aceitar estes dados.
+        */
+        entra_object_id:
+            localStorage.getItem("cyberChallengeEntraObjectId") || "",
+        entra_email:
+            localStorage.getItem("cyberChallengeEntraEmail") || "",
+        entra_name:
+            localStorage.getItem("cyberChallengeEntraName") || "",
+        cyber_codename:
+            localStorage.getItem("cyberChallengeCodename") || "",
+
         d1_score: score,
         d1_time: elapsed,
 
@@ -2821,9 +2874,7 @@ async function saveChallenge01Result(elapsed) {
                 WORKER_URL,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: getWorkerAuthHeaders(),
                     body: JSON.stringify(payload)
                 }
             );

@@ -1,4 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cyber Challenge 2026</title>
+
+<!-- Microsoft Entra ID / MSAL Browser v2 LTS -->
+<script
+    type="text/javascript"
+    src="https://alcdn.msftauth.net/browser/2.35.0/js/msal-browser.min.js"
+    defer>
+</script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #172033 0%, #0b0f17 45%, #05070b 100%);
+    color: #f4f7fb;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px 18px 50px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-size: 42px;
+    margin-bottom: 5px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: #9ba8bb;
+    margin-top: 8px;
+}
+
+.card {
+    background: rgba(17, 24, 39, 0.96);
+    border: 1px solid #263246;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+.hidden {
+    display: none !important;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #39475c;
+    background: #0b111c;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #4ade80;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #4ade80;
+    color: #06110a;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+.rules {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.rules strong {
+    color: #4ade80;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.stat {
+    background: #0c1320;
+    border: 1px solid #263246;
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 110px;
+}
+
+.stat-label {
+    color: #7f8da3;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.progress-wrapper {
+    height: 8px;
+    background: #1c2635;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #4ade80;
+    transition: width .3s;
+}
+
+.email {
+    background: #f7f9fc;
+    color: #172033;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.email-header {
+    background: #e9edf3;
+    padding: 16px;
+    border-bottom: 1px solid #cfd6df;
+}
+
+.email-row {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.email-row:last-child {
+    margin-bottom: 0;
+}
+
+.email-label {
+    display: inline-block;
+    width: 75px;
+    font-weight: bold;
+    color: #5c6878;
+}
+
+.email-body {
+    padding: 25px;
+    line-height: 1.65;
+    font-size: 16px;
+}
+
+.email-body p {
+    margin-top: 0;
+}
+
+/*
+   IMPORTANTE:
+   Os elementos clicáveis NÃO têm destaque inicial.
+*/
+
+.clickable {
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 1px 2px;
+}
+
+.clickable:hover {
+    background: transparent;
+}
+
+.clickable.correct {
+    background: #bbf7d0;
+    outline: 2px solid #22c55e;
+}
+
+.clickable.wrong {
+    background: #fecaca;
+    outline: 2px solid #ef4444;
+}
+
+.feedback {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #101827;
+    border: 1px solid #2c394d;
+    line-height: 1.55;
+}
+
+.feedback.good {
+    border-color: #22c55e;
+}
+
+.feedback.bad {
+    border-color: #ef4444;
+}
+
+.feedback.info {
+    border-color: #60a5fa;
+}
+
+.feedback.warning {
+    border-color: #f59e0b;
+}
+
+.next-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.safe-button {
+    background: #263246;
+    color: #e7edf5;
+}
+
+.safe-button:hover {
+    background: #344258;
+}
+
+.final-score {
+    text-align: center;
+    padding: 25px 10px;
+}
+
+.final-score .big {
+    font-size: 64px;
+    font-weight: bold;
+    color: #4ade80;
+    margin: 15px 0;
+}
+
+.final-message {
+    font-size: 18px;
+    color: #c5cfdb;
+    line-height: 1.6;
+    margin: 20px auto;
+    max-width: 650px;
+}
+
+.next-challenge-box {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(74,222,128,.10),
+            rgba(37,99,235,.10)
+        );
+    border: 1px solid #35516c;
+}
+
+.next-challenge-box h3 {
+    margin-top: 8px;
+    font-size: 23px;
+}
+
+.next-challenge-box p {
+    color: #b7c2d1;
+    line-height: 1.6;
+}
+
+.unlock {
+    color: #4ade80;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer {
+    text-align: center;
+    color: #68768a;
+    font-size: 12px;
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 15px 10px 35px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    .logo {
+        font-size: 34px;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+    .email-body {
+        padding: 18px;
+        font-size: 15px;
+    }
+
+    .email-label {
+        width: 65px;
+    }
+
+    .stat {
+        flex: 1;
+    }
+
+    .final-score .big {
+        font-size: 50px;
+    }
+
+    .next-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .next-area button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="header">
+
+    <div class="logo">🕵️‍♂️</div>
+
+    <h1>
+        CYBER CHALLENGE 2026
+    </h1>
+
+    <div class="subtitle">
+        Consegues apanhar o phish antes que ele te apanhe?
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     START SCREEN
+========================================================= -->
+
+<div id="startScreen" class="card">
+
+    <h2>
+        🎯 Desafio 01 — O Caça-Phish
+    </h2>
+
+    <p>
+        A tua missão é analisar <strong>10 emails</strong>
+        e identificar sinais de phishing, fraude ou engenharia social.
+    </p>
+
+    <div class="rules">
+
+        <strong>Como jogar:</strong>
+
+        <ul>
+
+            <li>
+                Analisa cada email com atenção.
+            </li>
+
+            <li>
+                Clica nos elementos que consideras suspeitos.
+            </li>
+
+            <li>
+                Nem tudo o que parece estranho é necessariamente perigoso.
+            </li>
+
+            <li>
+                Em alguns emails existem <strong>falsos positivos</strong>.
+            </li>
+
+            <li>
+                Se achares que o email é legítimo,
+                usa <strong>“Não encontrei nada suspeito”</strong>.
+            </li>
+
+            <li>
+                Tens apenas <strong>uma tentativa</strong>.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="rules" style="margin-top:20px;">
+        <strong>🛡️ Cyber Codename:</strong>
+        <span id="displayCodename">A carregar...</span>
+    </div>
+
+    <div id="authStatus"
+         style="margin:15px 0; padding:12px 14px; border-radius:10px;
+                background:#0c1320; border:1px solid #263246;">
+        🔐 <strong>Identidade:</strong>
+        <span id="authUser">A validar sessão...</span>
+    </div>
+
+    <div id="accessMessage" style="margin:15px 0; font-weight:bold;"></div>
+
+        <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
+        🚀 Começar o desafio
+    </button>
+
+</div>
+
+
+
+<!-- =========================================================
+     GAME SCREEN
+========================================================= -->
+
+<div id="gameScreen" class="hidden">
+
+    <div class="topbar">
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Email
+            </div>
+
+            <div
+                id="challengeNumber"
+                class="stat-value"
+            >
+                1 / 10
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Pontuação
+            </div>
+
+            <div
+                id="score"
+                class="stat-value"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Tempo
+            </div>
+
+            <div
+                id="timer"
+                class="stat-value"
+            >
+                00:00
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-wrapper">
+
+        <div
+            id="progress"
+            class="progress"
+        ></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2 id="challengeTitle">
+            Email 01
+        </h2>
+
+
+        <div class="instruction">
+            🔎 Analisa o email. Podes clicar nos elementos que consideras suspeitos
+            ou declarar que não encontraste nenhum sinal suspeito.
+        </div>
+
+
+        <div id="emailContainer"></div>
+
+
+        <div
+            id="feedback"
+            class="feedback hidden"
+        ></div>
+
+
+        <div class="next-area">
+
+            <button
+                id="safeButton"
+                class="safe-button"
+                onclick="answerSafe()"
+            >
+                🛡️ Não encontrei nada suspeito
+            </button>
+
+
+            <button
+                id="nextButton"
+                class="hidden"
+                onclick="nextQuestion()"
+            >
+                Próximo email →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     END SCREEN
+========================================================= -->
+
+<div id="endScreen" class="card hidden">
+
+    <div class="final-score">
+
+        <h2>
+            🏆 DESAFIO 01 CONCLUÍDO
+        </h2>
+
+        <p>
+            Cyber Codename:
+            <strong id="finalCodename"></strong>
+        </p>
+
+
+        <div
+            id="finalScore"
+            class="big"
+        >
+            0 / 100
+        </div>
+
+
+        <p id="finalTime"></p>
+
+        <p id="saveStatus" style="margin-top:15px; font-weight:bold;"></p>
+
+        <div
+            id="finalMessage"
+            class="final-message"
+        ></div>
+
+
+        <div class="next-challenge-box">
+
+            <div class="unlock">
+                🔓 NOVO DESAFIO DESBLOQUEADO
+            </div>
+
+            <h3>
+                DESAFIO 02 — CLEAR DESK
+            </h3>
+
+            <p>
+                Agora vamos sair da caixa de correio.
+            </p>
+
+            <p>
+                Há <strong>5 falhas de segurança</strong>
+                escondidas numa secretária.
+                E existem também algumas boas práticas.
+            </p>
+
+            <button
+                onclick="goToChallenge02()"
+            >
+                🔍 Aceitar Desafio 02 →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="footer">
+    Cyber Challenge 2026 · Sport TV
+</div>
+
+</div>
+
+
+
+<script>
+
+/* ============================================================
+   MICROSOFT ENTRA ID / MSAL
+============================================================ */
+
+const ENTRA_CLIENT_ID =
+    "51daeb10-f5fb-4b73-8625-9ba75101349d";
+
+const ENTRA_TENANT_ID =
+    "25617c82-4182-4171-8125-b408e318d942";
+
+const ENTRA_REDIRECT_URI =
+    "https://pnogueira2024.github.io/cyber-challenge-2026/";
+
+const msalConfig = {
+    auth: {
+        clientId: ENTRA_CLIENT_ID,
+        authority:
+            "https://login.microsoftonline.com/" +
+            ENTRA_TENANT_ID,
+        redirectUri: ENTRA_REDIRECT_URI,
+        postLogoutRedirectUri: ENTRA_REDIRECT_URI,
+        navigateToLoginRequestUrl: true
+    },
+    cache: {
+        cacheLocation: "sessionStorage",
+        storeAuthStateInCookie: false
+    }
+};
+
+const loginRequest = {
+    scopes: ["openid", "profile", "email"]
+};
+
+let msalInstance = null;
+let entraAccount = null;
+let entraIdToken = null;
+
+function preserveAccessParameters() {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get("token");
+
+    /*
+       O token do Sesame é preservado integralmente.
+       O codename já não vem do Sesame: é derivado da identidade Entra.
+    */
+    if (urlToken && urlToken.trim()) {
+        localStorage.setItem(
+            "cyberChallengeToken",
+            urlToken.trim()
+        );
+
+        /* Um novo token deve iniciar um novo contexto. */
+        localStorage.removeItem("cyberChallengeCodename");
+    }
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showAuthenticatedUser() {
+
+    const element =
+        document.getElementById("authUser");
+
+    if (!element || !entraAccount) return;
+
+    const claims =
+        entraAccount.idTokenClaims || {};
+
+    const name =
+        entraAccount.name ||
+        claims.name ||
+        "Utilizador";
+
+    const email =
+        entraAccount.username ||
+        claims.preferred_username ||
+        claims.email ||
+        "";
+
+    element.innerHTML =
+        `<strong>${escapeHtml(name)}</strong>` +
+        (email
+            ? ` · ${escapeHtml(email)}`
+            : "");
+}
+
 async function initialiseEntraAuthentication() {
+
     preserveAccessParameters();
 
     const authStatus = document.getElementById("authStatus");
@@ -6,9 +771,7 @@ async function initialiseEntraAuthentication() {
 
     /* Diagnóstico visível no próprio ecrã. Assim não precisamos de F12. */
     const diagnostic = document.createElement("div");
-
     diagnostic.id = "authDiagnostic";
-
     diagnostic.style.cssText = `
         margin-top:15px;
         padding:14px;
@@ -21,10 +784,8 @@ async function initialiseEntraAuthentication() {
         line-height:1.6;
         white-space:pre-wrap;
     `;
-
     diagnostic.innerHTML =
-        "🔎 Diagnóstico de autenticação\n" +
-        "A iniciar...";
+        "🔎 Diagnóstico de autenticação\nA iniciar...";
 
     if (authStatus && authStatus.parentNode) {
         authStatus.parentNode.insertBefore(
@@ -40,106 +801,51 @@ async function initialiseEntraAuthentication() {
             warning: "⚠️",
             error: "❌"
         };
-
         const icon = icons[type] || "🔎";
 
         if (diagnostic) {
-            const current = diagnostic.innerHTML;
-
-            diagnostic.innerHTML =
-                current +
-                "\n" +
-                icon +
-                " " +
-                escapeHtml(message);
+            diagnostic.innerHTML +=
+                "\n" + icon + " " + escapeHtml(message);
         }
 
-        console.log(
-            "[Cyber Challenge Auth]",
-            message
-        );
+        console.log("[Cyber Challenge Auth]", message);
     }
 
     function diagnosticError(error) {
         const message =
-            error && error.message
-                ? error.message
-                : String(error);
-
-        diagnosticStep(
-            message,
-            "error"
-        );
+            error && error.message ? error.message : String(error);
+        diagnosticStep(message, "error");
     }
 
     try {
 
-        /* ----------------------------------------------------
-           1 — MSAL
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "1/8 A verificar biblioteca MSAL..."
-        );
+        diagnosticStep("1/8 A verificar biblioteca MSAL...");
 
         if (typeof msal === "undefined") {
-            throw new Error(
-                "A biblioteca MSAL não foi carregada."
-            );
+            throw new Error("A biblioteca MSAL não foi carregada.");
         }
 
-        diagnosticStep(
-            "MSAL carregado.",
-            "ok"
-        );
+        diagnosticStep("MSAL carregado.", "ok");
 
+        diagnosticStep("2/8 A inicializar MSAL...");
 
-        /* ----------------------------------------------------
-           2 — Inicializar MSAL
-        ---------------------------------------------------- */
+        msalInstance = new msal.PublicClientApplication(msalConfig);
 
-        diagnosticStep(
-            "2/8 A inicializar MSAL..."
-        );
+        diagnosticStep("MSAL inicializado.", "ok");
 
-        msalInstance =
-            new msal.PublicClientApplication(
-                msalConfig
-            );
+        diagnosticStep("3/8 A processar retorno do Microsoft Entra...");
 
-        diagnosticStep(
-            "MSAL inicializado.",
-            "ok"
-        );
-
-
-        /* ----------------------------------------------------
-           3 — Processar retorno do loginRedirect
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "3/8 A processar retorno do Microsoft Entra..."
-        );
-
-        const response =
-            await msalInstance.handleRedirectPromise();
+        const response = await msalInstance.handleRedirectPromise();
 
         if (response) {
-
             diagnosticStep(
                 "O Entra devolveu uma resposta de autenticação.",
                 "ok"
             );
 
             if (response.account) {
-
-                entraAccount =
-                    response.account;
-
-                msalInstance.setActiveAccount(
-                    entraAccount
-                );
-
+                entraAccount = response.account;
+                msalInstance.setActiveAccount(entraAccount);
                 diagnosticStep(
                     "Conta recebida no retorno do Entra.",
                     "ok"
@@ -147,239 +853,124 @@ async function initialiseEntraAuthentication() {
             }
 
             if (response.idToken) {
-
-                entraIdToken =
-                    response.idToken;
-
+                entraIdToken = response.idToken;
                 diagnosticStep(
                     "ID Token recebido no retorno.",
                     "ok"
                 );
             }
-
         } else {
-
             diagnosticStep(
                 "Não existe retorno de loginRedirect. A verificar sessão existente."
             );
         }
 
-
-        /* ----------------------------------------------------
-           4 — Procurar conta existente
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "4/8 A procurar conta Entra existente..."
-        );
+        diagnosticStep("4/8 A procurar conta Entra existente...");
 
         if (!entraAccount) {
-
-            const accounts =
-                msalInstance.getAllAccounts();
-
-            diagnosticStep(
-                `Contas encontradas no MSAL: ${accounts.length}`
-            );
+            const accounts = msalInstance.getAllAccounts();
+            diagnosticStep(`Contas encontradas no MSAL: ${accounts.length}`);
 
             if (accounts.length > 0) {
-
-                entraAccount =
-                    accounts[0];
-
-                msalInstance.setActiveAccount(
-                    entraAccount
-                );
-
-                diagnosticStep(
-                    "Conta Entra encontrada.",
-                    "ok"
-                );
+                entraAccount = accounts[0];
+                msalInstance.setActiveAccount(entraAccount);
+                diagnosticStep("Conta Entra encontrada.", "ok");
             }
         }
 
-
-        /* ----------------------------------------------------
-           5 — Se não houver conta, iniciar login
-        ---------------------------------------------------- */
-
         if (!entraAccount) {
-
             diagnosticStep(
                 "5/8 Nenhuma sessão Entra encontrada.",
                 "warning"
             );
 
             if (authUser) {
-                authUser.textContent =
-                    "A iniciar sessão Microsoft...";
+                authUser.textContent = "A iniciar sessão Microsoft...";
             }
 
-            diagnosticStep(
-                "A abrir Microsoft Entra para autenticação..."
-            );
+            diagnosticStep("A abrir Microsoft Entra para autenticação...");
 
-            /*
-             * loginRedirect termina a execução desta página
-             * e redireciona para o Microsoft Entra.
-             */
-
-            await msalInstance.loginRedirect(
-                loginRequest
-            );
-
+            await msalInstance.loginRedirect(loginRequest);
             return false;
         }
 
-
-        /* ----------------------------------------------------
-           6 — Obter ID Token
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "5/8 Conta Entra encontrada.",
-            "ok"
-        );
-
-        diagnosticStep(
-            "6/8 A verificar ID Token..."
-        );
-
-        /*
-         * Se recebemos o token no redirect, usamos esse.
-         * Caso contrário tentamos obtê-lo silenciosamente.
-         */
+        diagnosticStep("Conta Entra encontrada.", "ok");
+        diagnosticStep("6/8 A verificar ID Token...");
 
         if (!entraIdToken) {
-
             diagnosticStep(
                 "Não existe ID Token em memória. A pedir token silenciosamente..."
             );
 
             try {
-
                 const silentResponse =
                     await msalInstance.acquireTokenSilent({
                         ...loginRequest,
                         account: entraAccount
                     });
 
-                entraIdToken =
-                    silentResponse.idToken || null;
+                entraIdToken = silentResponse.idToken || null;
 
                 if (entraIdToken) {
-
-                    diagnosticStep(
-                        "ID Token obtido com sucesso.",
-                        "ok"
-                    );
-
+                    diagnosticStep("ID Token obtido com sucesso.", "ok");
                 } else {
-
                     throw new Error(
                         "O Microsoft Entra não devolveu um ID Token."
                     );
                 }
-
             } catch (silentError) {
-
-                console.error(
-                    "Erro acquireTokenSilent:",
-                    silentError
-                );
+                console.error("Erro acquireTokenSilent:", silentError);
 
                 diagnosticStep(
                     "Não foi possível obter o token silenciosamente.",
                     "warning"
                 );
-
                 diagnosticStep(
                     "A iniciar nova autenticação Microsoft Entra..."
                 );
 
                 if (authUser) {
-                    authUser.textContent =
-                        "A renovar sessão Microsoft...";
+                    authUser.textContent = "A renovar sessão Microsoft...";
                 }
 
-                await msalInstance.loginRedirect(
-                    loginRequest
-                );
-
+                await msalInstance.loginRedirect(loginRequest);
                 return false;
             }
         }
 
-
         if (!entraIdToken) {
-
-            throw new Error(
-                "Não foi possível obter um ID Token Entra."
-            );
+            throw new Error("Não foi possível obter um ID Token Entra.");
         }
 
-
-        /* ----------------------------------------------------
-           7 — Mostrar identidade
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "7/8 A validar identidade do participante..."
-        );
+        diagnosticStep("7/8 A validar identidade do participante...");
 
         showAuthenticatedUser();
-
-        const identity =
-            establishParticipantIdentity();
+        const identity = establishParticipantIdentity();
 
         diagnosticStep(
             `Identidade: ${identity.name || "Sem nome"}`,
             "ok"
         );
-
-        diagnosticStep(
-            `Email: ${identity.email}`,
-            "ok"
-        );
-
+        diagnosticStep(`Email: ${identity.email}`, "ok");
         diagnosticStep(
             `Cyber Codename: ${identity.cyberCodename}`,
             "ok"
         );
+        diagnosticStep(`Object ID: ${identity.objectId}`, "ok");
 
-        diagnosticStep(
-            `Object ID: ${identity.objectId}`,
-            "ok"
-        );
-
-
-        /* ----------------------------------------------------
-           8 — Autenticação concluída
-        ---------------------------------------------------- */
-
-        diagnosticStep(
-            "8/8 Autenticação Entra concluída.",
-            "ok"
-        );
+        diagnosticStep("8/8 Autenticação Entra concluída.", "ok");
 
         if (authStatus) {
-            authStatus.style.borderColor =
-                "#22c55e";
+            authStatus.style.borderColor = "#22c55e";
         }
 
         if (authUser) {
-
-            /*
-             * Mantemos a identidade normal no topo.
-             */
-
             showAuthenticatedUser();
         }
 
         return true;
 
     } catch (error) {
-
         console.error(
             "Erro na autenticação Microsoft Entra ID:",
             error
@@ -388,17 +979,2175 @@ async function initialiseEntraAuthentication() {
         diagnosticError(error);
 
         if (authUser) {
-
-            authUser.innerHTML =
-                "❌ Erro na validação da sessão.";
+            authUser.innerHTML = "❌ Erro na validação da sessão.";
         }
 
         if (authStatus) {
-
-            authStatus.style.borderColor =
-                "#ef4444";
+            authStatus.style.borderColor = "#ef4444";
         }
 
         return false;
     }
 }
+
+
+/* ============================================================
+   IDENTIDADE ENTRA / CYBER CODENAME
+============================================================ */
+
+function establishParticipantIdentity() {
+    if (!entraAccount) {
+        throw new Error("Conta Entra não disponível.");
+    }
+
+    const claims = entraAccount.idTokenClaims || {};
+
+    const email = String(
+        entraAccount.username ||
+        claims.preferred_username ||
+        claims.email ||
+        ""
+    ).trim().toLowerCase();
+
+    const name = String(
+        entraAccount.name ||
+        claims.name ||
+        "Utilizador"
+    ).trim();
+
+    const objectId = String(
+        claims.oid ||
+        entraAccount.localAccountId ||
+        ""
+    ).trim();
+
+    if (!email) {
+        throw new Error("Não foi possível obter o email da conta Entra.");
+    }
+
+    if (!objectId) {
+        throw new Error("Não foi possível obter o Object ID da conta Entra.");
+    }
+
+    const shortname = email.split("@")[0].trim().toLowerCase();
+    const cyberCodename = shortname + "_cyber2026";
+
+    localStorage.setItem("cyberChallengeEntraObjectId", objectId);
+    localStorage.setItem("cyberChallengeEntraEmail", email);
+    localStorage.setItem("cyberChallengeEntraName", name);
+    localStorage.setItem("cyberChallengeShortname", shortname);
+    localStorage.setItem("cyberChallengeCodename", cyberCodename);
+
+    codename = cyberCodename;
+
+    return {
+        objectId,
+        email,
+        name,
+        shortname,
+        cyberCodename
+    };
+}
+
+
+/* ============================================================
+   CLOUDFLARE WORKER / TOKEN
+============================================================ */
+
+const WORKER_URL =
+    "https://cyberchalange2026.paulonnogueira.workers.dev/";
+
+let playerToken = "";
+
+
+function getPlayerToken() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get("token");
+
+    if (urlToken && urlToken.trim()) {
+        playerToken = urlToken.trim();
+        localStorage.setItem("cyberChallengeToken", playerToken);
+        return playerToken;
+    }
+
+    const storedToken =
+        localStorage.getItem("cyberChallengeToken");
+
+    if (storedToken && storedToken.trim()) {
+        playerToken = storedToken.trim();
+        return playerToken;
+    }
+
+    return "";
+}
+
+
+/* ============================================================
+   CYBER CODENAME
+============================================================ */
+
+function getPlayerCodename() {
+    if (!entraAccount) {
+        return "";
+    }
+
+    const claims = entraAccount.idTokenClaims || {};
+    const email = String(
+        entraAccount.username ||
+        claims.preferred_username ||
+        claims.email ||
+        ""
+    ).trim().toLowerCase();
+
+    if (!email) {
+        return "";
+    }
+
+    const shortname = email.split("@")[0].trim().toLowerCase();
+    codename = shortname + "_cyber2026";
+
+    localStorage.setItem(
+        "cyberChallengeCodename",
+        codename
+    );
+
+    return codename;
+}
+
+
+function getWorkerAuthHeaders() {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (entraIdToken) {
+        headers["Authorization"] =
+            "Bearer " + entraIdToken;
+    } else {
+        console.warn(
+            "[Cyber Challenge] ATENÇÃO: não existe entraIdToken."
+        );
+    }
+
+    return headers;
+}
+
+
+async function checkTokenAccess() {
+
+    const token = getPlayerToken();
+    const playerCodename = getPlayerCodename();
+    const display = document.getElementById("displayCodename");
+    const startButton = document.getElementById("startButton");
+    const accessMessage = document.getElementById("accessMessage");
+
+    if (display) {
+        display.textContent = playerCodename || "Não identificado";
+    }
+
+    if (!token) {
+        if (accessMessage) {
+            accessMessage.textContent =
+                "⚠️ Link de acesso inválido. Usa o link recebido por email.";
+            accessMessage.style.color = "#f87171";
+        }
+        return false;
+    }
+
+    if (!playerCodename) {
+        if (accessMessage) {
+            accessMessage.textContent =
+                "❌ Não foi possível determinar o Cyber Codename.";
+            accessMessage.style.color = "#f87171";
+        }
+        return false;
+    }
+
+    const diagnostic = document.getElementById("authDiagnostic");
+
+    if (diagnostic) {
+        diagnostic.innerHTML +=
+            "\n🔎 9/9 A contactar o Cloudflare Worker...";
+    }
+
+    if (accessMessage) {
+        accessMessage.textContent = "🔎 A validar o teu acesso...";
+        accessMessage.style.color = "#f59e0b";
+    }
+
+    try {
+        if (!entraIdToken) {
+            if (diagnostic) {
+                diagnostic.innerHTML +=
+                    "\n❌ Não existe ID Token para enviar ao Worker.";
+            }
+            throw new Error("Não existe ID Token Entra.");
+        }
+
+        if (diagnostic) {
+            diagnostic.innerHTML +=
+                "\n✅ ID Token disponível. A enviar Authorization Bearer...";
+        }
+
+        const response = await fetch(
+            WORKER_URL + "check?token=" + encodeURIComponent(token),
+            {
+                method: "GET",
+                cache: "no-store",
+                headers: getWorkerAuthHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (diagnostic) {
+            diagnostic.innerHTML +=
+                "\n✅ Worker respondeu: " +
+                escapeHtml(JSON.stringify(data));
+        }
+
+        if (data.allowed !== true) {
+            if (startButton) {
+                startButton.disabled = true;
+                startButton.style.opacity = "0.5";
+                startButton.style.cursor = "not-allowed";
+            }
+
+            if (accessMessage) {
+                accessMessage.innerHTML = `
+                    🔒 <strong>Cyber Challenge já iniciado</strong><br>
+                    Este token já foi utilizado para iniciar o desafio.<br>
+                    Não é possível repetir o Desafio 01.
+                `;
+                accessMessage.style.color = "#f87171";
+            }
+
+            return false;
+        }
+
+        if (accessMessage) {
+            accessMessage.textContent = "✅ Acesso validado. Podes começar.";
+            accessMessage.style.color = "#4ade80";
+        }
+
+        if (startButton) {
+            startButton.disabled = false;
+            startButton.style.opacity = "1";
+            startButton.style.cursor = "pointer";
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Erro ao validar o token:", error);
+
+        if (startButton) {
+            startButton.disabled = true;
+            startButton.style.opacity = "0.5";
+            startButton.style.cursor = "not-allowed";
+        }
+
+        if (accessMessage) {
+            accessMessage.innerHTML = `
+                ⚠️ <strong>Não foi possível validar o acesso.</strong><br>
+                Tenta novamente dentro de alguns segundos.
+            `;
+            accessMessage.style.color = "#f59e0b";
+        }
+
+        return false;
+    }
+}
+
+
+window.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        const authenticated =
+            await initialiseEntraAuthentication();
+
+        if (!authenticated) {
+            return;
+        }
+
+        await checkTokenAccess();
+    }
+);
+
+
+/* ============================================================
+   PERGUNTAS
+   Cada email vale 10 pontos.
+============================================================ */
+
+const questions = [
+
+/* ============================================================
+   01
+============================================================ */
+
+{
+    title: "📩 Email 01 — A conta Microsoft 365",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio do remetente não é microsoft.com. Um endereço que parece oficial pode esconder um domínio completamente diferente."
+                    >
+                        Microsoft 365 Support
+                        &lt;support@microsoft-support.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de o email estar dirigido diretamente a ti não é, por si só, um sinal de phishing."
+                    >
+                        tu@sporttv.pt
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de suspensão imediata cria pressão para agir sem verificar a mensagem."
+                    >
+                        ⚠️ Ação necessária — a tua conta será suspensa hoje
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Olá,
+                </p>
+
+                <p>
+                    Detetámos uma atividade suspeita na tua conta.
+                </p>
+
+                <p>
+                    Para evitar a suspensão permanente,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Um email inesperado que pede credenciais através de um link deve ser tratado como suspeito. Entra diretamente no portal oficial em vez de usar o link."
+                    >
+                        confirma a tua password aqui
+                    </span>.
+                </p>
+
+                <p>
+                    Tens apenas 30 minutos para concluir a validação.
+                </p>
+
+                <p>
+                    Se tiveres dúvidas,
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Recomendar o contacto com o suporte é normal. O problema está no contexto e nos outros sinais da mensagem."
+                    >
+                        contacta o Service Desk
+                    </span>.
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    Microsoft 365 Security Team
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   02
+============================================================ */
+
+{
+    title: "📄 Email 02 — Documento partilhado",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span>
+                        João Silva &lt;joao.silva@sporttv.pt&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de o teu endereço aparecer corretamente no campo Para não é um sinal de phishing."
+                    >
+                        tu@sporttv.pt
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A palavra 'urgente' pode ser usada para pressionar o destinatário a agir sem verificar o contexto."
+                    >
+                        Documento urgente — preciso da tua aprovação
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Olá,
+                </p>
+
+                <p>
+                    Partilhei contigo o documento relativo ao projeto.
+                </p>
+
+                <p>
+                    Podes consultar o documento através do
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Um link recebido por email deve ser verificado antes de ser aberto. O texto apresentado pode não revelar o destino real."
+                    >
+                        link abaixo
+                    </span>.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O pedido para iniciar sessão através de um link recebido deve ser validado. Prefere abrir diretamente o serviço oficial."
+                    >
+                        🔗 Abrir documento
+                    </span>
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    João
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   03
+============================================================ */
+
+{
+    title: "💰 Email 03 — Fatura pendente",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio do remetente não corresponde claramente ao fornecedor esperado. O nome apresentado não chega para validar a origem."
+                    >
+                        Contabilidade
+                        &lt;financeiro@empresa-faturas.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        Fatura #48392 — pagamento pendente
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Exmo. Senhor,
+                </p>
+
+                <p>
+                    Informamos que existe uma fatura pendente
+                    associada à sua empresa.
+                </p>
+
+                <p>
+                    Para evitar custos adicionais,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de custos adicionais cria pressão para efetuar um pagamento rapidamente."
+                    >
+                        efetue o pagamento imediatamente
+                    </span>.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Dados bancários recebidos por email devem ser confirmados através de um canal independente antes de qualquer pagamento."
+                    >
+                        Consulte os dados bancários na fatura em anexo.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O número da fatura é informação perfeitamente normal e pode existir num email legítimo."
+                    >
+                        Referência: #48392
+                    </span>
+                </p>
+
+                <p>
+                    Cumprimentos,<br>
+                    Departamento Financeiro
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   04
+============================================================ */
+
+{
+    title: "🎁 Email 04 — Pedido do chefe",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O endereço real não corresponde ao domínio habitual da organização. O nome 'Diretor' no remetente não prova a identidade."
+                    >
+                        Diretor
+                        &lt;diretor.sporttv@gmail-support.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 'Ajuda rápida' num contexto inesperado pode ser uma tentativa de criar urgência."
+                    >
+                        Preciso de uma ajuda rápida
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Olá,
+                </p>
+
+                <p>
+                    Estou numa reunião e preciso que trates
+                    de uma coisa rapidamente.
+                </p>
+
+                <p>
+                    Preciso que compres
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Pedidos inesperados para comprar cartões-presente são um padrão conhecido de fraude de identidade."
+                    >
+                        3 cartões-presente de 100€
+                    </span>.
+                </p>
+
+                <p>
+                    Envia-me os códigos por email assim que
+                    estiveres com eles.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedir que não telefonemos ou não confirmemos o pedido elimina uma das melhores formas de detetar uma fraude de identidade."
+                    >
+                        Não ligues agora porque estou numa reunião.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de alguém estar numa reunião é perfeitamente normal. É o conjunto do contexto que torna o pedido suspeito."
+                    >
+                        Estou numa reunião.
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   05
+============================================================ */
+
+{
+    title: "🔐 Email 05 — Password expirada",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio não pertence claramente ao suporte oficial da organização."
+                    >
+                        IT Helpdesk
+                        &lt;support@it-helpdesk-security.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        A tua password expira hoje
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    A tua password vai expirar dentro de 24 horas.
+                </p>
+
+                <p>
+                    Para manteres o acesso aos sistemas,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Não introduzas a password numa página aberta através de um link inesperado. Usa o portal oficial diretamente."
+                    >
+                        clica aqui para renovar a password
+                    </span>.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A ameaça de bloqueio aumenta a pressão para agir rapidamente."
+                    >
+                        Caso contrário, a tua conta será bloqueada.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Uma indicação de que uma password vai expirar pode ser perfeitamente legítima. O problema é a forma como o pedido é apresentado."
+                    >
+                        A password vai expirar dentro de 24 horas.
+                    </span>
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    IT Helpdesk
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   06 — LEGÍTIMO
+============================================================ */
+
+{
+    title: "💬 Email 06 — Convite Teams",
+
+    safe: true,
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O remetente utiliza um domínio associado ao serviço Microsoft Teams."
+                    >
+                        Microsoft Teams
+                        &lt;noreply@teams.microsoft.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        Convite para reunião
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Foste convidado para uma reunião do
+                    Microsoft Teams.
+                </p>
+
+                <p>
+                    <strong>
+                        Reunião semanal de equipa
+                    </strong>
+                </p>
+
+                <p>
+                    Data: 23/10/2026<br>
+                    Hora: 10:00
+                </p>
+
+                <p>
+                    Organizador:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ A identificação do organizador é informação normal num convite de reunião."
+                    >
+                        João Silva
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O botão para participar numa reunião é normal neste contexto. Como sempre, verifica o destino real antes de clicar."
+                    >
+                        Participar na reunião
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   07
+============================================================ */
+
+{
+    title: "📦 Email 07 — Encomenda",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O domínio não corresponde claramente ao domínio oficial da transportadora."
+                    >
+                        CTT Expresso
+                        &lt;entregas@ctt-expresso-support.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        Não foi possível entregar a sua encomenda
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Tentámos entregar a sua encomenda hoje,
+                    mas não foi possível concluir a entrega.
+                </p>
+
+                <p>
+                    Para reagendar a entrega,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Links inesperados relacionados com entregas podem ser usados para recolher dados pessoais ou bancários."
+                    >
+                        confirme os seus dados aqui
+                    </span>.
+                </p>
+
+                <p>
+                    Será aplicada uma taxa de
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pequenos pagamentos são frequentemente usados como pretexto para recolher dados de cartão."
+                    >
+                        2,99€
+                    </span>.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Um botão de pagamento recebido inesperadamente deve ser tratado com cautela."
+                    >
+                        Efetuar pagamento
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O facto de existir uma encomenda não é, por si só, um indicador de phishing."
+                    >
+                        Número de encomenda: 84729381
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   08
+============================================================ */
+
+{
+    title: "🚨 Email 08 — Alerta de segurança",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 Repara no domínio: 'micosoft' está escrito de forma diferente de 'microsoft'. Isto é um exemplo de typosquatting."
+                    >
+                        Security Alert
+                        &lt;security@micosoft-security.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 A utilização de 'URGENTE' tenta aumentar a pressão para agir rapidamente."
+                    >
+                        🚨 URGENTE — Atividade suspeita detetada
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Detetámos uma tentativa de acesso à tua conta.
+                </p>
+
+                <p>
+                    Localização:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Mostrar uma localização num alerta de segurança pode ser uma informação legítima. O contexto é que deve ser avaliado."
+                    >
+                        Lisboa, Portugal
+                    </span>
+                </p>
+
+                <p>
+                    Data:
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ A data e hora de um evento de segurança podem aparecer normalmente num alerta legítimo."
+                    >
+                        18/09/2026 — 14:31
+                    </span>
+                </p>
+
+                <p>
+                    Se não reconheces esta atividade,
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="3"
+                        data-feedback="🚩 O botão leva o utilizador a agir imediatamente. Em vez disso, abre diretamente o portal oficial e verifica a atividade."
+                    >
+                        verifica agora a tua conta
+                    </span>.
+                </p>
+
+                <p>
+                    Obrigado,<br>
+                    Security Team
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   09 — LEGÍTIMO
+============================================================ */
+
+{
+    title: "☁️ Email 09 — OneDrive",
+
+    safe: true,
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O remetente utiliza um domínio associado ao serviço OneDrive/Microsoft."
+                    >
+                        OneDrive
+                        &lt;no-reply@onedrive.microsoft.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span>
+                        Um ficheiro foi partilhado contigo
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    João Silva partilhou um ficheiro contigo.
+                </p>
+
+                <p>
+                    <strong>
+                        Projeto Cyber Challenge 2026
+                    </strong>
+                </p>
+
+                <p>
+                    O ficheiro está disponível no OneDrive.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Um botão para abrir um ficheiro partilhado pode ser perfeitamente legítimo. Verifica sempre o destino real antes de clicar."
+                    >
+                        Ver ficheiro
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Recomendar que confirmes ficheiros inesperados é uma boa prática de segurança."
+                    >
+                        Se não esperavas este ficheiro,
+                        confirma primeiro com o remetente.
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+},
+
+
+
+/* ============================================================
+   10 — BOSS FINAL
+============================================================ */
+
+{
+    title: "👑 BOSS FINAL — O verdadeiro teste",
+
+    html: `
+        <div class="email">
+
+            <div class="email-header">
+
+                <div class="email-row">
+                    <span class="email-label">De:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 O domínio 'sp0rtv-security.com' usa uma aparência semelhante ao domínio legítimo. O zero em 'sp0rtv' é um sinal de alerta."
+                    >
+                        Diretor IT
+                        &lt;f.rocha@sp0rtv-security.com&gt;
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Assunto:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 O assunto cria urgência e pressão para executar uma ação rapidamente."
+                    >
+                        URGENTE — preciso disto nos próximos 10 minutos
+                    </span>
+                </div>
+
+
+                <div class="email-row">
+                    <span class="email-label">Para:</span>
+
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ O endereço do destinatário estar correto não torna o email legítimo nem ilegítimo."
+                    >
+                        tu@sporttv.pt
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="email-body">
+
+                <p>
+                    Olá,
+                </p>
+
+                <p>
+                    Estou fora do escritório e preciso que me ajudes
+                    com uma situação urgente.
+                </p>
+
+                <p>
+                    Preciso que acedas ao seguinte documento:
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Antes de abrir um anexo inesperado, verifica a origem e o contexto do pedido."
+                    >
+                        📎 Documento_Confidencial_2026.pdf
+                    </span>
+                </p>
+
+                <p>
+                    Depois disso preciso que
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedidos inesperados de transferência de dinheiro devem ser confirmados através de outro canal."
+                    >
+                        transfiras 750€ para a conta indicada no documento
+                    </span>.
+                </p>
+
+                <p>
+                    Não quero envolver mais ninguém neste momento.
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="true"
+                        data-points="2"
+                        data-feedback="🚩 Pedir segredo ou isolamento reduz a possibilidade de o pedido ser verificado por outra pessoa."
+                    >
+                        Mantém isto confidencial.
+                    </span>
+                </p>
+
+                <p>
+                    <span
+                        class="clickable"
+                        data-suspect="false"
+                        data-feedback="ℹ️ Estar fora do escritório é perfeitamente possível. O problema é o conjunto dos restantes sinais."
+                    >
+                        Estou fora do escritório.
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+    `
+}
+
+];
+
+
+
+/* ============================================================
+   VARIÁVEIS DO JOGO
+============================================================ */
+
+let currentQuestion = 0;
+
+let score = 0;
+
+let codename = "";
+
+let startTime = null;
+
+let timerInterval = null;
+
+let answeredCurrentQuestion = false;
+
+
+
+/* ============================================================
+   START GAME
+============================================================ */
+
+/* ============================================================
+   PERSISTÊNCIA D1 — F5 / REFRESH
+============================================================ */
+let currentClickedIndices = [];
+let currentSafeAnswered = false;
+let gameFinished = false;
+let leavingPage = false;
+
+function getD1StateKey() {
+    const token = getPlayerToken();
+    return token ? `cyberChallenge_d1_state_${token}` : "";
+}
+
+function saveGameState() {
+    const key = getD1StateKey();
+    if (!key || gameFinished || !startTime) return;
+    const f = document.getElementById("feedback");
+    const sb = document.getElementById("safeButton");
+    const nb = document.getElementById("nextButton");
+    try {
+        localStorage.setItem(key, JSON.stringify({
+            currentQuestion, score, startTime, answeredCurrentQuestion,
+            currentClickedIndices, currentSafeAnswered,
+            feedbackClass: f ? f.className : "feedback hidden",
+            feedbackHTML: f ? f.innerHTML : "",
+            safeButtonText: sb ? sb.textContent : "",
+            safeButtonHidden: sb ? sb.classList.contains("hidden") : false,
+            nextButtonHidden: nb ? nb.classList.contains("hidden") : true
+        }));
+    } catch (e) { console.error("Erro ao guardar estado D1", e); }
+}
+
+function loadGameState() {
+    const key = getD1StateKey();
+    if (!key) return null;
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const state = JSON.parse(raw);
+        return state && Number.isFinite(Number(state.startTime)) ? state : null;
+    } catch (e) { return null; }
+}
+
+function clearGameState() {
+    const key = getD1StateKey();
+    if (key) localStorage.removeItem(key);
+}
+
+function restoreCurrentQuestionState(state) {
+    const clicked = Array.isArray(state.currentClickedIndices) ? state.currentClickedIndices.map(Number) : [];
+    document.querySelectorAll(".clickable").forEach((el, i) => {
+        if (clicked.includes(i)) el.classList.add(el.dataset.suspect === "true" ? "correct" : "wrong");
+    });
+    const f = document.getElementById("feedback");
+    if (f) { f.className = state.feedbackClass || "feedback hidden"; f.innerHTML = state.feedbackHTML || ""; }
+    const sb = document.getElementById("safeButton");
+    if (sb) { sb.textContent = state.safeButtonText || "🛡️ Não encontrei nada suspeito"; sb.classList.toggle("hidden", Boolean(state.safeButtonHidden)); }
+    const nb = document.getElementById("nextButton");
+    if (nb) nb.classList.toggle("hidden", Boolean(state.nextButtonHidden));
+}
+
+function restoreGameState() {
+    const state = loadGameState();
+    if (!state) return false;
+    const q = Number(state.currentQuestion);
+    if (!Number.isInteger(q) || q < 0 || q >= questions.length) { clearGameState(); return false; }
+    currentQuestion = q;
+    score = Number(state.score) || 0;
+    startTime = Number(state.startTime) || Date.now();
+    answeredCurrentQuestion = Boolean(state.answeredCurrentQuestion);
+    currentClickedIndices = Array.isArray(state.currentClickedIndices) ? state.currentClickedIndices.map(Number) : [];
+    currentSafeAnswered = Boolean(state.currentSafeAnswered);
+    gameFinished = false;
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
+    loadQuestion(state);
+    updateTimer();
+    return true;
+}
+
+window.addEventListener("beforeunload", function(e) {
+    if (startTime && !gameFinished && !leavingPage) { saveGameState(); e.preventDefault(); e.returnValue = ""; }
+});
+window.addEventListener("pagehide", function() { if (startTime && !gameFinished) saveGameState(); });
+window.addEventListener("visibilitychange", function() { if (document.visibilityState === "hidden" && startTime && !gameFinished) saveGameState(); });
+
+function startGame() {
+    const token = getPlayerToken();
+    codename = getPlayerCodename();
+    if (!token) { alert("Link de acesso inválido ou sem token."); return; }
+    if (!codename) { alert("Não foi possível identificar o teu Cyber Codename. Usa o link recebido por email."); return; }
+    if (restoreGameState()) return;
+    score = 0; currentQuestion = 0; answeredCurrentQuestion = false;
+    currentClickedIndices = []; currentSafeAnswered = false; gameFinished = false;
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    startTime = Date.now();
+    clearInterval(timerInterval); timerInterval = setInterval(updateTimer, 1000);
+    loadQuestion(); updateTimer(); saveGameState();
+}
+
+
+
+/* ============================================================
+   TIMER
+============================================================ */
+
+function updateTimer() {
+
+    if (!startTime) {
+        return;
+    }
+
+
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+
+    const minutes =
+        Math.floor(
+            elapsed / 60
+        );
+
+
+    const seconds =
+        elapsed % 60;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+}
+
+
+
+/* ============================================================
+   LOAD QUESTION
+============================================================ */
+
+function loadQuestion(savedState = null) {
+
+    const question =
+        questions[currentQuestion];
+
+
+    answeredCurrentQuestion = savedState ? Boolean(savedState.answeredCurrentQuestion) : false;
+    currentClickedIndices = savedState && Array.isArray(savedState.currentClickedIndices) ? savedState.currentClickedIndices.map(Number) : [];
+    currentSafeAnswered = savedState ? Boolean(savedState.currentSafeAnswered) : false;
+
+    document
+        .getElementById("challengeNumber")
+        .textContent =
+        `${currentQuestion + 1} / ${questions.length}`;
+
+
+    document
+        .getElementById("challengeTitle")
+        .textContent =
+        question.title;
+
+
+    document
+        .getElementById("score")
+        .textContent =
+        score;
+
+
+    document
+        .getElementById("progress")
+        .style.width =
+        `${(currentQuestion / questions.length) * 100}%`;
+
+
+    document
+        .getElementById("emailContainer")
+        .innerHTML =
+        question.html;
+
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    feedback.className =
+        "feedback hidden";
+
+
+    feedback.innerHTML =
+        "";
+
+
+    /*
+       O botão está SEMPRE disponível.
+    */
+
+    const safeButton =
+        document.getElementById("safeButton");
+
+
+    safeButton.classList.remove(
+        "hidden"
+    );
+
+
+    const nextButton =
+        document.getElementById("nextButton");
+
+
+    nextButton.classList.add(
+        "hidden"
+    );
+
+
+    /*
+       Ativar os elementos clicáveis.
+    */
+
+    document
+        .querySelectorAll(".clickable")
+        .forEach(
+            element => {
+
+                element.addEventListener(
+                    "click",
+                    function() {
+
+                        checkAnswer(this);
+
+                    }
+                );
+
+            }
+        );
+
+    if (savedState) restoreCurrentQuestionState(savedState);
+}
+
+
+
+/* ============================================================
+   CLICK NUM ELEMENTO
+============================================================ */
+
+function checkAnswer(element) {
+
+    if (
+        element.classList.contains("correct") ||
+        element.classList.contains("wrong")
+    ) {
+
+        return;
+    }
+
+
+    answeredCurrentQuestion =
+        true;
+
+
+    const suspect =
+        element.dataset.suspect === "true";
+
+
+    const points =
+        parseInt(
+            element.dataset.points || "0"
+        );
+
+
+    const feedbackText =
+        element.dataset.feedback || "";
+
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    /*
+       SINAL REAL
+    */
+
+    if (suspect) {
+
+        score += points;
+
+
+        element.classList.add(
+            "correct"
+        );
+
+
+        feedback.className =
+            "feedback good";
+
+
+        feedback.innerHTML = `
+            <strong>🚨 Boa deteção!</strong><br><br>
+
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>+${points} pontos</strong>
+        `;
+
+    }
+
+
+    /*
+       FALSO POSITIVO
+    */
+
+    else {
+
+        score -= 3;
+
+
+        if (score < 0) {
+            score = 0;
+        }
+
+
+        element.classList.add(
+            "wrong"
+        );
+
+
+        feedback.className =
+            "feedback bad";
+
+
+        feedback.innerHTML = `
+            <strong>❌ Falso positivo</strong><br><br>
+
+            ${feedbackText}
+
+            <br><br>
+
+            <strong>-3 pontos</strong>
+        `;
+    }
+
+
+    document
+        .getElementById("score")
+        .textContent =
+        score;
+
+    const clickedIndex = Array.from(document.querySelectorAll(".clickable")).indexOf(element);
+    if (clickedIndex >= 0 && !currentClickedIndices.includes(clickedIndex)) currentClickedIndices.push(clickedIndex);
+    saveGameState();
+
+    feedback.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+       Depois de clicar num elemento,
+       continuamos a permitir "não encontrei mais nada".
+    */
+
+    const safeButton =
+        document.getElementById("safeButton");
+
+
+    safeButton.textContent =
+        "🛡️ Não encontrei mais nada suspeito";
+
+
+    /*
+       O jogador pode avançar depois
+       de tomar uma decisão.
+    */
+
+    document
+        .getElementById("nextButton")
+        .classList.remove("hidden");
+}
+
+
+
+/* ============================================================
+   BOTÃO "NÃO ENCONTREI NADA"
+============================================================ */
+
+function answerSafe() {
+
+    const question =
+        questions[currentQuestion];
+
+
+    const feedback =
+        document.getElementById("feedback");
+
+
+    /*
+       EMAIL LEGÍTIMO
+    */
+
+    if (
+        question.safe === true
+    ) {
+
+        /*
+           Se já foi dada uma resposta,
+           não atribuir novamente os pontos.
+        */
+
+        if (
+            answeredCurrentQuestion
+        ) {
+
+            return;
+
+        }
+
+
+        answeredCurrentQuestion =
+            true;
+
+
+        score += 10;
+
+
+        document
+            .getElementById("score")
+            .textContent =
+            score;
+
+
+        feedback.className =
+            "feedback good";
+
+
+        feedback.innerHTML = `
+            <strong>🛡️ Boa análise!</strong><br><br>
+
+            Este email foi desenhado como uma situação legítima.
+            Não encontraste sinais suspeitos porque, neste caso,
+            não havia nenhum indicador principal de phishing.
+
+            <br><br>
+
+            <strong>+10 pontos</strong>
+        `;
+
+    }
+
+
+    /*
+       EMAIL SUSPEITO
+    */
+
+    else {
+
+        score -= 5;
+
+
+        if (score < 0) {
+            score = 0;
+        }
+
+
+        document
+            .getElementById("score")
+            .textContent =
+            score;
+
+
+        feedback.className =
+            "feedback bad";
+
+
+        feedback.innerHTML = `
+            <strong>🚨 Há sinais suspeitos neste email!</strong><br><br>
+
+            Uma análise mais cuidadosa teria permitido
+            identificar pelo menos um indicador de phishing,
+            fraude ou engenharia social.
+
+            <br><br>
+
+            <strong>-5 pontos</strong>
+        `;
+
+    }
+
+
+    feedback.classList.remove(
+        "hidden"
+    );
+
+
+    document
+        .getElementById("nextButton")
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("safeButton")
+        .classList.add(
+            "hidden"
+        );
+    saveGameState();
+}
+
+
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+
+    if (
+        currentQuestion >=
+        questions.length
+    ) {
+
+        endGame();
+
+        return;
+    }
+
+
+    loadQuestion();
+}
+
+
+
+/* ============================================================
+   GUARDAR RESULTADO NA D1
+============================================================ */
+
+async function saveChallenge01Result(elapsed) {
+
+    const token =
+        getPlayerToken();
+
+
+    const payload = {
+
+        token: token,
+
+        entra_object_id: localStorage.getItem("cyberChallengeEntraObjectId") || "",
+        entra_email: localStorage.getItem("cyberChallengeEntraEmail") || "",
+        entra_name: localStorage.getItem("cyberChallengeEntraName") || "",
+        cyber_codename: getPlayerCodename(),
+
+        d1_score: score,
+        d1_time: elapsed,
+
+        /*
+           Os restantes campos são obrigatórios na tabela D1.
+           Serão atualizados pelos desafios seguintes.
+        */
+        d2_score: 0,
+        d2_time: 0,
+        d3_score: 0,
+        d3_time: 0,
+        d4_score: 0,
+        d4_time: 0,
+        boss_score: 0,
+        boss_time: 0,
+
+        total_score: score,
+        total_time: elapsed,
+
+        completed_date:
+            new Date().toISOString()
+    };
+
+
+    const status =
+        document.getElementById("saveStatus");
+
+
+    status.textContent =
+        "💾 A guardar o resultado...";
+
+    status.style.color = "#f59e0b";
+
+
+    try {
+
+        const response =
+            await fetch(
+                WORKER_URL,
+                {
+                    method: "POST",
+                    headers: getWorkerAuthHeaders(),
+                    body: JSON.stringify(payload)
+                }
+            );
+
+
+        let data = null;
+
+
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            data = null;
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+
+        if (
+            data &&
+            data.success === false
+        ) {
+
+            throw new Error(
+                data.message || "O Worker devolveu um erro."
+            );
+        }
+
+
+        status.textContent =
+            "✅ Resultado guardado com sucesso.";
+
+        status.style.color = "#4ade80";
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao guardar o resultado na D1:",
+            error
+        );
+
+        status.textContent =
+            "⚠️ Não foi possível guardar o resultado. Podes continuar para o Desafio 02.";
+
+        status.style.color = "#f59e0b";
+
+        return false;
+    }
+    saveGameState();
+}
+
+
+
+async function endGame() {
+
+    clearInterval(
+        timerInterval
+    );
+
+    // Guardar localmente para os desafios seguintes.
+    localStorage.setItem(
+        "cyberChallenge_d1",
+        score
+    );
+
+    localStorage.setItem(
+        "cyberChallenge_d1_time",
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        )
+    );
+
+    localStorage.setItem(
+        "cyberChallengeToken",
+        getPlayerToken()
+    );
+
+
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+
+    const minutes =
+        Math.floor(
+            elapsed / 60
+        );
+
+
+    const seconds =
+        elapsed % 60;
+
+
+    document
+        .getElementById("gameScreen")
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("endScreen")
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById("finalCodename")
+        .textContent =
+        codename;
+
+
+    document
+        .getElementById("finalScore")
+        .textContent =
+        `${score} / 100`;
+
+
+    document
+        .getElementById("finalTime")
+        .textContent =
+        `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+
+    let message;
+
+
+    if (
+        score >= 90
+    ) {
+
+        message = `
+            🔥 <strong>Excelente!</strong><br><br>
+
+            Tens um radar de phishing muito bem afinado.
+            Identificaste os sinais sem cair nos falsos positivos.
+            Um verdadeiro Cyber Ninja.
+        `;
+
+    }
+
+    else if (
+        score >= 70
+    ) {
+
+        message = `
+            🛡️ <strong>Bom trabalho!</strong><br><br>
+
+            Identificaste os principais sinais.
+            Agora sabes também que nem tudo o que parece
+            estranho é necessariamente um ataque.
+        `;
+
+    }
+
+    else if (
+        score >= 50
+    ) {
+
+        message = `
+            👀 <strong>Há margem para melhorar.</strong><br><br>
+
+            Alguns sinais passaram pelo teu radar e alguns
+            falsos positivos enganaram-te.
+            Na dúvida: para, verifica e confirma.
+        `;
+
+    }
+
+    else {
+
+        message = `
+            🚨 <strong>O phish deu luta.</strong><br><br>
+
+            Este desafio mostrou porque devemos analisar
+            o contexto, o remetente, os links e os pedidos
+            antes de agir.
+        `;
+
+    }
+
+
+    document
+        .getElementById("finalMessage")
+        .innerHTML =
+        message;
+
+
+    document
+        .getElementById("progress")
+        .style.width =
+        "100%";
+
+
+    /*
+       Guardar na D1 antes de permitir avançar.
+    */
+    const challenge02Button =
+        document.querySelector(
+            ".next-challenge-box button"
+        );
+
+    if (challenge02Button) {
+        challenge02Button.disabled = true;
+        challenge02Button.style.opacity = "0.6";
+        challenge02Button.style.cursor = "wait";
+    }
+
+
+    const saveResult = await saveChallenge01Result(elapsed);
+
+    if (saveResult === true) {
+        clearGameState();
+        gameFinished = true;
+    }
+
+    if (saveResult !== true && challenge02Button) {
+        challenge02Button.disabled = true;
+        challenge02Button.style.opacity = "0.5";
+        challenge02Button.style.cursor = "not-allowed";
+    } else if (challenge02Button) {
+        challenge02Button.disabled = false;
+        challenge02Button.style.opacity = "1";
+        challenge02Button.style.cursor = "pointer";
+    }
+}
+
+
+
+/* ============================================================
+   DESAFIO 02
+============================================================ */
+
+function goToChallenge02() {
+
+    // Navegação intencional: não mostrar o aviso "Sair do site?".
+    leavingPage = true;
+
+    const token = (localStorage.getItem("cyberChallengeToken") || "").trim();
+    const codename = (localStorage.getItem("cyberChallengeCodename") || "").trim();
+
+    const params = new URLSearchParams();
+    if (token) params.set("token", token);
+    if (codename) params.set("codename", codename);
+
+    window.location.href =
+        "desafio02.html" + (params.toString() ? "?" + params.toString() : "");
+}
+
+
+</script>
+
+</body>
+</html>

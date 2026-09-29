@@ -710,19 +710,25 @@ function preserveAccessParameters() {
         new URLSearchParams(window.location.search);
 
     const urlToken = params.get("token");
-    const urlCodename = params.get("codename");
 
+    /*
+       O token Sesame é a fonte de acesso.
+       Preservamos o valor integral, sem truncar.
+       O Cyber Codename NÃO vem do URL: é gerado
+       a partir da identidade Entra autenticada.
+    */
     if (urlToken && urlToken.trim()) {
         localStorage.setItem(
             "cyberChallengeToken",
-            urlToken.trim().substring(0, 100)
+            urlToken.trim()
         );
-    }
 
-    if (urlCodename && urlCodename.trim()) {
-        localStorage.setItem(
-            "cyberChallengeCodename",
-            urlCodename.trim().substring(0, 50)
+        /*
+           Um novo token significa uma nova entrada.
+           Não reutilizamos um codename antigo do browser.
+        */
+        localStorage.removeItem(
+            "cyberChallengeCodename"
         );
     }
 }
@@ -762,6 +768,121 @@ function showAuthenticatedUser() {
         (email
             ? ` · ${escapeHtml(email)}`
             : "");
+}
+
+/*
+   Identidade Cyber Challenge 2026
+
+   Exemplo:
+   pnogueira@sporttv.pt
+          ↓
+   pnogueira
+          ↓
+   pnogueira_cyber2026
+*/
+function establishParticipantIdentity() {
+
+    if (!entraAccount) {
+        throw new Error(
+            "Não existe uma conta Microsoft Entra autenticada."
+        );
+    }
+
+    const claims =
+        entraAccount.idTokenClaims || {};
+
+    const email =
+        (
+            entraAccount.username ||
+            claims.preferred_username ||
+            claims.email ||
+            ""
+        ).trim().toLowerCase();
+
+    const objectId =
+        (
+            claims.oid ||
+            entraAccount.localAccountId ||
+            ""
+        ).trim();
+
+    if (!email) {
+        throw new Error(
+            "Não foi possível obter o email da conta Entra."
+        );
+    }
+
+    if (!objectId) {
+        throw new Error(
+            "Não foi possível obter o Object ID da conta Entra."
+        );
+    }
+
+    const atPosition = email.indexOf("@");
+
+    if (atPosition <= 0) {
+        throw new Error(
+            "O email da conta Entra não tem um formato válido."
+        );
+    }
+
+    const shortname =
+        email
+            .substring(0, atPosition)
+            .replace(/[^a-z0-9._-]/g, "")
+            .replace(/[._-]+$/g, "");
+
+    if (!shortname) {
+        throw new Error(
+            "Não foi possível determinar o shortname corporativo."
+        );
+    }
+
+    const cyberCodename =
+        shortname + "_cyber2026";
+
+    localStorage.setItem(
+        "cyberChallengeEntraObjectId",
+        objectId
+    );
+
+    localStorage.setItem(
+        "cyberChallengeEntraEmail",
+        email
+    );
+
+    localStorage.setItem(
+        "cyberChallengeEntraName",
+        (
+            entraAccount.name ||
+            claims.name ||
+            ""
+        ).trim()
+    );
+
+    localStorage.setItem(
+        "cyberChallengeShortname",
+        shortname
+    );
+
+    localStorage.setItem(
+        "cyberChallengeCodename",
+        cyberCodename
+    );
+
+    codename = cyberCodename;
+
+    return {
+        objectId: objectId,
+        email: email,
+        name: (
+            entraAccount.name ||
+            claims.name ||
+            ""
+        ).trim(),
+        shortname: shortname,
+        cyberCodename: cyberCodename
+    };
 }
 
 async function initialiseEntraAuthentication() {
@@ -830,6 +951,12 @@ async function initialiseEntraAuthentication() {
 
         showAuthenticatedUser();
 
+        /*
+           Depois do SSO, a identidade autenticada passa a
+           determinar o Cyber Codename oficial.
+        */
+        establishParticipantIdentity();
+
         if (authStatus) {
             authStatus.style.borderColor =
                 "#22c55e";
@@ -882,7 +1009,7 @@ function getPlayerToken() {
     if (urlToken && urlToken.trim()) {
 
         playerToken =
-            urlToken.trim().substring(0, 100);
+            urlToken.trim();
 
         localStorage.setItem(
             "cyberChallengeToken",
@@ -916,37 +1043,50 @@ function getPlayerToken() {
 
 function getPlayerCodename() {
 
-    const urlParams =
-        new URLSearchParams(window.location.search);
+    /*
+       O codename oficial é sempre derivado da identidade
+       Entra autenticada. Não aceitamos codename vindo do URL
+       nem um valor antigo como "Raven" guardado no browser.
+    */
 
-    const urlCodename =
-        urlParams.get("codename");
+    if (entraAccount) {
+        const claims =
+            entraAccount.idTokenClaims || {};
 
-    if (urlCodename && urlCodename.trim()) {
+        const email =
+            (
+                entraAccount.username ||
+                claims.preferred_username ||
+                claims.email ||
+                ""
+            ).trim().toLowerCase();
 
-        codename = urlCodename.trim().substring(0, 50);
+        const atPosition =
+            email.indexOf("@");
 
-        localStorage.setItem(
-            "cyberChallengeCodename",
-            codename
-        );
+        if (atPosition > 0) {
+            const shortname =
+                email
+                    .substring(0, atPosition)
+                    .replace(/[^a-z0-9._-]/g, "")
+                    .replace(/[._-]+$/g, "");
 
-        return codename;
-    }
+            if (shortname) {
+                codename =
+                    shortname + "_cyber2026";
 
-    const storedCodename =
-        localStorage.getItem("cyberChallengeCodename");
+                localStorage.setItem(
+                    "cyberChallengeCodename",
+                    codename
+                );
 
-    if (storedCodename && storedCodename.trim()) {
-
-        codename = storedCodename.trim();
-
-        return codename;
+                return codename;
+            }
+        }
     }
 
     return "";
 }
-
 
 async function checkTokenAccess() {
 
@@ -969,12 +1109,24 @@ async function checkTokenAccess() {
         return false;
     }
 
-    // O codename é apenas identificativo; não deve bloquear o jogo.
-    // Se não vier no URL, recuperamos do browser ou usamos um nome neutro.
+    /*
+       O Cyber Codename é obrigatório e é derivado da
+       identidade Entra autenticada.
+    */
     if (!playerCodename) {
-        codename = "Cyber Ninja";
-        localStorage.setItem("cyberChallengeCodename", codename);
-        if (display) display.textContent = codename;
+        if (startButton) {
+            startButton.disabled = true;
+            startButton.style.opacity = "0.5";
+            startButton.style.cursor = "not-allowed";
+        }
+
+        if (accessMessage) {
+            accessMessage.textContent =
+                "⚠️ Não foi possível determinar a identidade do participante.";
+            accessMessage.style.color = "#f87171";
+        }
+
+        return false;
     }
 
     if (accessMessage) {

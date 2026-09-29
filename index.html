@@ -6,6 +6,13 @@
 
 <title>Cyber Challenge 2026</title>
 
+<!-- Microsoft Entra ID / MSAL Browser v2 LTS -->
+<script
+    type="text/javascript"
+    src="https://alcdn.msftauth.net/browser/2.35.0/js/msal-browser.min.js"
+    defer>
+</script>
+
 <style>
 
 * {
@@ -448,6 +455,13 @@ button:hover {
         <span id="displayCodename">A carregar...</span>
     </div>
 
+    <div id="authStatus"
+         style="margin:15px 0; padding:12px 14px; border-radius:10px;
+                background:#0c1320; border:1px solid #263246;">
+        🔐 <strong>Identidade:</strong>
+        <span id="authUser">A validar sessão...</span>
+    </div>
+
     <div id="accessMessage" style="margin:15px 0; font-weight:bold;"></div>
 
         <button id="startButton" onclick="startGame()" disabled style="opacity:.6; cursor:wait;">
@@ -655,6 +669,196 @@ button:hover {
 
 <script>
 
+/* ============================================================
+   MICROSOFT ENTRA ID / MSAL
+============================================================ */
+
+const ENTRA_CLIENT_ID =
+    "51daeb10-f5fb-4b73-8625-9ba75101349d";
+
+const ENTRA_TENANT_ID =
+    "25617c82-4182-4171-8125-b408e318d942";
+
+const ENTRA_REDIRECT_URI =
+    "https://pnogueira2024.github.io/cyber-challenge-2026/";
+
+const msalConfig = {
+    auth: {
+        clientId: ENTRA_CLIENT_ID,
+        authority:
+            "https://login.microsoftonline.com/" +
+            ENTRA_TENANT_ID,
+        redirectUri: ENTRA_REDIRECT_URI,
+        postLogoutRedirectUri: ENTRA_REDIRECT_URI,
+        navigateToLoginRequestUrl: true
+    },
+    cache: {
+        cacheLocation: "sessionStorage",
+        storeAuthStateInCookie: false
+    }
+};
+
+const loginRequest = {
+    scopes: ["openid", "profile", "email"]
+};
+
+let msalInstance = null;
+let entraAccount = null;
+
+function preserveAccessParameters() {
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const urlToken = params.get("token");
+    const urlCodename = params.get("codename");
+
+    if (urlToken && urlToken.trim()) {
+        localStorage.setItem(
+            "cyberChallengeToken",
+            urlToken.trim().substring(0, 100)
+        );
+    }
+
+    if (urlCodename && urlCodename.trim()) {
+        localStorage.setItem(
+            "cyberChallengeCodename",
+            urlCodename.trim().substring(0, 50)
+        );
+    }
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showAuthenticatedUser() {
+
+    const element =
+        document.getElementById("authUser");
+
+    if (!element || !entraAccount) return;
+
+    const claims =
+        entraAccount.idTokenClaims || {};
+
+    const name =
+        entraAccount.name ||
+        claims.name ||
+        "Utilizador";
+
+    const email =
+        entraAccount.username ||
+        claims.preferred_username ||
+        claims.email ||
+        "";
+
+    element.innerHTML =
+        `<strong>${escapeHtml(name)}</strong>` +
+        (email
+            ? ` · ${escapeHtml(email)}`
+            : "");
+}
+
+async function initialiseEntraAuthentication() {
+
+    preserveAccessParameters();
+
+    const authStatus =
+        document.getElementById("authStatus");
+
+    const authUser =
+        document.getElementById("authUser");
+
+    try {
+
+        if (typeof msal === "undefined") {
+            throw new Error(
+                "A biblioteca MSAL não foi carregada."
+            );
+        }
+
+        msalInstance =
+            new msal.PublicClientApplication(
+                msalConfig
+            );
+
+        /*
+           Obrigatório para processar o retorno de
+           loginRedirect().
+        */
+        const response =
+            await msalInstance.handleRedirectPromise();
+
+        if (response && response.account) {
+            entraAccount = response.account;
+            msalInstance.setActiveAccount(
+                entraAccount
+            );
+        }
+
+        if (!entraAccount) {
+
+            const accounts =
+                msalInstance.getAllAccounts();
+
+            if (accounts.length > 0) {
+                entraAccount = accounts[0];
+                msalInstance.setActiveAccount(
+                    entraAccount
+                );
+            }
+        }
+
+        if (!entraAccount) {
+
+            if (authUser) {
+                authUser.textContent =
+                    "A iniciar sessão...";
+            }
+
+            await msalInstance.loginRedirect(
+                loginRequest
+            );
+
+            return false;
+        }
+
+        showAuthenticatedUser();
+
+        if (authStatus) {
+            authStatus.style.borderColor =
+                "#22c55e";
+        }
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Erro na autenticação Microsoft Entra ID:",
+            error
+        );
+
+        if (authUser) {
+            authUser.innerHTML =
+                "⚠️ Não foi possível validar a sessão. " +
+                "Consulta a consola do browser.";
+        }
+
+        if (authStatus) {
+            authStatus.style.borderColor =
+                "#ef4444";
+        }
+
+        return false;
+    }
+}
+
 
 /* ============================================================
    CLOUDFLARE WORKER / TOKEN
@@ -847,7 +1051,20 @@ async function checkTokenAccess() {
 }
 
 
-window.addEventListener("DOMContentLoaded", checkTokenAccess);
+window.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        const authenticated =
+            await initialiseEntraAuthentication();
+
+        if (!authenticated) {
+            return;
+        }
+
+        await checkTokenAccess();
+    }
+);
 
 
 /* ============================================================

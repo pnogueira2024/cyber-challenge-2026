@@ -627,9 +627,9 @@ button:hover {
 
         <div class="next-challenge-box">
 
-            <div class="unlock">
-                🔓 NOVO DESAFIO DESBLOQUEADO
-            </div>
+<div class="unlock" id="challenge02Unlock">
+    🔒 DESAFIO 02 — A AGUARDAR GRAVAÇÃO
+</div>
 
             <h3>
                 DESAFIO 02 — CLEAR DESK
@@ -2836,15 +2836,21 @@ async function saveChallenge01Result(elapsed) {
     const token =
         getPlayerToken();
 
-
     const payload = {
 
         token: token,
 
-        entra_object_id: localStorage.getItem("cyberChallengeEntraObjectId") || "",
-        entra_email: localStorage.getItem("cyberChallengeEntraEmail") || "",
-        entra_name: localStorage.getItem("cyberChallengeEntraName") || "",
-        cyber_codename: getPlayerCodename(),
+        entra_object_id:
+            localStorage.getItem("cyberChallengeEntraObjectId") || "",
+
+        entra_email:
+            localStorage.getItem("cyberChallengeEntraEmail") || "",
+
+        entra_name:
+            localStorage.getItem("cyberChallengeEntraName") || "",
+
+        cyber_codename:
+            getPlayerCodename(),
 
         d1_score: score,
         d1_time: elapsed,
@@ -2855,10 +2861,13 @@ async function saveChallenge01Result(elapsed) {
         */
         d2_score: 0,
         d2_time: 0,
+
         d3_score: 0,
         d3_time: 0,
+
         d4_score: 0,
         d4_time: 0,
+
         boss_score: 0,
         boss_time: 0,
 
@@ -2874,10 +2883,12 @@ async function saveChallenge01Result(elapsed) {
         document.getElementById("saveStatus");
 
 
-    status.textContent =
-        "💾 A guardar o resultado...";
+    if (status) {
+        status.textContent =
+            "💾 A guardar o resultado...";
 
-    status.style.color = "#f59e0b";
+        status.style.color = "#f59e0b";
+    }
 
 
     try {
@@ -2887,8 +2898,12 @@ async function saveChallenge01Result(elapsed) {
                 WORKER_URL,
                 {
                     method: "POST",
-                    headers: getWorkerAuthHeaders(),
-                    body: JSON.stringify(payload)
+
+                    headers:
+                        getWorkerAuthHeaders(),
+
+                    body:
+                        JSON.stringify(payload)
                 }
             );
 
@@ -2897,37 +2912,75 @@ async function saveChallenge01Result(elapsed) {
 
 
         try {
-            data = await response.json();
+
+            data =
+                await response.json();
+
         } catch (jsonError) {
+
             data = null;
+
         }
 
+
+        /*
+           Qualquer HTTP diferente de 2xx
+           é considerado falha.
+        */
 
         if (!response.ok) {
 
             throw new Error(
                 `HTTP ${response.status}`
             );
+
         }
 
 
+        /*
+           O Worker pode responder HTTP 200
+           mas indicar explicitamente success:false.
+        */
+
         if (
-            data &&
-            data.success === false
+            !data ||
+            data.success !== true
         ) {
 
             throw new Error(
-                data.message || "O Worker devolveu um erro."
+                data && data.message
+                    ? data.message
+                    : "O Worker não confirmou a gravação do resultado."
             );
+
         }
 
 
-        status.textContent =
-            "✅ Resultado guardado com sucesso.";
+        /*
+           SUCESSO REAL
+        */
 
-        status.style.color = "#4ade80";
+        if (status) {
+
+            status.textContent =
+                "✅ Resultado guardado com sucesso.";
+
+            status.style.color =
+                "#4ade80";
+
+        }
+
+
+        /*
+           Guardamos também o estado local
+           apenas depois de o Worker confirmar.
+        */
+
+        saveGameState();
+
 
         return true;
+
 
     } catch (error) {
 
@@ -2936,16 +2989,28 @@ async function saveChallenge01Result(elapsed) {
             error
         );
 
-        status.textContent =
-            "⚠️ Não foi possível guardar o resultado. Podes continuar para o Desafio 02.";
 
-        status.style.color = "#f59e0b";
+        if (status) {
+
+            status.innerHTML = `
+                ❌ <strong>Não foi possível guardar o resultado.</strong><br>
+                O Desafio 02 permanece bloqueado.<br>
+                <small>
+                    Podes tentar guardar novamente.
+                </small>
+            `;
+
+            status.style.color =
+                "#f87171";
+
+        }
+
 
         return false;
-    }
-    saveGameState();
-}
 
+    }
+
+}
 
 
 async function endGame() {
@@ -2954,23 +3019,16 @@ async function endGame() {
         timerInterval
     );
 
-    // Guardar localmente para os desafios seguintes.
-    localStorage.setItem(
-        "cyberChallenge_d1",
-        score
-    );
 
-    localStorage.setItem(
-        "cyberChallenge_d1_time",
-        Math.floor(
-            (Date.now() - startTime) / 1000
-        )
-    );
+    /*
+       IMPORTANTE:
+       Ainda NÃO marcamos o jogo como terminado.
 
-    localStorage.setItem(
-        "cyberChallengeToken",
-        getPlayerToken()
-    );
+       Só será feito depois de o Worker confirmar
+       que o resultado foi guardado na D1.
+    */
+
+    gameFinished = false;
 
 
     const elapsed =
@@ -2988,6 +3046,34 @@ async function endGame() {
     const seconds =
         elapsed % 60;
 
+
+    /*
+       Guardar localmente os dados do D01.
+       Isto permite que os desafios seguintes
+       utilizem a pontuação/tempo.
+    */
+
+    localStorage.setItem(
+        "cyberChallenge_d1",
+        score
+    );
+
+
+    localStorage.setItem(
+        "cyberChallenge_d1_time",
+        elapsed
+    );
+
+
+    localStorage.setItem(
+        "cyberChallengeToken",
+        getPlayerToken()
+    );
+
+
+    /*
+       Mostrar ecrã final.
+    */
 
     document
         .getElementById("gameScreen")
@@ -3020,6 +3106,10 @@ async function endGame() {
         .textContent =
         `⏱️ Tempo: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
+
+    /*
+       Mensagem final conforme pontuação.
+    */
 
     let message;
 
@@ -3092,36 +3182,283 @@ async function endGame() {
 
 
     /*
-       Guardar na D1 antes de permitir avançar.
+       ---------------------------------------------------------
+       CONTROLO DO DESAFIO 02
+       ---------------------------------------------------------
     */
+
     const challenge02Button =
         document.querySelector(
             ".next-challenge-box button"
         );
 
+
+    /*
+       Por defeito, o D02 começa BLOQUEADO.
+    */
+
     if (challenge02Button) {
-        challenge02Button.disabled = true;
-        challenge02Button.style.opacity = "0.6";
-        challenge02Button.style.cursor = "wait";
+
+        challenge02Button.disabled =
+            true;
+
+        challenge02Button.style.opacity =
+            "0.5";
+
+        challenge02Button.style.cursor =
+            "not-allowed";
+
     }
 
 
-    const saveResult = await saveChallenge01Result(elapsed);
+    /*
+       Mensagem de estado.
+    */
 
-    if (saveResult === true) {
+    const saveStatus =
+        document.getElementById("saveStatus");
+
+
+    if (saveStatus) {
+
+        saveStatus.innerHTML =
+            "💾 A guardar o resultado antes de desbloquear o próximo desafio...";
+
+        saveStatus.style.color =
+            "#f59e0b";
+
+    }
+
+
+    /*
+       ---------------------------------------------------------
+       TENTAR GRAVAR NA D1
+       ---------------------------------------------------------
+    */
+
+    const saveResult =
+        await saveChallenge01Result(
+            elapsed
+        );
+
+
+    /*
+       ---------------------------------------------------------
+       SUCESSO
+       ---------------------------------------------------------
+    */
+
+    if (
+        saveResult === true
+    ) {
+
+        /*
+           Só agora consideramos o D01 concluído.
+        */
+
+        gameFinished =
+            true;
+
+
+        /*
+           O estado local já não é necessário.
+        */
+
         clearGameState();
-        gameFinished = true;
+
+
+        /*
+           Desbloquear Desafio 02.
+        */
+
+        if (challenge02Button) {
+
+            challenge02Button.disabled =
+                false;
+
+            challenge02Button.style.opacity =
+                "1";
+
+            challenge02Button.style.cursor =
+                "pointer";
+
+        }
+
+
+        if (saveStatus) {
+
+            saveStatus.innerHTML =
+                "✅ <strong>Resultado guardado com sucesso.</strong><br>" +
+                "🔓 Desafio 02 desbloqueado.";
+
+            saveStatus.style.color =
+                "#4ade80";
+
+        }
+
     }
 
-    if (saveResult !== true && challenge02Button) {
-        challenge02Button.disabled = true;
-        challenge02Button.style.opacity = "0.5";
-        challenge02Button.style.cursor = "not-allowed";
-    } else if (challenge02Button) {
-        challenge02Button.disabled = false;
-        challenge02Button.style.opacity = "1";
-        challenge02Button.style.cursor = "pointer";
+
+    /*
+       ---------------------------------------------------------
+       FALHA
+       ---------------------------------------------------------
+    */
+
+    else {
+
+        /*
+           MUITO IMPORTANTE:
+
+           Não limpar o estado local.
+           Não marcar gameFinished.
+           Não permitir D02.
+        */
+
+        gameFinished =
+            false;
+
+
+        if (challenge02Button) {
+
+            challenge02Button.disabled =
+                true;
+
+            challenge02Button.style.opacity =
+                "0.5";
+
+            challenge02Button.style.cursor =
+                "not-allowed";
+
+        }
+
+
+        /*
+           Criar botão de retry caso ainda não exista.
+        */
+
+        let retryButton =
+            document.getElementById(
+                "retrySaveButton"
+            );
+
+
+        if (!retryButton) {
+
+            retryButton =
+                document.createElement(
+                    "button"
+                );
+
+            retryButton.id =
+                "retrySaveButton";
+
+            retryButton.textContent =
+                "🔄 Tentar guardar novamente";
+
+            retryButton.style.marginTop =
+                "15px";
+
+            retryButton.style.background =
+                "#f59e0b";
+
+            retryButton.style.color =
+                "#111827";
+
+
+            retryButton.onclick =
+                async function() {
+
+                    retryButton.disabled =
+                        true;
+
+                    retryButton.style.opacity =
+                        "0.6";
+
+                    retryButton.textContent =
+                        "💾 A tentar guardar...";
+
+
+                    const retryResult =
+                        await saveChallenge01Result(
+                            elapsed
+                        );
+
+
+                    if (
+                        retryResult === true
+                    ) {
+
+                        gameFinished =
+                            true;
+
+                        clearGameState();
+
+
+                        if (challenge02Button) {
+
+                            challenge02Button.disabled =
+                                false;
+
+                            challenge02Button.style.opacity =
+                                "1";
+
+                            challenge02Button.style.cursor =
+                                "pointer";
+
+                        }
+
+
+                        retryButton.remove();
+
+
+                        if (saveStatus) {
+
+                            saveStatus.innerHTML =
+                                "✅ <strong>Resultado guardado com sucesso.</strong><br>" +
+                                "🔓 Desafio 02 desbloqueado.";
+
+                            saveStatus.style.color =
+                                "#4ade80";
+
+                        }
+
+                    }
+
+                    else {
+
+                        retryButton.disabled =
+                            false;
+
+                        retryButton.style.opacity =
+                            "1";
+
+                        retryButton.textContent =
+                            "🔄 Tentar guardar novamente";
+
+                    }
+
+                };
+
+
+            const nextBox =
+                document.querySelector(
+                    ".next-challenge-box"
+                );
+
+
+            if (nextBox) {
+
+                nextBox.appendChild(
+                    retryButton
+                );
+
+            }
+
+        }
+
     }
+
 }
 
 

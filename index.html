@@ -1,17 +1,10 @@
 async function initialiseEntraAuthentication() {
-
     preserveAccessParameters();
 
-    const authStatus =
-        document.getElementById("authStatus");
+    const authStatus = document.getElementById("authStatus");
+    const authUser = document.getElementById("authUser");
 
-    const authUser =
-        document.getElementById("authUser");
-
-    /*
-       Diagnóstico visível no próprio ecrã.
-       Assim não precisamos de F12.
-    */
+    /* Diagnóstico visível no próprio ecrã. Assim não precisamos de F12. */
     const diagnostic = document.createElement("div");
 
     diagnostic.id = "authDiagnostic";
@@ -40,9 +33,7 @@ async function initialiseEntraAuthentication() {
         );
     }
 
-
     function diagnosticStep(message, type = "info") {
-
         const icons = {
             info: "🔎",
             ok: "✅",
@@ -50,13 +41,10 @@ async function initialiseEntraAuthentication() {
             error: "❌"
         };
 
-        const icon =
-            icons[type] || "🔎";
+        const icon = icons[type] || "🔎";
 
         if (diagnostic) {
-
-            const current =
-                diagnostic.innerHTML;
+            const current = diagnostic.innerHTML;
 
             diagnostic.innerHTML =
                 current +
@@ -72,9 +60,7 @@ async function initialiseEntraAuthentication() {
         );
     }
 
-
     function diagnosticError(error) {
-
         const message =
             error && error.message
                 ? error.message
@@ -85,7 +71,6 @@ async function initialiseEntraAuthentication() {
             "error"
         );
     }
-
 
     try {
 
@@ -98,7 +83,6 @@ async function initialiseEntraAuthentication() {
         );
 
         if (typeof msal === "undefined") {
-
             throw new Error(
                 "A biblioteca MSAL não foi carregada."
             );
@@ -227,7 +211,6 @@ async function initialiseEntraAuthentication() {
             );
 
             if (authUser) {
-
                 authUser.textContent =
                     "A iniciar sessão Microsoft...";
             }
@@ -237,9 +220,10 @@ async function initialiseEntraAuthentication() {
             );
 
             /*
-               loginRedirect termina a execução desta página
-               e redireciona para o Microsoft Entra.
-            */
+             * loginRedirect termina a execução desta página
+             * e redireciona para o Microsoft Entra.
+             */
+
             await msalInstance.loginRedirect(
                 loginRequest
             );
@@ -261,11 +245,10 @@ async function initialiseEntraAuthentication() {
             "6/8 A verificar ID Token..."
         );
 
-
         /*
-           Se recebemos o token no redirect, usamos esse.
-           Caso contrário tentamos obtê-lo silenciosamente.
-        */
+         * Se recebemos o token no redirect, usamos esse.
+         * Caso contrário tentamos obtê-lo silenciosamente.
+         */
 
         if (!entraIdToken) {
 
@@ -305,11 +288,6 @@ async function initialiseEntraAuthentication() {
                     silentError
                 );
 
-                /*
-                   Se a sessão existir mas o token silencioso
-                   não puder ser obtido, fazemos login interativo.
-                */
-
                 diagnosticStep(
                     "Não foi possível obter o token silenciosamente.",
                     "warning"
@@ -320,7 +298,6 @@ async function initialiseEntraAuthentication() {
                 );
 
                 if (authUser) {
-
                     authUser.textContent =
                         "A renovar sessão Microsoft...";
                 }
@@ -386,7 +363,6 @@ async function initialiseEntraAuthentication() {
         );
 
         if (authStatus) {
-
             authStatus.style.borderColor =
                 "#22c55e";
         }
@@ -394,14 +370,13 @@ async function initialiseEntraAuthentication() {
         if (authUser) {
 
             /*
-               Mantemos a identidade normal no topo.
-            */
+             * Mantemos a identidade normal no topo.
+             */
+
             showAuthenticatedUser();
         }
 
-
         return true;
-
 
     } catch (error) {
 

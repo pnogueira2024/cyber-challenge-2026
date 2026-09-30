@@ -794,28 +794,16 @@ async function initialiseEntraAuthentication() {
         );
     } */
 
-    function diagnosticStep(message, type = "info") {
-        const icons = {
-            info: "🔎",
-            ok: "✅",
-            warning: "⚠️",
-            error: "❌"
-        };
-        const icon = icons[type] || "🔎";
+function diagnosticStep(message, type = "info") {
+    console.log("[Cyber Challenge Auth]", message);
+}
 
-        if (diagnostic) {
-            diagnostic.innerHTML +=
-                "\n" + icon + " " + escapeHtml(message);
-        }
+function diagnosticError(error) {
+    const message =
+        error && error.message ? error.message : String(error);
 
-        console.log("[Cyber Challenge Auth]", message);
-    }
-
-    function diagnosticError(error) {
-        const message =
-            error && error.message ? error.message : String(error);
-        diagnosticStep(message, "error");
-    }
+    console.error("[Cyber Challenge Auth]", message);
+}
 
     try {
 

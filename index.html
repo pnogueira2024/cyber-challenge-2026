@@ -770,7 +770,7 @@ async function initialiseEntraAuthentication() {
     const authUser = document.getElementById("authUser");
 
     /* Diagnóstico visível no próprio ecrã. Assim não precisamos de F12. */
-    const diagnostic = document.createElement("div");
+    /* const diagnostic = document.createElement("div");
     diagnostic.id = "authDiagnostic";
     diagnostic.style.cssText = `
         margin-top:15px;
@@ -792,7 +792,7 @@ async function initialiseEntraAuthentication() {
             diagnostic,
             authStatus.nextSibling
         );
-    }
+    } */
 
     function diagnosticStep(message, type = "info") {
         const icons = {
